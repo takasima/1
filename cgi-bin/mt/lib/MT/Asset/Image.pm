@@ -87,14 +87,13 @@ sub image_width {
     return $w;
 }
 
-our $computed_thumbnail_cache = undef;
-
 sub has_thumbnail {
-    if ( !defined $computed_thumbnail_cache ) {
-        eval { require MT::Image; MT::Image->new or die; };
-        $computed_thumbnail_cache = $@ ? 0 : 1;
-    }
-    $computed_thumbnail_cache;
+    my $asset = shift;
+
+    require MT::Image;
+    my $image = MT::Image->new(
+        ( ref $asset ? ( Filename => $asset->file_path ) : () ) );
+    $image ? 1 : 0;
 }
 
 sub thumbnail_path {
@@ -157,7 +156,14 @@ sub thumbnail_file {
             >= $fmgr->file_mod_time($file_path) )
         )
     {
-        return ( $thumbnail, $n_w, $n_h );
+        require MT::Image;
+        my $img = new MT::Image( Filename => $thumbnail );
+        my ( $t_w, $t_h ) = ( $img->{width}, $img->{height} );
+        if (   ( $param{Square} && $t_h == $t_w )
+            or ( !$param{Square} && $t_h != $t_w ) )
+        {
+            return ( $thumbnail, $n_w, $n_h );
+        }
     }
 
     # stale or non-existent thumbnail. let's create one!
@@ -294,7 +300,7 @@ sub as_html {
             $thumb = MT::Asset->load( $param->{thumb_asset_id} )
                 || return $asset->error(
                 MT->translate(
-                    "Can't load image #[_1]",
+                    "Cannot load image #[_1]",
                     $param->{thumb_asset_id}
                 )
                 );
@@ -330,7 +336,7 @@ sub as_html {
             my $popup = MT::Asset->load( $param->{popup_asset_id} )
                 || return $asset->error(
                 MT->translate(
-                    "Can't load image #[_1]",
+                    "Cannot load image #[_1]",
                     $param->{popup_asset_id}
                 )
                 );
@@ -373,10 +379,11 @@ sub as_html {
         }
     }
     else {
+        require MT::Util;
         $text = sprintf(
             '<a href="%s">%s</a>',
             MT::Util::encode_html( $asset->url ),
-            MT->translate('View image'),
+            MT::Util::encode_html( $asset->display_name )
         );
     }
 
@@ -393,8 +400,7 @@ sub insert_options {
     my $perms = $app->{perms};
     my $blog  = $asset->blog or return;
 
-    eval { require MT::Image; MT::Image->new or die; };
-    $param->{do_thumb} = $@ ? 0 : 1;
+    $param->{do_thumb} = $asset->has_thumbnail ? 1 : 0;
 
     $param->{can_save_image_defaults}
         = $perms->can_do('save_image_defaults') ? 1 : 0;
@@ -507,7 +513,7 @@ sub on_upload {
         );
 
         if ( !$asset_thumb ) {
-            $asset_thumb = new $img_pkg;
+            $asset_thumb = $img_pkg->new();
             $original    = $asset_thumb->clone;
             $asset_thumb->blog_id($blog_id);
             $asset_thumb->url($pseudo_thumbnail_url);
@@ -524,7 +530,6 @@ sub on_upload {
                 )
             );
             $asset_thumb->parent( $asset->id );
-            $asset_thumb->save;
         }
         else {
             $original = $asset_thumb->clone;
@@ -535,6 +540,13 @@ sub on_upload {
         $thumbnail = $asset_thumb->file_path;
         my $thumbnail_url   = $asset_thumb->url;
         my $thumb_file_size = $fmgr->file_size($thumbnail);
+
+        $app->run_callbacks( 'cms_pre_save.asset', $app, $asset_thumb,
+            $original )
+            || return $app->errtrans( "Saving [_1] failed: [_2]",
+            'asset', $app->errstr );
+
+        $asset_thumb->save unless $asset_thumb->id;
 
         $app->run_callbacks( 'cms_post_save.asset', $app, $asset_thumb,
             $original );
@@ -643,7 +655,7 @@ sub on_upload {
                 $asset_html->url($pseudo_url);
                 $asset_html->label(
                     $app->translate(
-                        "Popup Page for [_1]",
+                        "Popup page for [_1]",
                         $asset->label || $asset->file_name
                     )
                 );
@@ -652,7 +664,6 @@ sub on_upload {
                 $asset_html->file_ext( $blog->file_extension );
                 $asset_html->created_by( $app->user->id );
                 $asset_html->parent( $asset->id );
-                $asset_html->save;
             }
             else {
                 $original = $asset_html->clone;
@@ -660,6 +671,13 @@ sub on_upload {
 
             # Select back the real URL for callbacks
             $url = $asset_html->url;
+
+            $app->run_callbacks( 'cms_pre_save.asset', $app, $asset_html,
+                $original )
+                || return $app->errtrans( "Saving [_1] failed: [_2]",
+                'asset', $app->errstr );
+
+            $asset_html->save unless $asset_html->id;
 
             $param->{popup_asset_id} = $asset_html->id;
 

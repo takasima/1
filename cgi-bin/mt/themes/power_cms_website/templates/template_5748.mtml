@@ -7,53 +7,55 @@ website_url=<$MTWebsiteURL$>
 website_name=<$MTWebsiteName$>
 body_class=mt-main-index
 </MTSetVars>
-<MTSetVarBlock name="html_head" append="1">
-<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(top.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+<MTSetVarBlock name="html_head">
 </MTSetVarBlock>
 <$MTInclude module="<__trans phrase="SP-HTML Header">"$>
 <$MTInclude module="<__trans phrase="SP-Header">"$>
 <mtml tag="mt:SetVarBlock" params='name="html_tag"'>
-    <MTGroupBlogsWebsites group="<__trans phrase="News list">">
-        <MTIf name="__first__">
-        <section>
+<nav>
+<ul id="global_nav">
+<MTObjectGroupItems name="<__trans phrase="Global menu">">
+  <MTObjectGroupItemClass setvar="item_class">
+  <MTIfObjectGroupItemIsEntry>
+    <MTIf name="item_class" eq="entry">
+      <li class="entry on"><a href="<MTEntryPermalink>"><MTEntryTitle escape="html"></a></li>
+    <MTElseIf name="item_class" eq="page"><mt:SetVarBlock name="pageName"><MTPageTitle></mt:SetVarBlock>
+<MTIfFolder name="$pageName">
+<li class="page off"><a href="<MTPagePermalink>"><MTPageTitle escape="html"></a>
+<mt:Pages folder="$pageName">
+<mt:PagesHeader><ul></mt:PagesHeader><mt:PageTitle setvar="pageTitle">
+<mt:Unless name="pageTitle" eq="$pageName"><li class="page on"><a href="<MTPagePermalink>"><MTPageTitle escape="html"></a></li></mt:Unless>
+<mt:PagesFooter></ul></li></mt:PagesFooter>
+</mt:Pages>
+<mt:Else>
+<li class="page on"><a href="<MTPagePermalink>"><MTPageTitle escape="html"></a></li>
+</MTIfFolder>
+    </MTIf>
+  <MTElse>
+    <MTIfObjectGroupItemIsCategory>
+      <MTIf name="item_class" eq="category">
+        <li class="category on"><a href="<MTCategoryArchiveLink>"><MTCategoryLabel escape="html"></a></li>
+      <MTElseIf name="item_class" eq="folder">
+        <li class="folder on"><MTFolderLabel escape="html"></li>
+      </MTIf>
+    <MTElse>
+      <MTIfObjectGroupItemIsBlog>
+        <MTIf name="item_class" eq="blog">
+          <li class="blog on"><a href="<MTBlogURL>"><MTBlogName escape="html"></a></li>
+        <MTElseIf name="item_class" eq="website">
+          <li class="blog on"><a href="<MTWebsiteURL>"><MTWebsiteName escape="html"></a></li>
         </MTIf>
-        <MTSetVarBlock name="blog_id"><$MTBlogID$></MTSetVarBlock>
-        <MTEntries lastn="5" blog_ids="$blog_id">
-            <MTEntriesHeader>
-            <h2><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></h2>
-            <div class="panel">
-            <nav>
-            <ul class="nav2">
-            </MTEntriesHeader>
-                <li><h2><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></h2></li>
-            <MTEntriesFooter>
-            </ul>
-            </nav>
-            </div>
-            </MTEntriesFooter>
-        </MTEntries>
-        <MTIf name="__last__">
-        <section>
-        </MTIf>
-    </MTGroupBlogsWebsites>
-    <nav>
-        <$MTWidgetSet name="<__trans phrase="Links">" SmartPhone="1"$>
-    </nav>
-    <aside>
-        <MTCampaigns group="<__trans phrase="Banner group">">
-        <MTIfCampaignHasImage>
-        <MTCampaignsHeader>
-        <ul class="banner">
-        </MTCampaignsHeader>
-        <MTCampaignAsset type="image">
-        <li><a href="<$MTCampaignURL escape="html"$>"><img src="<$MTAssetThumbnailURL width="222" escape="html"$>" alt="<$MTCampaignTitle escape="html"$>" /></a></li>
-        </MTCampaignAsset>
-        <MTCampaignsFooter>
-        </ul>
-        </MTCampaignsFooter>
-        </MTIfCampaignHasImage>
-        </MTCampaigns>
-    </aside>
+      </MTIfObjectGroupItemIsBlog>
+    </MTElse>
+    </MTIfObjectGroupItemIsCategory>
+  </MTElse>
+  </MTIfObjectGroupItemIsEntry>
+</MTObjectGroupItems>
+<MTBlogs include_blogs="children">
+<li class="blog on"><a href="<MTBlogURL>"><MTBlogName escape="html"></a></li>
+</MTBlogs>
+</ul>
+</nav>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
 <$MTInclude module="<__trans phrase="SP-Footer">"$>

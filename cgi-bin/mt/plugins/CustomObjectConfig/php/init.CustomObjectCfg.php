@@ -5,11 +5,14 @@
         $mt = MT::get_instance();
         $ctx =& $mt->context();
     }
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_customobject=1";
-    $custom_objects = array();
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'customobject_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_customobject=1";
+        $custom_objects = array();
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         require_once( 'block.mtcustomobject.php' );
         require_once( 'block.mtcustomobjects.php' );

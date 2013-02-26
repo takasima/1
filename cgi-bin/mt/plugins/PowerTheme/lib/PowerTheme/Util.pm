@@ -455,7 +455,7 @@ sub create_blogs {
     return \%__blogs;
 }
 
-my @allowed_file_extentions = (
+my @allowed_file_extensions = (
     'jpg',
     'jpeg',
     'gif',
@@ -469,11 +469,12 @@ sub save_blog_assets {
     my $theme_id = $blog->theme_id or return;
     my $author_id = $blog->modified_by || $blog->created_by;
     my $author = MT->model( 'author' )->load( { id => $author_id } );
-    my $theme_static_path = File::Spec->catdir( MT->config( 'ThemesDirectory' ), $theme_id, 'blog_static' );
+    my $theme = $blog->theme;
+    my $theme_static_path = File::Spec->catdir( $theme->path, 'blog_static' );
     my $file_path_list = directory_file_list( $theme_static_path );
     my $q_theme_static_path = quotemeta( $theme_static_path );
     for my $file_path ( @$file_path_list ) {
-        next unless grep { $file_path =~ /$_$/ } @allowed_file_extentions;
+        next unless grep { $file_path =~ /$_$/ } @allowed_file_extensions;
         $file_path =~ s/$q_theme_static_path/$site_path/;
         if ( -f $file_path ) {
             my $basename = file_label( $file_path );
@@ -553,7 +554,7 @@ sub directory_file_list {
 #         if ( -d $file_path ) {
 #             save_assets_in_directory( $file_path, $blog, $author, $exclude );
 #         } else {
-#             next unless grep { $file =~ /$_$/ } @allowed_file_extentions;
+#             next unless grep { $file =~ /$_$/ } @allowed_file_extensions;
 #             my $basename = file_label( $file_path );
 #             my %params = ( file => $file_path,
 #                            author => $author,

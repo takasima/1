@@ -14,7 +14,7 @@ sub entry_notify {
     return $app->return_to_dashboard( permission => 1 )
         unless $app->can_do('open_entry_notification_screen');
     my $entry_id = $app->param('entry_id')
-        or return $app->error( $app->translate("No entry ID provided") );
+        or return $app->error( $app->translate("No entry ID was provided") );
 
     require MT::Entry;
     my $entry = MT::Entry->load($entry_id)
@@ -33,7 +33,7 @@ sub send_notify {
     $app->validate_magic() or return;
     my $q        = $app->param;
     my $entry_id = $q->param('entry_id')
-        or return $app->error( $app->translate("No entry ID provided") );
+        or return $app->error( $app->translate("No entry ID was provided") );
     require MT::Entry;
     require MT::Blog;
     my $entry = MT::Entry->load($entry_id)
@@ -98,14 +98,16 @@ sub send_notify {
     keys %$addrs
         or return $app->error(
         $app->translate(
-            "No valid recipients found for the entry notification.")
+            "No valid recipients were found for the entry notification.")
         );
     my $address;
     if ($author) {
-        $address = defined $author->nickname 
+        $address
+            = defined $author->nickname
             ? $author->nickname . ' <' . $author->email . '>'
             : $author->email;
-    } else {
+    }
+    else {
         $address = $app->config('EmailAddressMain');
         $params{from_address} = $address;
     }
@@ -129,33 +131,32 @@ sub send_notify {
     $head{'Content-Type'} = qq(text/plain; charset="$charset");
     my $i = 1;
     require MT::Mail;
-    unless (exists $params{from_address}) {
+    unless ( exists $params{from_address} ) {
         MT::Mail->send( \%head, $body )
             or return $app->errtrans(
-                "Error sending mail ([_1]); try another MailTransfer setting?",
-                MT::Mail->errstr );
+            "Error sending mail ([_1]): Try another MailTransfer setting?",
+            MT::Mail->errstr );
     }
     delete $head{To};
-    
+
     my @email_to_send;
     my @addresses_to_send = grep $_, keys %$addrs;
     if ( $app->config('EmailNotificationBcc') ) {
-        while ( @addresses_to_send ) {
-            push @email_to_send, 
-                {
-                    %head,
-                    Bcc => [ splice( @addresses_to_send, 0, 20 ) ],
-                };
+        while (@addresses_to_send) {
+            push @email_to_send,
+                { %head, Bcc => [ splice( @addresses_to_send, 0, 20 ) ], };
         }
     }
     else {
-        @email_to_send = map { { %head, To => $_ } } @addresses_to_send;
+        @email_to_send = map {
+            { %head, To => $_ }
+        } @addresses_to_send;
     }
     foreach my $info (@email_to_send) {
         MT::Mail->send( $info, $body )
             or return $app->error(
             $app->translate(
-                "Error sending mail ([_1]); try another MailTransfer setting?",
+                "Error sending mail ([_1]): Try another MailTransfer setting?",
                 MT::Mail->errstr
             )
             );
@@ -245,13 +246,13 @@ sub save_filter {
     if ( !is_valid_email($email) ) {
         return $eh->error(
             $app->translate(
-                "The value you entered was not a valid email address")
+                "The text you entered is not a valid email address.")
         );
     }
     my $url = $app->param('url');
     if ( $url && ( !is_url($url) ) ) {
         return $eh->error(
-            $app->translate("The value you entered was not a valid URL") );
+            $app->translate("The text you entered is not a valid URL.") );
     }
     require MT::Notification;
 

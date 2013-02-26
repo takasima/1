@@ -1,19 +1,12 @@
 <MTSetVars>
 page_title=<$MTPageTitle$>
-description=<$MTBlogDescription strip_linefeeds="1" escape="html"$>
-keywords=<MTTags glue="," sort_by="rank" limit="10"><$MTTagName escape="html"$></MTTags>
-<MTBlogParentWebsite>
-website_id=<$MTWebsiteID$>
-website_url=<$MTWebsiteURL$>
-website_name=<$MTWebsiteName$>
-</MTBlogParentWebsite>
 </MTSetVars>
 <MTSetVarBlock name="html_head" append="1">
 </MTSetVarBlock>
 <$MTInclude module="<__trans phrase="PC-HTML Header">"$>
 <$MTInclude module="<__trans phrase="PC-Header">"$>
-    <!-- [contents] -->
-    <div id="contents">
+        <!-- [contents] -->
+        <div id="contents" class="clf">
         <$MTInclude module="<__trans phrase="PC-Breadcrumb">"$>
         <div id="single_contents" class="info_detail">
 <mtml tag="mt:SetVarBlock" params='name="html_tag"'>
@@ -29,7 +22,7 @@ website_name=<$MTWebsiteName$>
                     <div class="blog_entries_body clf">
                         <MTIfPingsAccepted>
                         <div class="trackbacks-info">
-                            <p><__trans phrase="Trackback">URL: <$MTEntryTrackbackLink escape="html"$></p>
+                            <p><__trans phrase="TrackBack URL: [_1]" params="<$mt:EntryTrackbackLink$>"></p>
                         </div>
                         </MTIfPingsAccepted>
                         <MTPings>
@@ -150,9 +143,11 @@ website_name=<$MTWebsiteName$>
                     </div>
                 </div>
                 </MTIfCommentsActive>
-        </div>
+            </div>
+
+            <MTIgnore><$MTInclude module="<__trans phrase="PC-Sidebar">"$></MTIgnore>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
-    </div>
-    <!-- /[contents] -->
+        </div>
+        <!-- /[contents] -->
 <$MTInclude module="<__trans phrase="PC-Footer">"$>

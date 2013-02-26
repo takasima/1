@@ -1,10 +1,11 @@
-id  : ContactForm
-key : contactform
+id:   ContactForm
+key:  contactform
 name: Contact Form
-version: 1.8
+version: 1.9.1
 schema_version: 1.093
 author_name: Alfasado Inc.
 author_link: 'http://alfasado.net/'
+pack_link: 'http://powercms.jp/'
 description: '<__trans phrase="Create and manage contact form.">'
 l10n_class: ContactForm::L10N
 config_settings:
@@ -79,7 +80,8 @@ tasks:
         frequency: 180
 applications:
     contactform:
-        handler: $contactform::MT::App::ContactForm
+        script: sub { MT->config->ContactFormScript }
+        handler: MT::App::ContactForm
         methods:
             confirm: $contactform::MT::App::ContactForm::_default
             submit: $contactform::MT::App::ContactForm::_default
@@ -157,6 +159,7 @@ applications:
                 condition: $contactform::ContactForm::Plugin::_formelement_permission
         compose_menus:
             contactformgroup:
+                id: form
                 label: Form
                 order: 2000
                 mode: view
@@ -292,12 +295,13 @@ object_types:
 customfield_objects:
     contactform:
         context: system
-        order: 10000
+        order: 10001
     contactformgroup:
         context:
+            - system
             - website
             - blog
-        order: 10001
+        order: 10000
 contactform_objects:
     text:
         order: 100

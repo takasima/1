@@ -38,11 +38,13 @@ jQuery(function(jQuery) {
         jQuery("#ext-fields-options").toggle();
         jQuery("#ext-fields .ext-field-toggle-link").toggle();
         jQuery("#ext-fields #newFldLabel").focus();
+        return false;
     });
     // close ext-field widget
     jQuery("#ext-fields-options .actions-bar .cancel").click(function(){
         jQuery("#ext-fields-options").toggle();
         jQuery(".ext-field-toggle-link").show();
+        return false;
     });
     // create ext-field
     jQuery("#ext-fields-options .actions-bar .submit").click(function(){
@@ -853,6 +855,16 @@ function makeNewExtField(){
     // reset input form
     jQuery('#newFldLabel').attr('value', '');
     jQuery('#newFldType').val('text');
+
+    var $textarea = input.hasClass('ext-field-textarea') ?
+        input : input.find('.ext-field-textarea');
+    if ($textarea.length) {
+        var id = $textarea.attr('id');
+        $textarea.focus();
+        new MT.EditorManager(id, {
+            format: formatValueToString[1]
+        });
+    }
 }
 
 function remove_div(wrap) {
@@ -908,6 +920,15 @@ function setTextFormat(format_select)
     }
     return format_select;
 }
+
+var formatValueToString = {
+    1  : '0',
+    2  : '__default__',
+    11 : 'markdown',
+    12 : 'markdown_with_smartypants',
+    9  : 'richtext',
+    13 : 'textile_2'
+};
 </MTJSCompressor>
 </script>
 <script type="text/javascript">
@@ -919,33 +940,24 @@ var textareaCustom = function(ele, textareaID){
     var fldProperty = textareaID.split('-');
     fldProperty = fldProperty[2]
     var elm = jQuery("#" + textareaID);
-    if(ele.value == '9'){
-<mt:ifPlugin component="TinyMCE">
-        tinymce_editor.show(elm);
-</mt:ifPlugin>
-    }else{
-        try{
-            jQuery('#' + textareaID).tinymce().remove();
-        }catch(e){}
-    }
+    elm.data('mt-editor').setFormat(formatValueToString[ele.value]);
 }
 
-<mt:ifPlugin component="TinyMCE">
+
 //=========================================================
 //    check format TinyMCE
 //=========================================================
-jQuery(function(){
-    jQuery('.ext-field-formatselect').each(function(){
-        if(this.value == 9){
-            var nm = this.id.split('-textformat')[0];
-            if(nm.match('file')){
-                nm = nm + '-desctext';
-            }
-            tinymce_editor.show(jQuery('#' + nm));
+jQuery(function($){
+    $('.ext-field-formatselect').each(function(){
+        var nm = this.id.split('-textformat')[0];
+        if(nm.match('file')){
+            nm = nm + '-desctext';
         }
-    })
+        new MT.EditorManager(nm, {
+            format: formatValueToString[this.value]
+        });
+    });
 });
-</mt:ifPlugin>
 
 function overwrite_extfile (obj, id1, id2, id3, cb){
     var tg1 = jQuery("#" + id1);

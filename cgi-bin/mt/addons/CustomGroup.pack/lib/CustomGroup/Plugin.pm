@@ -373,6 +373,7 @@ sub _edit_group {
         my $weblog_name = '';
         if (! $blog_view ) {
             if ( $child_object_ds eq 'blog' ) {
+                next unless $blogs{ $object->$id_column };
                 $weblog_name = $blogs{ $object->$id_column }->is_blog
                                                                 ? $blogs{ $object->$id_column }->website->name
                                                                 : '';

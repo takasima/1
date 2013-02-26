@@ -144,27 +144,27 @@ var sidebar = {
 sidebar.check_tab();
 
 var set_sidebar_size = function(menu_def_width,toggle){
-    jQuery.cookie("menu_width")
-        ? jQuery("#menu").css("width", jQuery.cookie("menu_width") + "px")
-        : jQuery.cookie("menu_width", menu_def_width);
+    if(!jQuery.cookie("menu_width"))
+        jQuery.cookie("menu_width", menu_def_width);
+    jQuery("#menu").css("width", jQuery.cookie("menu_width") + "px");
     
     if(!toggle){
-        jQuery.cookie("content_margin")
-            ? jQuery("#content").css("margin-left", jQuery.cookie("content_margin") + "px")
-            : jQuery.cookie("content_margin", 175);
+        if(!jQuery.cookie("content_margin"))
+            jQuery.cookie("content_margin", 175);
+        jQuery("#content").css("margin-left", jQuery.cookie("content_margin") + "px");
     }
     
-    jQuery.cookie("menu_margin")
-        ? jQuery("#menu_wrapper").css("margin-left", jQuery.cookie("menu_margin") + "px")
-        : jQuery.cookie("menu_margin", -190);
+    if(!jQuery.cookie("menu_margin"))
+        jQuery.cookie("menu_margin", -190);
+    jQuery("#menu_wrapper").css("margin-left", jQuery.cookie("menu_margin") + "px");
 
-    jQuery.cookie("tabs_position")
-        ? jQuery("#menu_tabs").css("left", jQuery.cookie("tabs_position") + "px")
-        : jQuery.cookie("tabs_position", 153);
+    if(!jQuery.cookie("tabs_position"))
+        jQuery.cookie("tabs_position", 153);
+    jQuery("#menu_tabs").css("left", jQuery.cookie("tabs_position") + "px");
 
-    jQuery.cookie("footer_position")
-        ? jQuery("#footer, .debug-panel").css("left", jQuery.cookie("footer_position") + "px")
-        : jQuery.cookie("footer_position", 154);
+    if(!jQuery.cookie("footer_position"))
+        jQuery.cookie("footer_position", 154);
+    jQuery("#footer, .debug-panel").css("left", jQuery.cookie("footer_position") + "px");
 }
 
 jQuery(function() {

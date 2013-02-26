@@ -31,10 +31,13 @@
     $ctx->add_container_tag( 'entrygroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'pagegroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'entrypagegroupfooter', 'smarty_block_mtgroupobjectsfooter' );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='entrygroup' OR field_type='pagegroup' OR field_type='entrypagegroup'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'entrypagegroup_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='entrygroup' OR field_type='pagegroup' OR field_type='entrypagegroup'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         require_once( 'block.mtgroupentries.php' );
         require_once( 'block.mtgrouppages.php' );

@@ -67,9 +67,10 @@ sub _hdlr_sign_out_link {
         }
     }
     my $e = $ctx->stash('entry');
-    return "$path$community_script?__mode=logout$static_arg"
-        . ( $blog ? '&blog_id=' . $blog->id : '' )
-        . ( $e ? "&amp;entry_id=" . $e->id : '' );
+    return
+          "$path$community_script?__mode=logout$static_arg"
+        . ( $blog ? '&blog_id=' . $blog->id   : '' )
+        . ( $e    ? "&amp;entry_id=" . $e->id : '' );
 }
 
 ###########################################################################
@@ -547,86 +548,36 @@ sub comments_from_threads {
     my ($args) = @_;
 
     my $author_id = $args->{author_id};
-    my $blog_id = $args->{blog_id} || 0;
-
-    # Vox-style listing of all comments posted to entries a commenter
-    # has participated in, subsequent to their own first comment to that
-    # entry.
-
-    # Recently commented on entries for threads they've posted to
-    require MT::Entry;
-    require MT::Comment;
-    my $entry_iter = MT::Entry->load_iter(
-        { ( $blog_id ? ( blog_id => $blog_id ) : () ) },
-        {   join => MT::Comment->join_on(
-                'entry_id',
-                {   ( $blog_id ? ( blog_id => $blog_id ) : () ),
-                    commenter_id => $author_id,
-                    visible      => 1,
+    my $blog_id   = $args->{blog_id};
+    my $lastn     = $args->{lastn};
+    my @comments  = MT->model('comment')->load(
+        {   visible      => 1,
+            commenter_id => $author_id,    # not
+        },
+        {   not               => { 'commenter_id' => $author_id },
+            'sort'            => 'created_on',
+            direction         => 'descend',
+            no_cached_prepare => 1,
+            limit             => $lastn,
+            alias             => 'main',
+            join              => MT::Entry->join_on(
+                undef,
+                { id => \'= main.comment_entry_id', },
+                {   join => MT::Comment->join_on(
+                        'entry_id',
+                        {   commenter_id => $author_id,
+                            ( $blog_id ? ( blog_id => $blog_id ) : () ),
+                        },
+                        {   unique => 1,
+                            alias  => 'sub',
+                        }
+                    ),
+                    unique => 1,
                 },
-                { unique => 1 }
             ),
-            'sort'    => 'created_on',
-            direction => 'descend',
         }
     );
 
-    my $lastn = $args->{lastn};
-
-    my @threads;
-    while ( my $entry = $entry_iter->() ) {
-        my $first_post = MT::Comment->load(
-            {   entry_id     => $entry->id,
-                commenter_id => $author_id,
-            },
-            {   'sort'    => 'created_on',
-                direction => 'ascend',
-                limit     => 1,
-            }
-        );
-        my $comment_iter = MT::Comment->load_iter(
-            {   entry_id     => $entry->id,
-                created_on   => [ $first_post->created_on, undef, ],
-                id           => [ $first_post->id, undef ],
-                commenter_id => $author_id,
-                visible      => 1,
-            },
-            {
-
-                # Only consider comments with a creation date
-                # following the date of the first comment by
-                # author in context.
-                range_incl => { created_on => 1 },
-
-                # Select only comments _following_ the first comment
-                # by the author in context.
-                range => { id => 1 },
-
-                # Skip replies by author in context.
-                not               => { commenter_id => 1 },
-                'sort'            => 'created_on',
-                direction         => 'descend',
-                no_cached_prepare => 1,
-            }
-        );
-        push @threads, $comment_iter if $comment_iter;
-    }
-
-    my $picker = sub {
-        my ( $candidate, $existing ) = @_;
-        ( $candidate->created_on gt $existing->created_on );
-    };
-    require MT::Util;
-    my $master_iter = MT::Util::multi_iter( \@threads, $picker );
-
-    my @comments;
-    while ( my $comment = $master_iter->() ) {
-        push @comments, $comment;
-        if ( @comments == $lastn ) {
-            $master_iter->end;
-            last;
-        }
-    }
     \@comments;
 }
 

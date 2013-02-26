@@ -8,10 +8,13 @@
     $customfield_types[ 'contactform' ] = array(
         'column_def' => 'vchar',
     );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='contactform'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'contactform_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='contactform'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         require_once( 'block.mtcontactforms.php' );
         foreach ( $customfields as $field ) {
@@ -59,7 +62,7 @@
 <mtcontactforms id="$form_id">
     <mt:If name="__first__">
     <div id="contactform">
-    <form action="<mt:CGIPath><mt:ContactFormScript>" method="post"<mt:if name="config.ContactFormAllowUploadFile"> enctype="multipart/form-data"</mt:if>>
+    <form action="<mt:if name="config.ContactFormCGIPath"><mt:Var name="config.ContactFormCGIPath"><mt:else><mt:CGIPath></mt:if><mt:ContactFormScript>" method="post"<mt:if name="config.ContactFormAllowUploadFile"> enctype="multipart/form-data"</mt:if>>
         <input type="hidden" name="__mode" value="confirm">
         <input type="hidden" name="blog_id" value="<mt:BlogID>" />
         <input type="hidden" name="id" value="<mt:ContactFormID>" />

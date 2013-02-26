@@ -694,7 +694,7 @@ sub _download_contactform_csv {
     if ( $csv->combine( @$column_names ) ) {
         my $string = $csv->string;
         $string = encode_utf8_string_to_cp932_octets( $string );
-        print $string;
+        $app->print( $string );
     }
     my $iter = $model->load_iter();
     while ( my $item = $iter->() ) {
@@ -709,7 +709,7 @@ sub _download_contactform_csv {
         if ( $csv->combine( @values ) ) {
             my $string = utf8_on( $csv->string );
             $string = encode_utf8_string_to_cp932_octets( $string );
-            print "\n$string";
+            $app->print( "\n$string" );
         }
     }
 }
@@ -987,7 +987,7 @@ sub _download_feedbacks {
             if ( $csv->combine( @get_keys ) ) {
                 my $string = $csv->string;
                 $string = encode_utf8_string_to_cp932_octets( utf8_on( $string ) );
-                print "$string\n";
+                $app->print( "$string\n" );
                 # $res .= $string;
             }
         }
@@ -996,7 +996,7 @@ sub _download_feedbacks {
         if ( $csv->combine( @get_data ) ) {
             my $string = $csv->string;
             $string = encode_utf8_string_to_cp932_octets( utf8_on( $string ) );
-            print "$string\n";
+            $app->print( "$string\n" );
             # $res .= $string;
         }
     }

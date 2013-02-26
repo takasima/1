@@ -142,7 +142,6 @@ a:hover {
     left: 0;
     width: 940px;
     margin: 0 auto;
-    padding-top: 3px;
     background: #fff url(header-menu-bg.png) center bottom no-repeat;
 }
 
@@ -298,7 +297,7 @@ a:hover {
     color: #fff;
 }
 
-.content-nav stong {
+.content-nav strong {
     color: red;
 }
 

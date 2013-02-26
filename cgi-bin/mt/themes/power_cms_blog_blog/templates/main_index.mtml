@@ -70,41 +70,13 @@
 <MTSetVarBlock name="entries">
     <MTEntries offset="0" limit="10">
     <MTEntriesHeader>
-        <ul class="nav2">
+        <ul class="archivelist">
     </MTEntriesHeader>
-        <li><h2><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></h2></li>
+        <li><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a> <span class="category"><mt:EntryCategories glue=","><a href="<mt:CategoryArchiveLink>"><mt:CategoryLabel></a></mt:EntryCategories></span><MTIfCommentsActive> | <a class="commentcount" href="<$MTEntryPermalink escape="html"$>#comment"><__trans phrase="Comments"> (<$MTEntryCommentCount$>)</a></MTIfCommentsActive><MTIfPingsActive> | <a class="trackbackcount" href="<$MTEntryPermalink escape="html"$>#trackback"><__trans phrase="TrackBacks"> (<$MTEntryTrackbackCount$>)</a></MTIfPingsActive></li>
     <MTEntriesFooter>
         </ul>
     </MTEntriesFooter>
     </MTEntries>
-</MTSetVarBlock>
-<MTSetVarBlock name="pager">
-    <MTPager>
-    <MTIfPagerHeader>
-    <ul class="pager">
-    <MTIfPagerPrev>
-    <li class="prev"><a href="<MTPagerPrevLink>"><__trans phrase="Previous"></a></li>
-    <MTElse>
-    <li class="prev"><span><__trans phrase="Previous"></span></li>
-    </MTElse>
-    </MTIfPagerPrev>
-    </MTIfPagerHeader>
-    <MTIfPagerCurrent>
-    <li class="index"><span><$MTPagerCounter$></span></li>
-    <MTElse>
-    <li class="index"><a href="<MTPagerLink>"><$MTPagerCounter$></a></li>
-    </MTElse>
-    </MTIfPagerCurrent>
-    <MTIfPagerFooter>
-    <MTIfPagerNext>
-    <li class="next"><a href="<MTPagerNextLink>"><__trans phrase="Next"></a></li>
-    <MTElse>
-    <li class="next"><span><__trans phrase="Next"></span></li>
-    </MTElse>
-    </MTIfPagerNext>
-    </ul>
-    </MTIfPagerFooter>
-    </MTPager>
 </MTSetVarBlock>
 <$MTInclude module="<__trans phrase="SP-Main Index">"$>
     <mtml tag="mt:else">

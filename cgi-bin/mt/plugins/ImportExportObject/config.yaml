@@ -1,7 +1,7 @@
 id  : ImportExportObject
 key : importexportobject
 name: Import / Export Object
-version: 0.7
+version: 0.8
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
 description: <__trans phrase="Import and Export Entry,Page,Category,Folder,Asset and Field.">

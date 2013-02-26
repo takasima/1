@@ -20,7 +20,7 @@
                 </mt:If>
             </mt:If>
             </p>
-        <form action="<$mt:CGIPath$><$mt:ContactFormScript$>" method="post"<mt:if name="config.ContactFormAllowUploadFile"> enctype="multipart/form-data"</mt:if>>
+        <form action="<mt:if name="config.ContactFormCGIPath"><$mt:Var name="config.ContactFormCGIPath"$><mt:else><$mt:CGIPath$></mt:if><$mt:ContactFormScript$>" method="post"<mt:if name="config.ContactFormAllowUploadFile"> enctype="multipart/form-data"</mt:if>>
         <mt:if name="mode" eq="confirm">
             <input type="hidden" name="sessid" value="<$MTGetVar name="request.sessid" escape="html"$>" />
         <mt:else>
@@ -35,9 +35,9 @@
             <input type="hidden" name="identifier" value="<mt:Var name="identifier" escape="html">" />
         <mt:Elseif name="template_type" eq="submit">
         <mt:Else>
-        <$MTArchiveType setvar="archive_type"$>
             <input type="hidden" name="blog_id" value="<$mt:BlogID$>" />
             <input type="hidden" name="id" value="<$mt:ContactFormID$>" />
+        <$MTArchiveType setvar="archive_type"$>
         <mt:If name="archive_type" eq="Individual">
             <input type="hidden" name="object_id" value="<$mt:EntryID$>" />
             <input type="hidden" name="model" value="entry" />

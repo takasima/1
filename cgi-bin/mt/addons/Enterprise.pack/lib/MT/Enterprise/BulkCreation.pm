@@ -78,12 +78,15 @@ sub _parse_line {
 sub _is_valid_username {
     my $obj = shift;
     my ($username) = @_;
-    if (   ( length($username) < 1 )
-        || ( length($username) > 255 )
-        || ( index( $username, '\n' ) > -1 ) )
     {
-        return $obj->error(
-            MT->translate( "Invalid user name: [_1]", $username ) );
+        use bytes;
+        if (   ( length($username) < 1 )
+            || ( length($username) > 255 )
+            || ( index( $username, '\n' ) > -1 ) )
+        {
+            return $obj->error(
+                MT->translate( "Invalid user name: [_1]", $username ) );
+        }
     }
     if ( $username =~ m/^\s*$/ ) {
         return $obj->error(
@@ -99,12 +102,15 @@ sub _is_valid_username {
 sub _is_valid_nickname {
     my $obj = shift;
     my ($nickname) = @_;
-    if (   ( length($nickname) < 1 )
-        || ( length($nickname) > 255 )
-        || ( index( $nickname, '\n' ) > -1 ) )
     {
-        return $obj->error(
-            MT->translate( "Invalid display name: [_1]", $nickname ) );
+        use bytes;
+        if (   ( length($nickname) < 1 )
+            || ( length($nickname) > 255 )
+            || ( index( $nickname, '\n' ) > -1 ) )
+        {
+            return $obj->error(
+                MT->translate( "Invalid display name: [_1]", $nickname ) );
+        }
     }
     if ( $nickname =~ m/^\s*$/ ) {
         return $obj->error(
@@ -236,6 +242,15 @@ sub _parse_line_register {
             return ( $lineref->[0],
                 MT->translate( "Invalid theme ID: [_1]", $lineref->[12] ) );
         }
+        else {
+            require MT::Theme;
+            my $themes = MT::Theme->load_all_themes;
+            unless ( grep { $_->{id} eq $lineref->[12]; } values %$themes ) {
+                return ( $command,
+                    MT->translate( "A theme '[_1]' was not found.", $lineref->[12] )
+                );
+            }
+        }
     }
     return ( $lineref->[0], undef );
 }
@@ -251,16 +266,16 @@ sub _parse_line_update {
 
     # username
     $obj->_is_valid_username( $lineref->[1] )
-        or return $obj->error( $command, $obj->errstr );
+        or return ( $command, $obj->errstr );
 
     # new username
     if ( $lineref->[2] && !$obj->_is_valid_username( $lineref->[2] ) ) {
-        return $obj->error( $command, $obj->errstr );
+        return ( $command, $obj->errstr );
     }
 
     # new nickname
     if ( $lineref->[3] && !$obj->_is_valid_nickname( $lineref->[3] ) ) {
-        return $obj->error( $command, $obj->errstr );
+        return ( $command, $obj->errstr );
     }
 
     # new email
@@ -474,13 +489,13 @@ sub update {
     my $author = $obj->_load_author_by_name( $line[1] );
     require MT::Log;
     if ($author) {
-        if ( $line[2] ) {
+        if ( $line[2] && $line[1] ne $line[2] ) {
             my $new_author = $obj->_load_author_by_name( $line[2] );
-            my $message    = MT->translate(
-                "User '[_1]' already exists. The update was not processed: [_2]",
-                $line[2], $line[1]
-            );
             if ($new_author) {
+                my $message = MT->translate(
+                    "User '[_1]' already exists. The update was not processed: [_2]",
+                    $line[2], $line[1]
+                );
                 $app->log(
                     {   message  => $message,
                         level    => MT::Log::ERROR(),

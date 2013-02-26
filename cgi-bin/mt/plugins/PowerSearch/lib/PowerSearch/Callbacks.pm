@@ -35,9 +35,9 @@ sub _post_delete_asset {
         my $realtime_update = $plugin->get_config_value('realtime_update');
         if ($realtime_update) {
             my $target_files = $plugin->get_config_value('target_files');
-            my @extentions = split( /,/, $target_files );
+            my @extensions = split( /,/, $target_files );
             my ( $name, $path, $suffix )
-                = File::Basename::fileparse( $file, @extentions );
+                = File::Basename::fileparse( $file, @extensions );
             if ($suffix) {
                 my $permalink = $obj->url;
                 my $id        = _to_hash("UPDATE:EST:$path");
@@ -81,10 +81,10 @@ sub _cms_upload_file {
         my $realtime_update = $plugin->get_config_value('realtime_update');
         if ($realtime_update) {
             my $target_files = $plugin->get_config_value('target_files');
-            my @extentions = split( /,/, $target_files );
+            my @extensions = split( /,/, $target_files );
             if ( -f $file ) {
                 my ( $name, $path, $suffix )
-                    = File::Basename::fileparse( $file, @extentions );
+                    = File::Basename::fileparse( $file, @extensions );
                 if ($suffix) {
                     my $id   = _to_hash("UPLOAD:EST:$file");
                     my $sess = MT::Session->get_by_key(

@@ -54,7 +54,7 @@ sub _update_index {
             my @up_files
                 = MT::Session->load( { kind => 'EF', name => 'EST' } );
             my $target_files = $plugin->get_config_value('target_files');
-            my @extentions = split( /,/, $target_files );
+            my @extensions = split( /,/, $target_files );
 
             for my $sess (@up_files) {
                 my $f       = $sess->data;
@@ -84,7 +84,7 @@ sub _update_index {
                     $file_url =~ s/^$site_path/$site_url/;
                     $file_url =~ s#\\#/#g;
                     my ( $name, $path, $suffix )
-                        = File::Basename::fileparse( lc($f), @extentions );
+                        = File::Basename::fileparse( lc($f), @extensions );
                     if ($suffix) {
                         $suffix =~ s/\.//g;
                         $suffix = lc($suffix);

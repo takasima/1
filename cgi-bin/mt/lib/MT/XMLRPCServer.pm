@@ -19,7 +19,6 @@ sub mt_new {
         or die MT::XMLRPCServer::_fault( MT->errstr );
 
     # we need to be UTF-8 here no matter which PublishCharset
-    $main::server->serializer->encoding('UTF-8');
     $mt->run_callbacks( 'init_app', $mt, { App => 'xmlrpc' } );
     $mt;
 }
@@ -532,7 +531,7 @@ sub _edit_entry {
         or die _fault( MT->translate( "Invalid blog ID '[_1]'", $blog_id ) );
     my ( $author, $perms ) = $class->_login( $user, $pass, $entry->blog_id );
     die _fault( MT->translate("Invalid login") ) unless $author;
-    die _fault( MT->translate("Not privileged to edit entry") )
+    die _fault( MT->translate("Not allowed to edit entry") )
         if !$author->is_superuser
             && ( !$perms || !$perms->can_edit_entry( $entry, $author ) );
     my $orig_entry = $entry->clone;
@@ -939,7 +938,7 @@ sub _get_entry {
     }
     my ( $author, $perms ) = $class->_login( $user, $pass, $entry->blog_id );
     die _fault( MT->translate("Invalid login") ) unless $author;
-    die _fault( MT->translate("Not privileged to get entry") )
+    die _fault( MT->translate("Not allowed to get entry") )
         if !$author->is_superuser
             && ( !$perms || !$perms->can_edit_entry( $entry, $author ) );
     my $co = sprintf "%04d%02d%02dT%02d:%02d:%02d",
@@ -1002,6 +1001,118 @@ sub getPage {
     );
 }
 
+# 2012-09-19 iwamoto@symphonyinc.co.jp ==>
+sub getPostidByBookid {
+    my $class = shift;
+    my ( $book_id, $user, $pass ) = @_;
+
+    #my $mt = MT::XMLRPCServer::Util::mt_new();   ## Will die if MT->new fails.
+    #my ($author) = $class->_login( $user, $pass );
+    #die _fault( MT->translate("Invalid login") ) unless $author;
+
+    require MT::Object;
+    my $driver = MT::Object->driver;
+    my $dbh = $driver->rw_handle;
+    my $query = "SELECT entry_meta_entry_id FROM `mt_entry_meta`"
+              . " WHERE `entry_meta_type`='field.book_id' AND `entry_meta_vchar_idx`='$book_id'";
+    my $sth = $dbh->prepare( $query );
+
+    if ($dbh->errstr) {
+        die _fault( MT->translate( "Error in query: " . $dbh->errstr ) );
+    }
+    $sth->execute();
+    if ($sth->errstr) {
+        die _fault( MT->translate( "Error in query: " . $sth->errstr ) );
+    }
+
+    my $columns = $sth->{ NAME_hash };
+    my $entry_id = '';
+    if (my @row = $sth->fetchrow_array()) {
+        $entry_id = $row[$columns->{entry_meta_entry_id}];
+    }
+    SOAP::Data->type( string => $entry_id || '' );
+}
+
+sub newCategory {
+    my $class = shift;
+    my ( $blog_id, $category_name, $user, $pass ) = @_;
+
+    my $mt = MT::XMLRPCServer::Util::mt_new();   ## Will die if MT->new fails.
+    my ($author) = $class->_login( $user, $pass );
+    die _fault( MT->translate("Invalid login") ) unless $author;
+
+    require MT::Category;
+    my $category = MT::Category->new;
+    $category->blog_id($blog_id);
+    $category->label($category_name);
+    $category->basename($category_name);
+    $category->author_id($author->id);
+
+    $category->save
+        or die _fault(
+        MT->translate( "Saving category failed: [_1]", $category->errstr )
+        );
+    SOAP::Data->type( string => $category->id );
+}
+
+sub getCFStartYear {
+    my $class = shift;
+    my ( $entry_id, $user, $pass ) = @_;
+
+    #my $mt = MT::XMLRPCServer::Util::mt_new();   ## Will die if MT->new fails.
+    #my ($author) = $class->_login( $user, $pass );
+    #die _fault( MT->translate("Invalid login") ) unless $author;
+
+    require MT::Object;
+    my $driver = MT::Object->driver;
+    my $dbh = $driver->rw_handle;
+    my $query = "SELECT entry_meta_vinteger_idx FROM `mt_entry_meta` WHERE `entry_meta_entry_id`=$entry_id and `entry_meta_type`='field.start_year'";
+    my $sth = $dbh->prepare( $query );
+
+    if ($dbh->errstr) {
+        die _fault( MT->translate( "Error in query: " . $dbh->errstr ) );
+    }
+    $sth->execute();
+    if ($sth->errstr) {
+        die _fault( MT->translate( "Error in query: " . $sth->errstr ) );
+    }
+
+    my $start_year = 0;
+    my $columns = $sth->{ NAME_hash };
+    if (my @row = $sth->fetchrow_array()) {
+        my $entry_meta_type = $row[$columns->{entry_meta_type}];
+        $start_year = $row[$columns->{entry_meta_vinteger_idx}];
+    }
+    SOAP::Data->type( int => $start_year );
+}
+
+sub rebuildCategory {
+    my $class = shift;
+    my ( $blog_id, $user, $pass, $catid ) = @_;
+
+    my $mt = MT::XMLRPCServer::Util::mt_new();
+    my ($author) = $class->_login( $user, $pass );
+    die _fault( MT->translate("Invalid login") ) unless $author;
+
+    my $blog = MT::Blog->load($blog_id)
+        or die _fault( MT->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+
+    use MT::WeblogPublisher;
+    my $pub = MT::WeblogPublisher->new;
+    #my %cat_hash = ('Category-id' => $catid);
+    #my %recipe = (Category => \%cat_hash);
+    my %recipe;
+    $recipe{Category}{$catid}{id} = $catid;
+    my %param = (Blog => $blog, Recipe => \%recipe);
+    $pub->rebuild_archives(%param)
+        or die _fault(
+            MT->translate( "Rebuild Categories failed: [_1]", $pub->errstr )
+        );
+    SOAP::Data->type( boolean => 1 );
+}
+
+# 2012-09-19 iwamoto@symphonyinc.co.jp <==
+
 sub supportedMethods {
     [   'blogger.newPost', 'blogger.editPost', 'blogger.getRecentPosts',
         'blogger.getUsersBlogs', 'blogger.getUserInfo', 'blogger.deletePost',
@@ -1015,7 +1126,11 @@ sub supportedMethods {
         # not yet supported: metaWeblog.getTemplate, metaWeblog.setTemplate
         'mt.getCategoryList', 'mt.setPostCategories', 'mt.getPostCategories',
         'mt.getTrackbackPings', 'mt.supportedTextFilters',
-        'mt.getRecentPostTitles', 'mt.publishPost', 'mt.getTagList'
+        'mt.getRecentPostTitles', 'mt.publishPost', 'mt.getTagList',
+
+        # 2012-09-19 iwamoto@symphonyinc.co.jp ==>
+        'mt.getPostidByBookid', 'mt.newCategory', 'mt.getCFStartYear', 'mt.rebuildCategory'
+        # 2012-09-19 iwamoto@symphonyinc.co.jp <==
     ];
 }
 
@@ -1175,7 +1290,7 @@ sub setPostCategories {
         die _fault( MT->translate( "Invalid entry ID '[_1]'", $entry_id ) );
     my ( $author, $perms ) = $class->_login( $user, $pass, $entry->blog_id );
     die _fault( MT->translate("Invalid login") ) unless $author;
-    die _fault( MT->translate("Not privileged to set entry categories") )
+    die _fault( MT->translate("Not allowed to set entry categories") )
         if !$author->is_superuser
             && ( !$perms || !$perms->can_edit_entry( $entry, $author ) );
     my @place = MT::Placement->load( { entry_id => $entry_id } );
@@ -1242,11 +1357,12 @@ sub publishPost {
         die _fault( MT->translate( "Invalid entry ID '[_1]'", $entry_id ) );
     my ( $author, $perms ) = $class->_login( $user, $pass, $entry->blog_id );
     die _fault( MT->translate("Invalid login") ) unless $author;
-    die _fault( MT->translate("Not privileged to edit entry") )
+    die _fault( MT->translate("Not allowed to edit entry") )
         if !$author->is_superuser
             && ( !$perms || !$perms->can_edit_entry( $entry, $author ) );
     $mt->rebuild_entry( Entry => $entry, BuildDependencies => 1 )
-        or die _fault( MT->translate( "Publish failed: [_1]", $mt->errstr ) );
+        or
+        die _fault( MT->translate( "Publishing failed: [_1]", $mt->errstr ) );
     SOAP::Data->type( boolean => 1 );
 }
 
@@ -1271,7 +1387,7 @@ sub publishScheduledFuturePosts {
     my $author = $class->_login( $user, $pass );
     die _fault( MT->translate("Invalid login") ) unless $author;
     my $blog = MT::Blog->load($blog_id)
-        or die _fault( MT->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+        or die _fault( MT->translate( 'Cannot load blog #[_1].', $blog_id ) );
 
     my $now = time;
 
@@ -1360,7 +1476,7 @@ sub newMediaObject {
     my $mt = MT::XMLRPCServer::Util::mt_new();   ## Will die if MT->new fails.
     my ( $author, $perms ) = $class->_login( $user, $pass, $blog_id );
     die _fault( MT->translate("Invalid login") ) unless $author;
-    die _fault( MT->translate("Not privileged to upload files") )
+    die _fault( MT->translate("Not allowed to upload files") )
         if !$author->is_superuser
             && (   !$perms
                 || !$perms->can_do('upload_asset_via_xmlrpc_server') );
@@ -1368,7 +1484,7 @@ sub newMediaObject {
     require MT::Blog;
     require File::Spec;
     my $blog = MT::Blog->load($blog_id)
-        or die _fault( MT->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+        or die _fault( MT->translate( 'Cannot load blog #[_1].', $blog_id ) );
 
     my $fname = $file->{name}
         or die _fault( MT->translate("No filename provided") );
@@ -1384,7 +1500,7 @@ sub newMediaObject {
         my @ret = File::Basename::fileparse( $fname, @deny_exts );
         die _fault(
             MT->translate(
-                'The file([_1]) you uploaded is not allowed.', $fname
+                'The file ([_1]) that you uploaded is not allowed.', $fname
             )
         ) if $ret[2];
     }
@@ -1397,7 +1513,7 @@ sub newMediaObject {
         my @ret = File::Basename::fileparse( $fname, @allowed );
         die _fault(
             MT->translate(
-                'The file([_1]) you uploaded is not allowed.', $fname
+                'The file ([_1]) that you uploaded is not allowed.', $fname
             )
         ) unless $ret[2];
     }
@@ -1425,6 +1541,8 @@ sub newMediaObject {
     my ( $vol, $path, $name ) = File::Spec->splitpath($local_file);
     $path =~ s!/$!!
         unless $path eq '/';    ## OS X doesn't like / at the end in mkdir().
+    $path = File::Spec->catpath( $vol, $path )
+        if $vol;
     unless ( $fmgr->exists($path) ) {
         $fmgr->mkpath($path)
             or die _fault(

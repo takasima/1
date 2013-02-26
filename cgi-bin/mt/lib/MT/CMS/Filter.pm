@@ -18,9 +18,12 @@ sub save {
     my $label     = $q->param('label');
     my $ds        = $q->param('datasource');
 
+    $app->validate_magic
+        or return $app->json_error( $app->translate('Invalid request') );
+
     if ( !$label ) {
         return $app->json_error(
-            $app->translate('Failed to save filter: label is required.') );
+            $app->translate('Failed to save filter: Label is required.') );
     }
     my $items;
     if ( my $items_json = $q->param('items') ) {
@@ -58,7 +61,7 @@ sub save {
                 label     => $label,
                 ( $fid ? ( id => { not => $fid } ) : () ),
             },
-            {   limit      => 1,
+            {   limit     => 1,
                 fetchonly => { id => 1 },
             }
         )
@@ -66,7 +69,7 @@ sub save {
     {
         return $app->json_error(
             $app->translate(
-                'Failed to save filter: label "[_1]" is duplicated.', $label
+                'Failed to save filter:  Label "[_1]" is duplicated.', $label
             )
         );
     }
@@ -160,20 +163,19 @@ sub delete_filters {
     return $app->errtrans('Invalid request')
         unless $app->validate_magic;
 
-    my @ids  = $app->param('id');
+    my @ids = $app->param('id');
+
     # handling either AJAX request and normal request
     @ids = split ',', join ',', @ids;
 
     my $res = MT->model('filter')->remove( { id => \@ids } )
-        or return $app->json_error(
-        MT->translate(
-            'Failed to delete filter(s): [_1]',
-            MT->model('filter')->errstr,
-        )
+        or return $app->errtrans(
+        'Failed to delete filter(s): [_1]',
+        MT->model('filter')->errstr,
         );
     unless ( $res > 0 ) {
         ## if $res is 0E0 ( zero but true )
-        return $app->json_error( MT->translate( 'No such filter', ) );
+        return $app->errtrans('No such filter');
     }
 
     if ( $app->param('xhr') ) {

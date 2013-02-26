@@ -4,7 +4,8 @@ use strict;
 use File::Copy::Recursive qw( fcopy );
 
 use lib qw( addons/PowerCMS.pack/lib );
-use PowerCMS::Util qw( powercms_files_dir is_user_can build_tmpl make_dir 
+use CustomFields::Util qw( get_meta );
+use PowerCMS::Util qw( powercms_files_dir is_user_can build_tmpl make_dir
                        site_path site_url current_user current_blog current_ts
                        permitted_blog_ids is_windows
                      );
@@ -43,24 +44,24 @@ sub change_status {
     if ( $is_task ) {
         $app = MT->instance();
         @revision = MT->model( 'powerrevision' )->load( { blog_id => $blog->id,
-                                                          class => 'workflow', 
-                                                          status => 4, 
+                                                          class => 'workflow',
+                                                          status => 4,
                                                         }, {
                                                           'sort' => 'obj_auth_on',
                                                           start_val => $ts,
                                                           direction => 'descend',
-                                                        } 
+                                                        }
                                                       );
     } else {
         my @entries = $app->param( 'id' );
         for my $id( @entries ) {
             my $entry = MT::Entry->load( { id => $id } );
             next unless defined $entry;
-            my @rev = MT->model( 'powerrevision' )->load( { blog_id => $blog->id, 
+            my @rev = MT->model( 'powerrevision' )->load( { blog_id => $blog->id,
                                                             object_ds => 'entry',
                                                             object_id => $id,
                                                             class => 'workflow',
-                                                          }, { 
+                                                          }, {
                                                             'sort' => 'obj_auth_on',
                                                             limit => 1,
                                                             direction => 'ascend',
@@ -75,7 +76,6 @@ sub change_status {
     }
     my $published;
     require MT::WeblogPublisher;
-    my $pub = MT::WeblogPublisher->new();
     my $fmgr = MT::FileMgr->new( 'Local' );
     for my $entry_id( keys %posted ) {
         my $revision = $posted{ $entry_id };
@@ -90,8 +90,8 @@ sub change_status {
         if ( $fmgr->exists( $xmlfile ) ) {
             $xml = $fmgr->get_data( $xmlfile );
             my $latest = MT->model( 'powerrevision' )->load( { object_id => $entry_id,
-                                                               object_ds => 'entry' 
-                                                             }, { 
+                                                               object_ds => 'entry',
+                                                             }, {
                                                                'sort' => 'modified_on',
                                                                direction => 'descend',
                                                                limit => 1,
@@ -117,14 +117,18 @@ sub change_status {
             $revision->object_status( 2 );
             $revision->save or die $revision->errstr;
             my $builddependencies = 0;
-            $pub->rebuild_entry( Entry => $entry, 
+            my $pub = MT::WeblogPublisher->new();
+            $pub->rebuild_entry( Entry => $entry,
                                  BuildDependencies => ( $entry->class eq 'entry' ? 1 : 0 ),
-                                 NoIndexes => 1 
+                                 NoIndexes => 1
                                ) or $app->error( $plugin->translate( 'Rebuild error: [_1]', $pub->errstr ) );
+            MT->instance->request( '__cached_maps', {} );
+            MT->instance->request( '__published:' . $entry->blog_id, {} );
             $published = 1;
         }
     }
     if ( $published ) {
+        my $pub = MT::WeblogPublisher->new();
         $pub->rebuild_indexes( Blog => $blog )
             or $app->error( $plugin->translate( 'Rebuild error: [_1]', $pub->errstr ) );
     }
@@ -134,17 +138,15 @@ sub change_status {
 sub cleanup_assets {
     my $app = MT->instance();
     my $plugin = MT->component( 'PowerRevision' );
-    my $limit;
-    if ( my $user = current_user() ){
-        $limit = 10;
-    } else { # is task
+    my $limit = 10;
+    unless ( current_user() ) { # is task
         $limit = 999;
     }
     my $blog = current_blog( $app ); # if is task, 'current_blog' return undef.
     my @temp_files = MT::Session->load( { kind => 'TF',
                                           ( $blog ? ( blog_id => $blog->id ) : () ),
                                           class => ( $plugin->key || lc ( $plugin->id ) ),
-                                        }, { 
+                                        }, {
                                           'sort' => 'start',
                                           start_val => ( time - 10 ),
                                           direction => 'descend',
@@ -237,9 +239,9 @@ sub can_revision_update {
 
 sub set_publishcharset {
     my $data = shift;
-    my $enc = MT->config->PublishCharset;
-    unless ( $enc =~ /^utf-?8$/i ) {
-        return MT::I18N::encode_text( $data, 'utf8', lc( $enc ) );
+    my $enc = lc(MT->config->PublishCharset || '');
+    unless ( $enc =~ /^utf-?8$/ ) {
+        return MT::I18N::encode_text( $data, 'utf8', $enc );
     }
     return $data;
 }
@@ -254,7 +256,7 @@ sub preview_object_basename {
     push @parts, $id || 0;
     push @parts, $app->param( '_type' );
     push @parts, $app->config->SecretToken;
-    my $data = join ",", @parts;
+    my $data = join ',', @parts;
     return 'mt-preview-' . perl_sha1_digest_hex( $data );
 }
 
@@ -517,9 +519,9 @@ sub build_entry_xml {
         }
     }
     $res .= "</mtentryasset>\n";
-    eval { require CustomFields::Util };
-    unless ( $@ ){
-        use CustomFields::Util qw( get_meta );
+    #eval { require CustomFields::Util };
+    #unless ( $@ ) {
+        #use CustomFields::Util qw( get_meta );
         # For Snippet Field
         my @fields = MT->model( 'field' )->load( { type => 'snippet', blog_id => [ 0, $blog_id ] } );
         my @snippet;
@@ -558,9 +560,9 @@ sub build_entry_xml {
         }
         # / For Snippet Field
         $res .= "</mtcustomfield>\n";
-    }
+    #}
     eval { require ExtFields::Extfields };
-    unless ( $@ ){
+    unless ( $@ ) {
         $res .= "<mtextfields>\n";
         my @fields = ExtFields::Extfields->load( { entry_id => $entry_id } );
         for my $field ( @fields ) {
@@ -588,7 +590,7 @@ sub recover_entry_from_xml {
     my ( $app, $blog, $entry, $revision, $xml, $rebuild, $save, $backup_dir ) = @_;
     my $plugin = MT->component( 'PowerRevision' );
     cleanup_assets();
-    my @objassets = MT->model( 'objectasset' )->load( { object_id => $entry->id,
+    my @objassets = MT->model( 'objectasset' )->load( { object_id => $revision->id,
                                                         object_ds => 'entry',
                                                       }
                                                     );
@@ -602,9 +604,9 @@ sub recover_entry_from_xml {
     } else {
         $status = $entry->status;
     }
-    my $blog_id = $blog->id; 
+    my $blog_id = $blog->id;
     my $entry_column_names = $entry->column_names;
-    my $xmlsimple = XML::Simple->new(); 
+    my $xmlsimple = XML::Simple->new();
     my $backup = $xmlsimple->XMLin( $xml );
     my $mtentry = $backup->{ mtentry };
     for my $name ( @$entry_column_names ) {
@@ -629,7 +631,7 @@ sub recover_entry_from_xml {
                 if ( %$val == 0 ) {
                     $val = undef;
                 }
-            };
+            }
             if ( $val ) {
                 $val = set_publishcharset( $val );
             }
@@ -654,7 +656,7 @@ sub recover_entry_from_xml {
         if ( my $user = current_user( $app ) ) {
             $entry->author_id( $user->id );
         } else {
-            my $permission = ( $entry->class eq 'page' ? "\%'manage_pages'\%" : "\%'publish_post'\%" );
+            my $permission = ( $entry->class eq 'page' ? "%'manage_pages'%" : "%'publish_post'%" );
             my %args;
             $args{ join } = MT->model( 'permission' )->join_on( 'author_id',
                                                                 { blog_id => $entry->blog_id,
@@ -683,7 +685,7 @@ sub recover_entry_from_xml {
                                                               blog_id => $blog_id,
                                                             }
                                                           );
-            $obj->is_primary( 1 ); 
+            $obj->is_primary( 1 );
             $obj->save or die $obj->errstr;
             push ( @cids, $obj->id );
             $entry->category( $obj );
@@ -691,7 +693,7 @@ sub recover_entry_from_xml {
     }
     my @mt_placement_ids = $mtplacement->{ placement_id };
     my $placement_ids = $mtplacement->{ placement_id };
-    eval { 
+    eval {
         @mt_placement_ids = @$placement_ids
     };
     for my $cid( @mt_placement_ids ) {
@@ -711,16 +713,16 @@ sub recover_entry_from_xml {
     my @places = MT->model( 'placement' )->load( { entry_id => $entry_id } );
     for my $place( @places ) {
         my $pid = $place->id;
-        if (! grep ( /^$pid$/, @cids ) ) { 
+        if (! grep ( /^$pid$/, @cids ) ) {
             $place->remove or die $place->errstr;
         }
     }
     my @tids;
     my $mtobjecttag = $backup->{ mtobjecttag };
-    my @mtobjecttagdatas = $mtobjecttag->{ objecttagdata };
-    my $objecttagdatas = $mtobjecttag->{ objecttagdata };
-    eval { @mtobjecttagdatas = @$objecttagdatas };
-    for my $objecttag( @mtobjecttagdatas ) {
+    my @mtobjecttagdata = $mtobjecttag->{ objecttagdata };
+    my $objecttagdata = $mtobjecttag->{ objecttagdata };
+    eval { @mtobjecttagdata = @$objecttagdata };
+    for my $objecttag( @mtobjecttagdata ) {
         my $oid = $objecttag->{ objecttag_tag_id } or next;
         my $tag = MT->model( 'tag' )->load( $oid );
         if ( defined $tag ) {
@@ -730,39 +732,39 @@ sub recover_entry_from_xml {
                                                               blog_id => $blog_id,
                                                             }
                                                           );
-            $obj->save or die $obj->errstr; 
+            $obj->save or die $obj->errstr;
             push ( @tids, $obj->id );
         }
     }
-    my @tags = MT->model( 'objecttag' )->load( { object_id => $entry_id, 
+    my @tags = MT->model( 'objecttag' )->load( { object_id => $entry_id,
                                                  object_datasource => 'entry',
                                                }
                                              );
     for my $tag( @tags ) {
-        my $tid = $tag->id; 
+        my $tid = $tag->id;
         if (! grep( /^$tid$/, @tids ) ) {
             $tag->remove or die $tag->errstr;
         }
     }
     my $mtentrytags = $backup->{ mtentrytags };
-    eval { 
+    eval {
         my $v = %$mtentrytags;
     };
-    unless ( $@ ){
+    unless ( $@ ) {
         if ( %$mtentrytags == 0 ) {
             $mtentrytags = undef;
         }
-    };
+    }
     if ( $mtentrytags ) {
         my @tags = split ( /,/, $mtentrytags );
-        $entry->set_tags( @tags ); 
+        $entry->set_tags( @tags );
         $entry->save or die $entry->errstr;
     }
     eval {
         require CustomFields::BackupRestore;
         require CustomFields::Field;
     };
-    unless ( $@ ){
+    unless ( $@ ) {
         my $mtcustomfield = $backup->{ mtcustomfield };
         my $object_class = MT->model( $entry->class );
         my $class_type = $object_class->class_type || $object_class->datasource;
@@ -778,17 +780,17 @@ sub recover_entry_from_xml {
         for my $field ( @snippet_fields ) {
             push ( @snippet, $field->basename );
         }
-        while( my $field = $iter->() ) {
+        while ( my $field = $iter->() ) {
             my $basename = $field->basename;
             my $val = $mtcustomfield->{ "customfield_$basename" };
-            eval { 
+            eval {
                 my $v = %$val
             };
-            unless ( $@ ) { 
+            unless ( $@ ) {
                 if ( %$val == 0 ) {
                     $val = undef;
                 }
-            };
+            }
             if ( grep ( /^$basename$/, @snippet ) ) {
 #                 require MT::Serialize;
 #                 my $ser = MT::Serialize->serialize( \$val );
@@ -806,13 +808,13 @@ sub recover_entry_from_xml {
     }
     my @aids;
     my $mtobjectasset = $backup->{ mtobjectasset };
-    my @mtobjectassetdatas = $mtobjectasset->{ objectassetdata };
-    my $objectassetdatas = $mtobjectasset->{ objectassetdata };
-    eval { 
-        @mtobjectassetdatas = @$objectassetdatas;
+    my @mtobjectassetdata = $mtobjectasset->{ objectassetdata };
+    my $objectassetdata = $mtobjectasset->{ objectassetdata };
+    eval {
+        @mtobjectassetdata = @$objectassetdata;
     };
     my %removes;
-    for my $objectasset( @mtobjectassetdatas ) {
+    for my $objectasset( @mtobjectassetdata ) {
         my $oid = $objectasset->{ objectasset_asset_id } or next;
         my $asset = MT->model( 'asset' )->load( { id => $oid } );
         my $temporary_path;
@@ -823,15 +825,15 @@ sub recover_entry_from_xml {
         if ( $fmgr->exists( $xml_file ) ) {
             my $asset_xml = $fmgr->get_data( $xml_file );
             my $assetxmlspl = XML::Simple->new();
-            my $asset_datas = $assetxmlspl->XMLin( $asset_xml );
-            my $backuppath  = $asset_datas->{ backuppath };
+            my $asset_data = $assetxmlspl->XMLin( $asset_xml );
+            my $backuppath  = $asset_data->{ backuppath };
             $backuppath =~ s/^%b/$backup_dir/;
             my $recover_asset; my $org_asset;
             if ( defined $asset ) {
                 $org_asset = $asset->file_path;
-                if ( $fmgr->exists( $org_asset ) ){
+                if ( $fmgr->exists( $org_asset ) ) {
                     my @stats = stat ( $backuppath );
-                    my $copy_modified = $stats[ 9 ]; 
+                    my $copy_modified = $stats[ 9 ];
                     my $copy_size = $stats[ 7 ];
                     my @orgstats = stat ( $org_asset );
                     my $org_modified = $orgstats[ 9 ];
@@ -846,10 +848,10 @@ sub recover_entry_from_xml {
                 $recover_asset = 1;
             }
             if (! defined $asset ) {
-                $asset = MT->model( 'asset' )->new; 
+                $asset = MT->model( 'asset' )->new;
             }
             my $asset_column_names = $asset->column_names;
-            my $mtasset = $asset_datas->{ mtasset };
+            my $mtasset = $asset_data->{ mtasset };
             for my $name( @$asset_column_names ) {
                 my $val = $mtasset->{ 'asset_' . $name  };
                 eval {
@@ -859,7 +861,7 @@ sub recover_entry_from_xml {
                     if ( %$val == 0 ) {
                         $val = undef;
                     }
-                };
+                }
                 if ( (! $save ) && ( $name eq 'id' ) ) {
                     $val = $val * -1;
                 }
@@ -933,25 +935,25 @@ sub recover_entry_from_xml {
                 my $val = $objectasset->{ 'objectasset_' . $name };
                 eval {
                     my $v = %$val
-                }; 
-                unless ( $@ ){
-                    if ( %$val == 0 ) { 
+                };
+                unless ( $@ ) {
+                    if ( %$val == 0 ) {
                         $val = undef;
                     }
-                };
+                }
                 if ( (! $save ) && ( $name eq 'asset_id' ) ) {
                     $val = $asset_id;
                 }
                 $obj->$name( $val );
             }
             if ( $entry_id < 0 ) {
-                $obj->id( undef ); 
+                $obj->id( undef );
                 $obj->object_id( $entry->id );
             }
             $obj->save or die $obj->errstr;
         }
     }
-    my @assets = MT->model( 'objectasset' )->load( { object_id => $entry_id, 
+    my @assets = MT->model( 'objectasset' )->load( { object_id => $entry_id,
                                                      object_ds => 'entry',
                                                    }
                                                  );
@@ -961,16 +963,16 @@ sub recover_entry_from_xml {
             $asset->remove or die $asset->errstr;
         }
     }
-    eval { 
+    eval {
         require ExtFields::Extfields;
-    }; 
-    unless ( $@ ){
+    };
+    unless ( $@ ) {
         my @exids;
         my $mtextfields = $backup->{ mtextfields };
-        my @mtextfieldsdatas = $mtextfields->{ extfieldsdata };
-        my $extfieldsdatas = $mtextfields->{ extfieldsdata };
-        eval { @mtextfieldsdatas = @$extfieldsdatas };
-        for my $extfields( @mtextfieldsdatas ) {
+        my @mtextfieldsdata = $mtextfields->{ extfieldsdata };
+        my $extfieldsdata = $mtextfields->{ extfieldsdata };
+        eval { @mtextfieldsdata = @$extfieldsdata };
+        for my $extfields( @mtextfieldsdata ) {
             my $oid = $extfields->{ extfields_id };
             next unless $oid;
             my $obj;
@@ -987,14 +989,14 @@ sub recover_entry_from_xml {
             for my $name( @$names ) {
                 if ( $name ne 'entry_id' ) {
                     my $val = $extfields->{ "extfields_$name" };
-                    eval { 
+                    eval {
                         my $v = %$val;
                     };
-                    unless ( $@ ){ 
+                    unless ( $@ ) {
                         if ( %$val == 0 ) {
-                            $val = undef; 
+                            $val = undef;
                         }
-                    };
+                    }
                     $obj->$name( $val );
                 }
             }
@@ -1015,16 +1017,16 @@ sub recover_entry_from_xml {
     if ( ( $rebuild ) && ( $entry->status == MT::Entry::RELEASE() ) ) {
         require MT::WeblogPublisher;
         my $pub = MT::WeblogPublisher->new();
-        $pub->rebuild_entry( Entry => $entry, BuildDependencies => 1, ) 
+        $pub->rebuild_entry( Entry => $entry, BuildDependencies => 1, )
             or die ( 'Rebuild error: [_1]', $pub->errstr );
         if ( $entry->status != MT::Entry::RELEASE() ) {
             $pub->remove_entry_archive_file( Entry => $entry );
         }
     }
     my $object_name = encode_html( $revision->object_name );
-    my $author_name = ''; 
-    eval { 
-        my $author = $app->user; 
+    my $author_name = '';
+    eval {
+        my $author = $app->user;
         $author_name = $author->nickname || $author->name;
     };
     if ( $@ && ! $author_name ) {
@@ -1033,12 +1035,11 @@ sub recover_entry_from_xml {
     my $revision_id = $revision->id;
     $entry_id = $revision->object_id;
     my $class = $revision->object_class;
-    $class =~ s/(^.)/uc($1)/e;
-    $class = $plugin->translate( $class );
+    $class = $plugin->translate( ucfirst($class) );
     if ( $save == 1 ) {
-        $app->log( $plugin->translate( '[_1] \'[_2]\' (ID:[_3]) recoverd from revision (ID:[_4]) by \'[_5]\'', $class, $object_name, $entry_id, $revision_id, $author_name ) );
+        $app->log( $plugin->translate( "[_1] '[_2]' (ID:[_3]) recoverd from revision (ID:[_4]) by '[_5]'", $class, $object_name, $entry_id, $revision_id, $author_name ) );
     } elsif ( $save == 2 ) {
-        $app->log( $plugin->translate( '[_1] saved \'[_2]\' (ID:[_3])\'s revision (ID:[_4]) by \'[_5]\'', $class, $object_name, $entry_id, $revision_id, $author_name ) );
+        $app->log( $plugin->translate( "[_1] saved '[_2]' (ID:[_3])'s revision (ID:[_4]) by '[_5]'", $class, $object_name, $entry_id, $revision_id, $author_name ) );
     }
     $entry->clear_cache();
     return ( $entry, %removes );

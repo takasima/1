@@ -1,7 +1,7 @@
 id  : CustomObject
 key : customobject
 name: Custom Object Pack
-version: 1.8
+version: 2.0
 schema_version: 2.41
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
@@ -170,6 +170,7 @@ applications:
                     }
         compose_menus:
             customobject:
+                id: customobject
                 label: CustomObject
                 order: 1000
                 mode: view

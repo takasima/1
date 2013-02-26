@@ -13,23 +13,25 @@ sub _init_tags {
     $r->cache($k)
         and return 1
         or $r->cache($k, 1);
-    if ( ref $app eq 'MT::App::CMS' ) {
-        if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
-            # pass
-        } else {
-            my $load_at = [ 'view', 'rebuild', 'preview', 'save', 'delete', 'cfg', 'default', 'recover', 'itemset' ];
-            require CGI;
-            $CGI::POST_MAX = $app->config->CGIMaxUpload;
-            my $q = new CGI;
-            my $mode = $q->param( '__mode' )
-                or return;
-            $mode =~ s/_.*$//;
-            if (! grep { $mode =~ /^\Q$_\E/ } @$load_at ) {
-                return;
-            }
-            my $type = $q->param( '_type' );
-            if ( $type && ( $type eq 'field' ) ) {
-                return;
+    unless ( $ENV{FAST_CGI} || MT->config->PIDFilePath ) {
+        if ( ref $app eq 'MT::App::CMS' ) {
+            if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
+                # pass
+            } else {
+                require CGI;
+                $CGI::POST_MAX = $app->config->CGIMaxUpload;
+                my $q = new CGI;
+                my $mode = $q->param( '__mode' )
+                    or return;
+                $mode =~ s/_.*$//;
+                my @load_at = qw/view rebuild preview save delete cfg default recover itemset publish/;
+                unless ( grep { $mode =~ /^\Q$_\E/ } @load_at ) {
+                    return;
+                }
+                my $type = $q->param( '_type' );
+                if ( $type && ( $type eq 'field' ) ) {
+                    return;
+                }
             }
         }
     }

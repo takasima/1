@@ -22,6 +22,8 @@ use constant NAMESPACE => 'community_pack_recommend';
 
 sub id {'community'}
 
+sub script_name { MT->config->CommunityScript }
+
 sub init {
     my $app = shift;
     $app->SUPER::init(@_);
@@ -289,7 +291,7 @@ sub login_pending {
         },
         );
 
-    if ( ( $url =~ m!^/! ) & $blog ) {
+    if ( ( $url =~ m!^/! ) && $blog ) {
         my ($blog_domain) = $blog->site_url =~ m|(.+://[^/]+)|;
         $url = $blog_domain . $url;
     }
@@ -386,26 +388,35 @@ sub _create_commenter_assign_role {
     $commenter->auth_type( $app->config->AuthenticationModule );
     return undef unless ( $commenter->save );
 
-    require MT::Role;
-    require MT::Association;
-    my $role = MT::Role->load_same( undef, undef, 1, 'comment' );
-    my $blog = MT::Blog->load($blog_id);
-    if ( $role && $blog ) {
-        MT::Association->link( $commenter => $role => $blog );
-    }
-    else {
-        my $blog_name = $blog ? $blog->name : '(Blog not found)';
-        $app->log(
-            {   message => MT->translate(
-                    "Error assigning commenting rights to user '[_1] (ID: [_2])' for weblog '[_3] (ID: [_4])'. No suitable commenting role was found.",
-                    $commenter->name, $commenter->id,
-                    $blog_name,       $blog->id,
-                ),
-                level    => MT::Log::ERROR(),
-                class    => 'system',
-                category => 'new'
-            }
-        );
+    $commenter->add_default_roles;
+    my $flip = 1;
+    my $have_default_roles
+        = grep { $_ == $blog_id }
+        map { ( $flip = !$flip ) ? $_ : () }
+        split ',', MT->config->DefaultAssignments;
+
+    if ( not $have_default_roles ) {
+        require MT::Role;
+        require MT::Association;
+        my $role = MT::Role->load_same( undef, undef, 1, 'comment' );
+        my $blog = MT::Blog->load($blog_id);
+        if ( $role && $blog ) {
+            MT::Association->link( $commenter => $role => $blog );
+        }
+        else {
+            my $blog_name = $blog ? $blog->name : '(Blog not found)';
+            $app->log(
+                {   message => MT->translate(
+                        "Error assigning commenting rights to user '[_1] (ID: [_2])' for weblog '[_3] (ID: [_4])'. No suitable commenting role was found.",
+                        $commenter->name, $commenter->id,
+                        $blog_name,       $blog->id,
+                    ),
+                    level    => MT::Log::ERROR(),
+                    class    => 'system',
+                    category => 'new'
+                }
+            );
+        }
     }
     $app->user($commenter);
     $commenter;
@@ -502,7 +513,7 @@ sub do_login {
         }
         $error
             ||= $app->translate(
-            'This account has been disabled. Please see your system administrator for access.'
+            'This account has been disabled. Please see your Movable Type system administrator for access.'
             );
         $app->user(undef);
         $app->log(
@@ -586,7 +597,7 @@ sub _check_commenter_author {
         if ( my $registration = $app->config->CommenterRegistration ) {
             my $blog = MT::Blog->load($blog_id)
                 or return $app->error(
-                $app->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+                $app->translate( 'Cannot load blog #[_1].', $blog_id ) );
             if ($registration->{Allow}
                 && (   $app->config->ExternalUserManagement
                     || $blog->allow_commenter_regist )
@@ -640,7 +651,7 @@ sub redirect_to_target {
         my $entry = MT::Entry->load( $q->param('entry_id') || 0 )
             or return $app->error(
             $app->translate(
-                'Can\'t load entry #[_1].',
+                'Cannot load entry #[_1].',
                 $q->param('entry_id')
             )
             );
@@ -1060,7 +1071,7 @@ sub do_confirm {
     my $blog;
     if ($blog_id) {
         $blog = $app->model('blog')->load($blog_id)
-            or return $error->( 'Can\'t load blog #[_1].', $blog_id );
+            or return $error->( 'Cannot load blog #[_1].', $blog_id );
         $app->blog($blog);
     }
 
@@ -1655,6 +1666,7 @@ sub post {
     );
 
     # for custom field asset
+    my ( @cf_assets, @cf_objasset );
     foreach my $p ( $q->param() ) {
         next if !$q->param($p);
         if ( $p =~ /^file_customfield_(.*?)$/ ) {
@@ -1662,9 +1674,12 @@ sub post {
                 my $asset
                     = $app->_handle_upload( $p, require_type => $file_type );
                 if ( !defined($asset) && $app->errstr ) {
+                    $entry->remove();
+                    $_->remove() for ( @cf_assets, @cf_objasset );
                     return $app->error( $app->errstr );
                 }
                 if ($asset) {
+                    push @cf_assets, $asset;
                     $q->param( "customfield_$1",
                         $asset->as_html( { include => 1, enclose => 1 } ) );
                     my $obj_asset = MT->model('objectasset')->load(
@@ -1680,6 +1695,7 @@ sub post {
                         $obj_asset->object_ds('entry');
                         $obj_asset->object_id( $entry->id );
                         $obj_asset->save;
+                        push @cf_objasset, $obj_asset;
                     }
                 }
             }
@@ -1698,6 +1714,8 @@ sub post {
     }
 
     $app->run_callbacks( 'api_post_save.entry', $app, $entry, $orig );
+
+    $q->param( 'customfield_beacon', 0 );
 
     if ( MT::Entry::RELEASE() == $entry->status ) {
         $app->rebuild_entry(
@@ -1866,7 +1884,7 @@ sub _handle_upload {
         my @ret = File::Basename::fileparse( $base . $ext, @deny_exts );
         if ( $ret[2] ) {
             return $app->errtrans(
-                'The file([_1]) you uploaded is not allowed.',
+                'The file ([_1]) that you uploaded is not allowed.',
                 $base . $ext );
         }
     }
@@ -1879,7 +1897,7 @@ sub _handle_upload {
         my @ret = File::Basename::fileparse( $base . $ext, @allow_exts );
         unless ( $ret[2] ) {
             return $app->errtrans(
-                'The file([_1]) you uploaded is not allowed.',
+                'The file ([_1]) that you uploaded is not allowed.',
                 $base . $ext );
         }
     }
@@ -1929,10 +1947,10 @@ sub _handle_upload {
         %complements = ();
     }
     else {
-        $blog_id    = 0;
-        $save_path  = '%s/uploads/';
-        $local_path = File::Spec->catdir( $app->static_file_path, 'support',
-            'uploads' );
+        $blog_id   = 0;
+        $save_path = '%s/uploads/';
+        $local_path
+            = File::Spec->catdir( $app->support_directory_path(), 'uploads' );
 
         require MT::FileMgr;
         $fmgr        = MT::FileMgr->new('Local');
@@ -2247,37 +2265,8 @@ sub edit_profile_method {
 }
 
 sub __verify_password_strength {
-    my ( $app, $username, $pass ) = @_;
-    my @constrains = $app->config('UserPasswordValidation');
-    my $min_length = $app->config('UserPasswordMinLength');
-    if ( ( $min_length =~ m/\D/ ) or ( $min_length < 1 ) ) {
-        $min_length = $app->config->default('UserPasswordMinLength');
-    }
-
-    if ( length $pass < $min_length ) {
-        return $app->translate(
-            "Password should be longer than [_1] characters", $min_length );
-    }
-    if ( index( lc($pass), lc($username) ) >= 0 ) {
-        return $app->translate("Password should not include your Username");
-    }
-    if ( ( grep { $_ eq 'letternumber' } @constrains )
-        and not( $pass =~ /[a-zA-Z]/ and $pass =~ /\d/ ) )
-    {
-        return $app->translate("Password should include letters and numbers");
-    }
-    if ( ( grep { $_ eq 'upperlower' } @constrains )
-        and not( $pass =~ /[a-z]/ and $pass =~ /[A-Z]/ ) )
-    {
-        return $app->translate(
-            "Password should include lowercase and uppercase letters");
-    }
-    if ( ( grep { $_ eq 'symbol' } @constrains )
-        and not $pass =~ m'[!"#$%&\'\(\|\)\*\+,-\.\/\\:;<=>\?@\[\]^_`{}~]' )
-    {
-        $app->translate("Password should contain symbols such as #!$%");
-    }
-    return;
+    my $app = shift;
+    MT::App::verify_password_strength( $app, @_ );
 }
 
 sub save_profile_method {
@@ -2321,8 +2310,8 @@ sub save_profile_method {
                 )
                 )
             {
-                $param{error}
-                    = $app->translate('Failed to verify current password.');
+                $param{error} = $app->translate(
+                    'Failed to verify the current password.');
             }
             elsif (
                 my $error = __verify_password_strength(
@@ -2616,11 +2605,11 @@ sub feed_profile_method {
         if ( my $error = $@ || $tmpl->errstr ) {
             $app->response_code(500);
             $app->send_http_header('text/plain');
-            $app->print($error);
+            $app->print_encode($error);
         }
         else {
             $app->send_http_header('application/atom+xml');
-            $app->print($out);
+            $app->print_encode($out);
         }
     }
 }

@@ -15,9 +15,9 @@ use vars qw( %Lexicon );
 %Lexicon = (
 ## addons/Enterprise.pack/app-cms.yaml
 	'Groups ([_1])' => 'Groupes ([_1])',
-	'Are you sure you want to delete the selected group(s)?' => 'Etes-vous sûr de vouloir effacer les groupes sélectionnés ?',
-	'Are you sure you want to remove the selected member(s) from the group?' => 'Êtes-vous sûr de vouloir retirer les groupes sélectionnés ?',
-	'[_1]\'s Group' => 'Le Groupe de [_1]', # Translate - New
+	'Are you sure you want to delete the selected group(s)?' => 'Etes-vous sûr de vouloir effacer les groupes sélectionnés ?',
+	'Are you sure you want to remove the selected member(s) from the group?' => 'Voulez-vous vraiment retirer les groupes sélectionnés ?',
+	'[_1]\'s Group' => 'Le Groupe de [_1]',
 	'Groups' => 'Groupes',
 	'Manage Member' => 'Gérer le membre',
 	'Bulk Author Export' => 'Export auteurs en masse',
@@ -28,15 +28,14 @@ use vars qw( %Lexicon );
 
 ## addons/Enterprise.pack/app-wizard.yaml
 	'This module is required in order to use the LDAP Authentication.' => 'Ce module est nécessaire pour utiliser l\'identification LDAP.',
-	'This module is required in order to use SSL/TLS connection with the LDAP Authentication.' => 'Ce module est nécessaire pour utiliser les connections SSL/TLS avec l\'identification LDAP.',
-	'This module and its dependencies are required in order to use CRAM-MD5, DIGEST-MD5 or LOGIN as a SASL mechanism.' => 'Ce module et ses dépendances sont requis afin d\'utiliser CRAM-MD5, DIGEST-MD5 ou LOGIN en tant que méchanisme SASL.',
 
 ## addons/Enterprise.pack/config.yaml
+	'http://www.sixapart.com/movabletype/' => 'http://www.movabletype.com/',
 	'Permissions of group: [_1]' => 'Permissions du groupe [_1]',
 	'Group' => 'Groupe',
-	'Groups associated with author: [_1]' => 'Groupes associés avec l\'auteur : [_1]',
+	'Groups associated with author: [_1]' => 'Groupes associés avec l\'auteur : [_1]',
 	'Inactive' => 'Inactif',
-	'Members of group: [_1]' => 'Membres du groupe : [_1]',
+	'Members of group: [_1]' => 'Membres du groupe : [_1]',
 	'Advanced Pack' => 'Advanced Pack',
 	'User/Group' => 'Utilisateur/Groupe',
 	'User/Group Name' => 'Nom d\'utilisateur/groupe',
@@ -73,14 +72,14 @@ use vars qw( %Lexicon );
 	'Loading MT::LDAP failed: [_1]' => 'Chargement de MT::LDAP échoué: [_1]',
 	'External user synchronization failed.' => 'Synchronisation utilisateur externe échouée.',
 	'An attempt to disable all system administrators in the system was made.  Synchronization of users was interrupted.' => 'Une tentative de désactivation de tous les administrateurs système a été réalisée. La synchronisation des utilisateurs a été interrompue.',
-	'Information about the following users was modified:' => 'Une information à propos des utilisateurs suivants a été modifiée :',
+	'Information about the following users was modified:' => 'Une information à propos des utilisateurs suivants a été modifiée :',
 	'The following users were disabled:' => 'Les utilisateurs suivants ont été désactivés:',
 	'LDAP users synchronized.' => 'Utilisateurs LDAP synchronisés.',
 	'Synchronization of groups can not be performed without LDAPGroupIdAttribute and/or LDAPGroupNameAttribute being set.' => 'La synchronisation des groupes ne peut pas être faite sans la configuration de LDAPGroupIdAttribute et/ou LDAPGroupNameAttribute.',
 	'LDAP groups synchronized with existing groups.' => 'Groupes LDAP synchronisés avec les groupes existants.',
-	'Information about the following groups was modified:' => 'Une information à propos des groupes suivants a été modifiée :',
+	'Information about the following groups was modified:' => 'Une information à propos des groupes suivants a été modifiée :',
 	'No LDAP group was found using the filter provided.' => 'Aucun groupe LDAP n\'a été trouvé en utilisant le filtre indiqué.',
-	'The filter used to search for groups was: \'[_1]\'. Search base was: \'[_2]\'' => 'Le filtre utilisé pour la recherche dans les groupes était : \'[_1]\'. La base de la recherche était : \'[_2]\'',
+	'The filter used to search for groups was: \'[_1]\'. Search base was: \'[_2]\'' => 'Le filtre utilisé pour la recherche dans les groupes était : \'[_1]\'. La base de la recherche était : \'[_2]\'',
 	'(none)' => '(Aucun)',
 	'The following groups were deleted:' => 'Les groupes suivants ont été effacés:',
 	'Failed to create a new group: [_1]' => 'Impossible de créer un nouveau groupe: [_1]',
@@ -94,7 +93,7 @@ use vars qw( %Lexicon );
 	'Loading MT::LDAP failed: [_1].' => 'Échec de Chargement MT::LDAP[_1]',
 
 ## addons/Enterprise.pack/lib/MT/Enterprise/BulkCreation.pm
-	'Formatting error at line [_1]: [_2]' => 'Erreur de formattage à la ligne [_1] : [_2]',
+	'Formatting error at line [_1]: [_2]' => 'Erreur de formattage à la ligne [_1] : [_2]',
 	'Invalid command: [_1]' => 'Commande invalide: [_1]',
 	'Invalid number of columns for [_1]' => 'Nombre de colonnes invalide pour [_1]',
 	'Invalid user name: [_1]' => 'Identifiant invalide: [_1]',
@@ -104,16 +103,17 @@ use vars qw( %Lexicon );
 	'Invalid password: [_1]' => 'Mot de passe invalide: [_1]',
 	'\'Personal Blog Location\' setting is required to create new user blogs.' => 'Le paramètre \'Localisation du blog personnel\' est nécessaire pour créer de nouveaux blogs utilisateur',
 	'Invalid weblog name: [_1]' => 'Nom de weblog invalide: [_1]',
-	'Invalid blog URL: [_1]' => 'URL de blog invalide : [_1]',
-	'Invalid site root: [_1]' => 'Racine du site invalide : [_1]',
-	'Invalid timezone: [_1]' => 'Fuseau horaire invalide : [_1]',
-	'Invalid theme ID: [_1]' => 'ID de thème invalide : [_1]',
-	'A user with the same name was found.  The registration was not processed: [_1]' => 'Un utilisateur avec le même nom a été trouvé. L\'entregistrement n\'a pas été effectué : [_1]',
+	'Invalid blog URL: [_1]' => 'URL de blog invalide : [_1]',
+	'Invalid site root: [_1]' => 'Racine du site invalide : [_1]',
+	'Invalid timezone: [_1]' => 'Fuseau horaire invalide : [_1]',
+	'Invalid theme ID: [_1]' => 'ID de thème invalide : [_1]',
+	'A theme \'[_1]\' was not found.' => 'Un thème \'[_1]\' est introuvable.', # Translate - New
+	'A user with the same name was found.  The registration was not processed: [_1]' => 'Un utilisateur avec le même nom a été trouvé. L\'entregistrement n\'a pas été effectué : [_1]',
 	'Blog for user \'[_1]\' can not be created.' => 'Le blog pour l\'utilisateur \'[_1]\' ne peut être créé.',
 	'Blog \'[_1]\' for user \'[_2]\' has been created.' => 'Le blog \'[_1]\' pour l\'utilisateur \'[_2]\' a été créé.',
 	'Error assigning weblog administration rights to user \'[_1] (ID: [_2])\' for weblog \'[_3] (ID: [_4])\'. No suitable weblog administrator role was found.' => 'Erreur en tentant d\'assigner les droits d\'administration du blog à l\'utilisateur \'[_1] (ID: [_2])\' pour le weblog \'[_3] (ID: [_4])\'. Aucun rôle d\'administrateur de weblog adéquat n\'a été trouvé.',
 	'Permission granted to user \'[_1]\'' => 'Permission accordée à l\'utilisateur \'[_1]\'',
-	'User \'[_1]\' already exists. The update was not processed: [_2]' => 'L\'utilisateur \'[_1] existe déjà. La mise à jour n\'a pas continué : [_2]',
+	'User \'[_1]\' already exists. The update was not processed: [_2]' => 'L\'utilisateur \'[_1] existe déjà. La mise à jour n\'a pas continué : [_2]',
 	'User \'[_1]\' not found.  The update was not processed.' => 'L\'utilisateur \'[_1] n\'a pas trouvé. La mise à jour n\'a pas continué.',
 	'User \'[_1]\' has been updated.' => 'L\'utilisateur \'[_1]\' a été mis à jour.',
 	'User \'[_1]\' was found, but the deletion was not processed' => 'L\'utilisateur \'[_1] a été trouvé, mais la suppression n\'a pas été effectuée.',
@@ -145,7 +145,7 @@ use vars qw( %Lexicon );
 	'No records were found in the file.  Make sure the file uses CRLF as the line-ending characters.' => 'Aucun enregistrement n\'a été trouvé dans le fichier. Veuillez vous assurer que le fichier utilise CRLF comme caractère de fin de ligne.',
 	'Registered [quant,_1,user,users], updated [quant,_2,user,users], deleted [quant,_3,user,users].' => 'Création de [quant,_1,utilisateur,utilisateurs], modification de [quant,_2, utilisateur, utilisateurs], suppression de [quant,_3, utilisateur, utilisateurs].',
 	'Bulk author export cannot be used under external user management.' => 'L\'exportation par lot ne peut pas être utilisé lors d\'une gestion des utilisateurs externe.',
-	'A user can\'t change his/her own username in this environment.' => 'Un utilisateur ne peut pas changer son nom d\'utilisateur dans cet environnement',
+	'A user cannot change his/her own username in this environment.' => 'Un utilisateur ne peut pas changer son nom d\'utilisateur dans cet environnement',
 	'An error occurred when enabling this user.' => 'Une erreur s\'est produite pendant l\'activation de cet utilisateur.',
 
 ## addons/Enterprise.pack/lib/MT/Enterprise/Upgrade.pm
@@ -162,12 +162,12 @@ use vars qw( %Lexicon );
 ## addons/Enterprise.pack/lib/MT/Group.pm
 
 ## addons/Enterprise.pack/lib/MT/LDAP.pm
-	'Invalid LDAPAuthURL scheme: [_1].' => 'LDAPAuthURL invalide : [_1].',
+	'Invalid LDAPAuthURL scheme: [_1].' => 'LDAPAuthURL invalide : [_1].',
 	'Either your server does not have [_1] installed, the version that is installed is too old, or [_1] requires another module that is not installed.' => 'Soit votre serveur n\'a pas [_1] d\'installé, soit la version installée est trop vieille, ou [_1] nécessite un autre module qui n\'est pas installé',
 	'Error connecting to LDAP server [_1]: [_2]' => 'Erreur de connection au serveur LDAP [_1]: [_2]',
-	'User not found in LDAP: [_1]' => 'L\'utilisateur n\'a pas été trouvé dans LDAP : [_1]',
+	'User not found in LDAP: [_1]' => 'L\'utilisateur n\'a pas été trouvé dans LDAP : [_1]',
 	'Binding to LDAP server failed: [_1]' => 'Rattachement au serveur LDAP échoué: [_1]',
-	'More than one user with the same name found in LDAP: [_1]' => 'Plus d\'un utilisateur avec le même nom a été trouvé dans LDAP : [_1]',
+	'More than one user with the same name found in LDAP: [_1]' => 'Plus d\'un utilisateur avec le même nom a été trouvé dans LDAP : [_1]',
 
 ## addons/Enterprise.pack/lib/MT/ObjectDriver/Driver/DBD/MSSQLServer.pm
 	'PublishCharset [_1] is not supported in this version of the MS SQL Server Driver.' => 'PublishCharset [_1] n\'est pas supporté dans cette version du pilote MS SQL Server.',
@@ -208,7 +208,7 @@ use vars qw( %Lexicon );
 	q{Click 'Continue' below to configure your LDAP attribute mappings.} => q{Cliquez sur 'Continuer' ci-dessous pour configurer vos rattachements des attributs LDAP.},
 	'Your LDAP configuration is complete.' => 'Votre configuration LDAP est terminée.',
 	q{To finish with the configuration wizard, press 'Continue' below.} => q{Pour finir l'assistant de configuration, cliquez sur 'Continuer' ci-dessous.},
-	q{Can't locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.} => q{Net::LDAP impossible à localiser. Le module Net::LDAP est requis pour l'authentification LDAP.},
+	q{Cannot locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.} => q{Net::LDAP impossible à localiser. Le module Net::LDAP est requis pour l'authentification LDAP.},
 	'Use LDAP' => 'Utiliser LDAP',
 	q{Authentication URL} => q{URL d'identification},
 	q{The URL to access for LDAP authentication.} => q{L'URL pour accéder à l'identification LDAP.},
@@ -305,6 +305,7 @@ use vars qw( %Lexicon );
 	q{You successfully synchronized users' information with the external directory.} => q{Vous avez synchronisé les informations des utilisateurs avec l'annuaire externe avec succès.},
 	'Some ([_1]) of the selected users could not be re-enabled because they are no longer found in LDAP.' => 'Quelques ([_1]) des utilisateurs sélectionnés ne peuvent pas être réactivés car ils ne sont plus trouvés dans LDAP',
 	'You successfully removed the users from this group.' => 'Vous avez retiré avec succès les utilisateurs de ce groupe.',
+
 );
 
 1;

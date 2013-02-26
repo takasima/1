@@ -1,7 +1,7 @@
 name: Custom Group Pack
 id:   CustomGroup
 key:  customgroup
-version: 1.8
+version: 1.9.1
 schema_version: 0.31
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.

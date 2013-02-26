@@ -260,6 +260,7 @@ sub edit {
                 = ( $cfg->OutboundTrackbackLimit eq 'local' )
                 || ( $cfg->OutboundTrackbackLimit eq 'any' );
             my $threshold = $obj->junk_score_threshold || 0;
+            $threshold = $threshold + 0;
             $threshold = '+' . $threshold if $threshold > 0;
             $param->{junk_score_threshold} = $threshold;
             $param->{junk_folder_expiry}   = $obj->junk_folder_expiry || 60;
@@ -389,7 +390,7 @@ sub cfg_prefs {
 
     my $blog = $app->model('blog')->load($blog_id)
         or return $app->error(
-        $app->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+        $app->translate( 'Cannot load blog #[_1].', $blog_id ) );
 
     if ( $blog->is_blog() ) {
         my @data;
@@ -410,6 +411,9 @@ sub cfg_prefs {
                 };
         }
         @data = sort { MT::App::CMS::archive_type_sorter( $a, $b ) } @data;
+        unless ( grep $_->{archive_type_is_preferred}, @data ) {
+            $param{no_preferred_archive_type} = 1;
+        }
         $param{entry_archive_types} = \@data;
     }
 
@@ -596,7 +600,7 @@ sub rebuild_phase {
         require MT::Template;
         foreach (@ids) {
             my $template = MT::Template->load($_)
-                or return $app->errtrans( 'Can\'t load template #[_1].', $_ );
+                or return $app->errtrans( 'Cannot load template #[_1].', $_ );
 
             my $perms = $app->user->permissions( $template->blog_id );
             return $app->permission_denied()
@@ -633,7 +637,7 @@ sub rebuild_pages {
 
     my $blog = MT::Blog->load($blog_id)
         or return $app->error(
-        $app->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+        $app->translate( 'Cannot load blog #[_1].', $blog_id ) );
     my $order = $q->param('type');
     my @order = split /,/, $order;
     my $next  = $q->param('next');
@@ -699,7 +703,7 @@ sub rebuild_pages {
         require MT::Template;
         $tmpl_saved = MT::Template->load($tmpl_id)
             or
-            return $app->errtrans( 'Can\'t load template #[_1].', $tmpl_id );
+            return $app->errtrans( 'Cannot load template #[_1].', $tmpl_id );
         return $app->permission_denied()
             unless $app->user->permissions( $tmpl_saved->blog_id )
                 ->can_do('rebuild');
@@ -721,6 +725,7 @@ sub rebuild_pages {
         $app->rebuild_entry(
             Entry             => $entry,
             BuildDependencies => 1,
+            OldCategories     => $q->param('old_categories'),
             OldPrevious       => $q->param('old_previous'),
             OldNext           => $q->param('old_next')
         ) or return $app->publish_error();
@@ -731,7 +736,7 @@ sub rebuild_pages {
             unless $perms->can_do('rebuild');
         if ($template_id) {
             my $tmpl = MT->model('template')->load($template_id)
-                or return $app->errtrans( 'Can\'t load template #[_1].',
+                or return $app->errtrans( 'Cannot load template #[_1].',
                 $template_id );
             return $app->permission_denied()
                 unless $app->user->permissions( $tmpl->blog_id )
@@ -739,7 +744,7 @@ sub rebuild_pages {
         }
         elsif ($map_id) {
             my $map = MT->model('templatemap')->load($map_id)
-                or return $app->errtrans( 'Can\'t load template #[_1].',
+                or return $app->errtrans( 'Cannot load template #[_1].',
                 $map_id );
             return $app->permission_denied()
                 unless $app->user->permissions( $map->blog_id )
@@ -801,7 +806,7 @@ sub rebuild_pages {
                 unless $perms->can_do('rebuild');
             if ($template_id) {
                 my $tmpl = MT->model('template')->load($template_id)
-                    or return $app->errtrans( 'Can\'t load template #[_1].',
+                    or return $app->errtrans( 'Cannot load template #[_1].',
                     $template_id );
                 return $app->permission_denied()
                     unless $app->user->permissions( $tmpl->blog_id )
@@ -809,7 +814,7 @@ sub rebuild_pages {
             }
             elsif ($map_id) {
                 my $map = MT->model('templatemap')->load($map_id)
-                    or return $app->errtrans( 'Can\'t load template #[_1].',
+                    or return $app->errtrans( 'Cannot load template #[_1].',
                     $map_id );
                 return $app->permission_denied()
                     unless $app->user->permissions( $map->blog_id )
@@ -952,14 +957,14 @@ sub rebuild_pages {
             my $entry = MT::Entry->load( scalar $q->param('entry_id') )
                 or return $app->error(
                 $app->translate(
-                    'Can\'t load entry #[_1].',
+                    'Cannot load entry #[_1].',
                     $q->param('entry_id')
                 )
                 );
             require MT::Blog;
             my $blog = MT::Blog->load( $entry->blog_id )
                 or return $app->error(
-                $app->translate( 'Can\'t load blog #[_1].', $entry->blog_id )
+                $app->translate( 'Cannot load blog #[_1].', $entry->blog_id )
                 );
             require MT::CMS::Entry;
             MT::CMS::Entry::ping_continuation(
@@ -1120,7 +1125,7 @@ sub start_rebuild_pages {
         require MT::Template;
         my $tmpl = MT::Template->load($tmpl_id)
             or return $app->error(
-            $app->translate( 'Can\'t load template #[_1].', $tmpl_id ) );
+            $app->translate( 'Cannot load template #[_1].', $tmpl_id ) );
         $param{build_type_name} = $app->translate( "index template '[_1]'",
             MT::Util::encode_html( $tmpl->name ) );
         $param{is_one_index} = 1;
@@ -1130,13 +1135,15 @@ sub start_rebuild_pages {
         require MT::Entry;
         my $entry = MT::Entry->load($entry_id)
             or return $app->error(
-            $app->translate( 'Can\'t load entry #[_1].', $entry_id ) );
+            $app->translate( 'Cannot load entry #[_1].', $entry_id ) );
         $param{build_type_name}
             = $app->translate( "[_1] '[_2]'", $entry->class_label,
             MT::Util::encode_html( $entry->title ) );
         $param{is_entry} = 1;
         $param{entry_id} = $entry_id;
-        for my $col (qw( is_new old_status old_next old_previous )) {
+        for my $col (
+            qw( is_new old_status old_next old_previous old_categories ))
+        {
             $param{$col} = $q->param($col);
         }
     }
@@ -1187,7 +1194,7 @@ sub rebuild_confirm {
     require MT::Blog;
     my $blog = MT::Blog->load($blog_id)
         or return $app->error(
-        $app->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+        $app->translate( 'Cannot load blog #[_1].', $blog_id ) );
 
     return $app->permission_denied()
         unless $app->can_do('rebuild');
@@ -1202,7 +1209,7 @@ sub rebuild_confirm {
         my $tmpl
             = MT::Template->load( { id => $tmpl_id, blog_id => $blog_id } )
             or return $app->error(
-            $app->translate( 'Can\'t load template #[_1].', $tmpl_id ) );
+            $app->translate( 'Cannot load template #[_1].', $tmpl_id ) );
         $param{index_tmpl_id}   = $tmpl->id;
         $param{index_tmpl_name} = $tmpl->name;
     }
@@ -1248,7 +1255,7 @@ sub cc_return {
     my $code;
     if ( $url =~ m!^http://creativecommons\.org/licenses/([a-z\-]+)!i ) {
         $code = $1;
-    } 
+    }
     elsif ( $url =~ m!^http://creativecommons.org/publicdomain/mark/!i ) {
         $code = 'pd';
     }
@@ -1256,11 +1263,11 @@ sub cc_return {
         $code = 'pdd';
     }
     else {
-        return $app->error("MT is not aware of this license: " .
-            MT::Util::encode_html($name, 1));
+        return $app->error( "MT is not aware of this license: "
+                . MT::Util::encode_html( $name, 1 ) );
     }
 
-    my %param = ( 
+    my %param = (
         license_name => MT::Util::cc_name($code),
         license_code => "$code $url $image",
     );
@@ -1653,13 +1660,16 @@ sub post_save {
 
     # check to see what changed and add a flag to meta_messages
     my @meta_messages = ();
-    my %blog_fields = ( %{ $obj->column_defs }, %{ $obj->properties()->{fields} } );
-    foreach my $key (qw{ created_on created_by modified_on modified_by id class children_modified_on }) {
+    my %blog_fields
+        = ( %{ $obj->column_defs }, %{ $obj->properties()->{fields} } );
+    foreach my $key (
+        qw{ created_on created_by modified_on modified_by id class children_modified_on }
+        )
+    {
         delete $blog_fields{$key};
     }
 
-    for my $blog_field (keys %blog_fields)
-    {
+    for my $blog_field ( keys %blog_fields ) {
 
         if ( $obj->$blog_field() ne $original->$blog_field() ) {
             my $old
@@ -1956,6 +1966,10 @@ sub save_filter {
             )
             )
             unless 0 < sprintf( '%d', $app->param('max_revisions_template') );
+        return $eh->error(
+            MT->translate("Please choose a preferred archive type.") )
+            unless !$app->blog->is_blog
+                || $app->param('preferred_archive_type');
     }
     return 1;
 }
@@ -2194,10 +2208,12 @@ sub cfg_prefs_save {
             $blog->archive_url("$subdomain/::/$path");
         }
         $blog->site_path( $app->param('site_path_absolute') )
-            if $app->param('use_absolute')
+            if !$app->config->BaseSitePath
+                && $app->param('use_absolute')
                 && $app->param('site_path_absolute');
         $blog->archive_path( $app->param('archive_path_absolute') )
-            if $app->param('enable_archive_paths')
+            if !$app->config->BaseSitePath
+                && $app->param('enable_archive_paths')
                 && $app->param('use_absolute_archive')
                 && $app->param('archive_path_absolute');
     }
@@ -2354,6 +2370,77 @@ sub update_publishing_profile {
                 $tmpl->build_type( MT::PublishOption::ONDEMAND() );
             }
             $tmpl->save();
+        }
+        if ( $dcty eq 'none' ) {
+            if ( $ENV{SERVER_SOFTWARE} =~ /Microsoft-IIS/
+                && MT->config->EnableAutoRewriteOnIIS )
+            {
+
+                # Remove IIS redirect settings
+                my $remove_setting = sub {
+                    my ($web_config_path) = @_;
+                    require XML::Simple;
+                    my $web_config;
+                    my $parser = XML::Simple->new;
+                    if ( -f $web_config_path ) {
+                        $web_config = $parser->XMLin( $web_config_path,
+                            keyattr => [] );
+
+                        my $rules;
+                        my $new_rules;
+                        if (defined $web_config->{'system.webServer'}
+                            ->{'rewrite'} )
+                        {
+                            $rules = $web_config->{'system.webServer'}
+                                ->{'rewrite'}->{'rules'}->{'rule'};
+                            $rules = [$rules] unless ref $rules eq 'ARRAY';
+                            foreach my $rule (@$rules) {
+                                if ( defined $rule->{name}
+                                    && $rule->{name}
+                                    !~ m/^Rewrite rule for '/ )
+                                {
+                                    unshift @$new_rules, $rule;
+                                }
+                            }
+                        }
+                        if ($new_rules) {
+                            $web_config->{'system.webServer'}->{'rewrite'}
+                                ->{'rules'}->{'rule'} = $new_rules;
+                        }
+                        elsif (
+                            defined $web_config->{'system.webServer'}
+                            ->{'rewrite'} )
+                        {
+                            delete $web_config->{'system.webServer'}
+                                ->{'rewrite'};
+                        }
+
+                        my $out = $parser->XMLout(
+                            $web_config,
+                            RootName => undef,
+                            keyattr  => []
+                        );
+                        $out
+                            = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+                            . "<configuration>\n"
+                            . $out
+                            . "</configuration>\n";
+
+                        my $fh;
+                        open( $fh, ">$web_config_path" )
+                            || die
+                            "Couldn't open $web_config_path for appending";
+                        print $fh $out;
+                        close $fh;
+                    }
+                };
+
+                $remove_setting->(
+                    File::Spec->catfile( $blog->site_path, "web.config" ) );
+                $remove_setting->(
+                    File::Spec->catfile( $blog->archive_path, "web.config" )
+                );
+            }
         }
     }
     elsif ( $dcty eq 'archives' ) {
@@ -2592,16 +2679,98 @@ sub prepare_dynamic_publishing {
             && ( -f $htaccess_path )
             && ( -f $mtview_path );
 
+    require URI;
+    my $mtview_server_url = new URI($site_url);
+    $mtview_server_url = $mtview_server_url->path();
+    $mtview_server_url
+        .= ( $mtview_server_url =~ m|/$| ? "" : "/" ) . "mtview.php";
+
     # IIS itself does not handle .htaccess,
     # but IISPassword (3rd party) does and dies with this.
-    if ( $ENV{SERVER_SOFTWARE} !~ /Microsoft-IIS/ ) {
-        eval {
-            require URI;
-            my $mtview_server_url = new URI($site_url);
-            $mtview_server_url = $mtview_server_url->path();
-            $mtview_server_url
-                .= ( $mtview_server_url =~ m|/$| ? "" : "/" ) . "mtview.php";
+    if ( $ENV{SERVER_SOFTWARE} =~ /Microsoft-IIS/
+        && MT->config->EnableAutoRewriteOnIIS )
+    {
 
+    # On the IIS environment, will make/modify the web.config with URL Rewrite
+        my $rule;
+        $rule->{'stopProcessing'} = 'false';
+        $rule->{'action'}         = {
+            'url'               => $mtview_server_url . '{R:2}',
+            'appendQueryString' => 'true',
+            'type'              => 'Rewrite',
+        };
+        $rule->{'match'} = {
+            'ignoreCase' => 'false',
+            'url'        => '^(.*)(\\?.*)?$',
+        };
+        $rule->{'name'}       = "Rewrite rule for '$site_url'";
+        $rule->{'conditions'} = {
+            'add' => [
+                {   'input'      => '{REQUEST_FILENAME}',
+                    'ignoreCase' => 'false',
+                    'negate'     => 'true',
+                    'matchType'  => 'IsFile'
+                }
+            ],
+            'logicalGrouping' => 'MatchAll',
+        };
+
+        require XML::Simple;
+        my $web_config_path = File::Spec->catfile( $site_path, "web.config" );
+        my $web_config;
+        my $parser = XML::Simple->new;
+        if ( -f $web_config_path ) {
+            $web_config = $parser->XMLin( $web_config_path, keyattr => [] );
+            my $ins = 1;
+            my $rules;
+            if ( exists $web_config->{'system.webServer'}->{'rewrite'} ) {
+                $rules = $web_config->{'system.webServer'}->{'rewrite'}
+                    ->{'rules'}->{'rule'};
+                $rules = [$rules] unless ref $rules eq 'ARRAY';
+                foreach my $rule (@$rules) {
+                    my $rule_url = $rule->{action}->{url};
+                    if ( $rule_url =~ /^$mtview_server_url/i ) {
+                        $ins = 0;
+                        last;
+                    }
+                }
+            }
+            if ($ins) {
+                $web_config->{'system.webServer'}->{'rewrite'}->{'rules'}
+                    ->{'clear'} = {};
+                unshift @$rules, $rule;
+            }
+            $web_config->{'system.webServer'}->{'rewrite'}->{'rules'}
+                ->{'rule'} = $rules;
+        }
+        else {
+            $web_config->{'system.webServer'}
+                = { 'rewrite' => { 'rules' => undef } };
+            $web_config->{'system.webServer'}->{'rewrite'}->{'rules'}
+                ->{'clear'} = {};
+            $web_config->{'system.webServer'}->{'rewrite'}->{'rules'}
+                ->{'rule'} = $rule;
+        }
+
+        my $out = $parser->XMLout(
+            $web_config,
+            RootName => undef,
+            keyattr  => []
+        );
+        $out
+            = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+            . "<configuration>\n"
+            . $out
+            . "</configuration>\n";
+
+        my $fh;
+        open( $fh, ">$web_config_path" )
+            || die "Couldn't open $web_config_path for appending";
+        print $fh $out;
+        close $fh;
+    }
+    else {
+        eval {
             my $contents = "";
             if ( open( HT, $htaccess_path ) ) {
                 local $/ = undef;
@@ -2613,7 +2782,7 @@ sub prepare_dynamic_publishing {
 
 ## %%%%%%% Movable Type generated this part; don't remove this line! %%%%%%%
 # Disable fancy indexes, so mtview.php gets a chance...
-Options -Indexes +SymLinksIfOwnerMatch
+Options -Indexes
   <IfModule mod_rewrite.c>
   # The mod_rewrite solution is the preferred way to invoke
   # dynamic pages, because of its flexibility.
@@ -2886,7 +3055,14 @@ sub clone {
             }
         }
     }
-
+    if ( my $limit = $app->config->BaseSitePath ) {
+        $param->{'sitepath_limited'} = $limit;
+        $limit = File::Spec->catdir( $limit, "PATH" );
+        $limit =~ s/PATH$//;
+        $param->{'sitepath_limited_trail'} = $limit;
+        $param->{'use_absolute'}           = 0;
+        $param->{'use_absolute_archive'}   = 0;
+    }
     $param = _has_valid_form( $app, $blog, $param );
 
     if ( $blog_id && $app->param('clone') && $param->{'isValidForm'} ) {
@@ -3015,7 +3191,7 @@ HTML
         );
 
         $new_blog->site_path(
-              $param->{'use_absolute'}
+              $param->{'use_absolute'} && !$app->config->BaseSitePath
             ? $param->{'site_path_absolute'}
             : $param->{'site_path'}
         );
@@ -3033,7 +3209,8 @@ HTML
 
         if ( $param->{enable_archive_paths} ) {
             $new_blog->archive_path(
-                  $param->{'use_absolute_archive'}
+                $param->{'use_absolute_archive'}
+                    && !$app->config->BaseSitePath
                 ? $param->{'archive_path_absolute'}
                 : $param->{'archive_path'}
             );

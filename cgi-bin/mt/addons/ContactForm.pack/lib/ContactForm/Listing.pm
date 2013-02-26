@@ -241,6 +241,10 @@ sub list_props {
             label      => 'Default',
             auto       => 1,
         },
+        basename => {
+            label      => 'basename',
+            auto       => 1,
+        },
         required => {
             label      => 'Required',
             auto       => 1,
@@ -844,9 +848,12 @@ sub author {
 
 sub feedback_email {
     my ( $prop, $obj, $app ) = @_;
-    return MT->config->FeedbackEmailLink
-                ? '<a href="mailto:' . $obj->email . '">' . $obj->email . '</a>'
-                : $obj->email;
+    if( $obj->email ){
+        return MT->config->FeedbackEmailLink
+                    ? '<a href="mailto:' . $obj->email . '">' . $obj->email . '</a>'
+                    : $obj->email;
+    }
+    return '';
 }
 
 1;

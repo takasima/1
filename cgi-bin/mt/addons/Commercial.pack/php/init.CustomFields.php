@@ -20,6 +20,8 @@ init_core_customfield_types();
 global $customfields_custom_handlers;
 $customfields_custom_handlers = array();
 
+$dynamic_functions = '';
+
 # Loop through fields and register the custom template tag handlers
 require_once('class.baseobject.php');
 require_once('class.mt_field.php');
@@ -36,21 +38,19 @@ foreach ($fields as $field) {
     }
 
     $fn_name = $field->field_id;
-    $fn = <<<CODE
+    $dynamic_functions .= <<<CODE
 function customfield_$fn_name(\$args, &\$ctx) {
     return _hdlr_customfield_value(\$args, \$ctx, '$tag_name');
 }
 CODE;
-    eval($fn);
     $ctx->add_tag($tag_name, 'customfield_' . $fn_name);
 
     if(preg_match('/^video|image|file|audio/', $field->field_type)) {
-        $asset_fn = <<<CODE
+        $dynamic_functions .= <<<CODE
 function customfield_asset_$fn_name(\$args, \$content, &\$ctx, &\$repeat) {
     return _hdlr_customfield_asset(\$args, \$content, \$ctx, \$repeat, '$tag_name');
 }
 CODE;
-        eval($asset_fn);
         $ctx->add_container_tag($tag_name . $field->type, 'customfield_asset_' . $fn_name);
         $ctx->add_container_tag($tag_name . 'asset', 'customfield_asset_' . $fn_name);
     }
@@ -62,7 +62,7 @@ $customfield_object_types = array(
     'entry', 'page', 'category', 'folder', 'author', 'template', 'comment',
     'video', 'file', 'asset', 'image', 'audio', 'website', 'blog');
 foreach ($customfield_object_types as $type) {
-    $customfields_fn = <<<CODE
+    $dynamic_functions .= <<<CODE
 function customfields_$type(\$args, \$content, &\$ctx, &\$repeat) {
     return _hdlr_customfields(\$args, \$content, \$ctx, \$repeat, '$type');
 }
@@ -79,14 +79,14 @@ function customfield_value_$type(\$args, &\$ctx) {
     return _hdlr_customfield_value(\$args, \$ctx);
 }
 CODE;
-
-    eval($customfields_fn);
-
     $ctx->add_container_tag($type.'customfields', 'customfields_'.$type);
     $ctx->add_tag($type.'customfieldname', 'customfield_name_'.$type);
     $ctx->add_tag($type.'customfielddescription', 'customfield_description_'.$type);
     $ctx->add_tag($type.'customfieldvalue', 'customfield_value_'.$type);
 }
+
+eval($dynamic_functions);
+
 $ctx->add_tag('customfieldname', '_hdlr_customfield_name');
 $ctx->add_tag('customfieldbasename', '_hdlr_customfield_basename');
 $ctx->add_tag('customfielddescription', '_hdlr_customfield_description');
@@ -114,19 +114,25 @@ function _hdlr_customfield_obj(&$ctx, $obj_type) {
     $obj = $ctx->stash($obj_type);
 
     # In PHP, we only need to test for this because archive_category doesn't exist
-    if(!$obj && $obj_type == 'author') {
+    if(!$obj) {
         $entry = $ctx->stash('entry');
         if(!$entry) return '';
 
-        $entry_id = $entry->entry_id;
-        # We need to cache this puppy as much as possible
-        $obj = $ctx->stash("entry_${entry_id}_author");
-        if(!$obj) {
-            $author_id = $entry->entry_author_id;
-            require_once('class.mt_author.php');
-            $author = new Author();
-            $obj = $author->load("where author_id = $author_id");
-            $ctx->stash("entry_${entry_id}_author", $obj[0]);
+        if ($obj_type == 'category') {
+            $obj = $entry->category();
+        }
+
+        if ($obj_type == 'author') {
+            $entry_id = $entry->entry_id;
+            # We need to cache this puppy as much as possible
+            $obj = $ctx->stash("entry_${entry_id}_author");
+            if(!$obj) {
+                $author_id = $entry->entry_author_id;
+                require_once('class.mt_author.php');
+                $author = new Author();
+                $obj = $author->load("where author_id = $author_id");
+                $ctx->stash("entry_${entry_id}_author", $obj[0]);
+            }
         }
     }
 

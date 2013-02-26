@@ -5,10 +5,13 @@
     $customfield_types[ 'snippet' ] = array(
         'column_def' => 'vblob',
     );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='snippet'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'snippet_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='snippet'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         foreach ( $customfields as $field ) {
             $tag = $field->tag;
@@ -124,7 +127,7 @@
         if ( $custom_object ) {
             $custom_objects = explode( ',', $custom_object );
         }
-        if ( in_array( $field_obj_type, $custom_objects ) ) {
+        if ( is_array( $custom_objects ) && in_array( $field_obj_type, $custom_objects ) ) {
             $field_obj_type = 'customobject';
         }
         $obj = _hdlr_customfield_obj( $ctx, $field_obj_type );

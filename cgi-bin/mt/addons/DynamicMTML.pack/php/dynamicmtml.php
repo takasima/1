@@ -76,11 +76,24 @@ class DynamicMTML {
         if ( isset( $ctx ) ) {
             $ctx->stash( 'bootstrapper', $this );
         }
-        $mt->db()->set_names( $mt );
-        $this->stash( 'db', $mt->db() );
-        $blog = $ctx->stash( 'blog' );
-        if (! isset( $blog ) ) {
-            $blog = $this->stash( 'blog' );
+        if (! $this->no_database ) {
+            $driver = $this->config( 'dbdriver' );
+            if (! $driver ) {
+                $driver = $this->config( 'objectdriver' );
+                $driver = preg_replace( '/^DB[ID]::/', '', $driver );
+                $driver or $driver = 'mysql';
+                $driver = strtolower( $driver );
+                $cfg =& $this->config;
+                $cfg[ 'dbdriver' ] = $driver;
+                if ( $driver == 'mysql' or $driver == 'postgres' ) {
+                    $mt->db()->set_names( $mt );
+                }
+            }
+            $this->stash( 'db', $mt->db() );
+            $blog = $ctx->stash( 'blog' );
+            if (! isset( $blog ) ) {
+                $blog = $this->stash( 'blog' );
+            }
         }
         if (! isset( $blog ) ) {
             // if (! $blog_id ) {
@@ -94,7 +107,9 @@ class DynamicMTML {
                 //                             'sort' => 'id' ) );
                 // $blog_id = $blog->id;
             } else {
-                $blog = $mt->db()->fetch_blog( $blog_id );
+                if (! $this->no_database ) {
+                    $blog = $mt->db()->fetch_blog( $blog_id );
+                }
             }
         }
         $templates_c = NULL;
@@ -206,7 +221,18 @@ class DynamicMTML {
         }
         if ( (! $mt->blog_id() ) || ( $mt->blog_id() != $blog_id ) ) {
             $mt->init( $blog_id, $this->cfg_file );
-            $mt->db()->set_names( $mt );
+            $driver = $app->config( 'dbdriver' );
+            if (! $driver ) {
+                $driver = $this->config( 'objectdriver' );
+                $driver = preg_replace( '/^DB[ID]::/', '', $driver );
+                $driver or $driver = 'mysql';
+                $driver = strtolower( $driver );
+                $cfg =& $this->config;
+                $cfg[ 'dbdriver' ] = $driver;
+                if ( $driver == 'mysql' or $driver == 'postgres' ) {
+                    $mt->db()->set_names( $mt );
+                }
+            }
             $ctx->stash( 'blog', $blog );
             $ctx->stash( 'blog_id', $blog_id );
             $this->stash( 'blog', $blog );
@@ -219,6 +245,9 @@ class DynamicMTML {
     }
 
     function blog ( $id = NULL ) {
+        if ( $this->no_database ) {
+            return NULL;
+        }
         $blog_id = $id;
         $mt = $this->mt();
         if (! $blog_id ) {
@@ -4020,7 +4049,7 @@ class DynamicMTML {
                         $expression = '';
                         if ( __is_hash( $val ) ) {
                             foreach ( $val as $op => $value ) {
-                                $val = $this->escape( $val );
+                                $value = $this->escape( $value );
                                 if ( $expression ) $expression .= " OR ";
                                 if ( in_array( $op, $operators ) ) {
                                     // 'like', 'not_like', 'not_null', 'not', '>', '>=',

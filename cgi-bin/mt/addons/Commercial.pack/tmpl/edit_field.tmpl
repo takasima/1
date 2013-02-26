@@ -47,6 +47,10 @@
 <!--
     var customfield_types_loop = <mt:var name="customfield_types_loop" to_json="1">
 
+    function htmlEscape( val ) {
+      return val.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
     function toggleClassName(el, cn) {
         if (DOM.hasClassName(el, cn))
             DOM.removeClassName(el, cn);
@@ -55,9 +59,9 @@
     }
 
     function toggleCode(el) {
-        var name = getByID('name').value;
+        var name = htmlEscape( getByID('name').value );
         var code = getByID('code');
-        var tag = getByID('tag').value;
+        var tag = htmlEscape( getByID('tag').value );
         var text = '&lt;mt:If tag="' + tag + '"&gt;<br />' + name + ': &lt;mt:' + tag + '&gt;<br />&lt;/mt:If&gt;';
         code.innerHTML = text;
 
@@ -187,7 +191,10 @@
     }
 
     function checkRequired(f) {
-        var fields = new Array('obj_type', 'name', 'type', 'basename', 'tag');
+        var fields = jQuery('#main-content div.required :input:not(:button):visible')
+                         .map(function() {
+                             return this.id;
+                         });
         var submit = true;
         for (var i = 0; i < fields.length; i++) {
             var field = document.getElementById(fields[i]);
@@ -344,7 +351,7 @@
      hint='<__trans phrase="The basename must be unique within this [_1]." params="<mt:var name="level_label">">'
      show_hint="1">
     <input type="hidden" name="basename_manual" id="basename_manual"value="0" />
-    <input type="hidden" name="basename_old" id="basename_old" value="<mt:var name="basename" escape="html">" />
+    <input type="hidden" name="basename_old" id="basename_old" value="<mt:if name="id"><mt:var name="basename_old" escape="html"></mt:if>" />
     <input type="text" name="basename" id="basename" class="text mt-edit-field<mt:if name="error"> show-input</mt:if>" maxlength="65" value="<mt:var name="basename" escape="html">" onchange="setElementValue('basename_manual', '1');" />
     <p class="alert-warning-inline icon-left icon-warning" id="basename-warning" style="display: none;"><__trans phrase="Warning: Changing this field's basename may require changes to existing templates."></p>
   </mtapp:setting>

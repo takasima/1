@@ -19,21 +19,6 @@ class MTDatabasemssqlserver extends MTDatabase {
         return true;
     }
 
-    public function escape($str) {
-        // This deals with quote escaping
-        $str = str_replace("'","''",str_replace("\'","'",$str));
-
-        // These values need to be escaped for ms sql
-        $escape = array ( "\n"=>"\\\\012","\r"=>"\\\\015");
-
-        // Firstly unescape
-        foreach ( $escape as $match => $replace ) {
-            $str = str_replace($match,$replace,$str);
-        }
-
-        return $str;
-    }
-
     public function set_names($mt) {
         return;
     }

@@ -10,8 +10,7 @@
 # $ chmod 600 .pgpass
 
 use strict;
-use lib 'lib',    '../lib';
-use lib 'extlib', '../extlib';
+use lib 'lib', '../lib', 'extlib', '../extlib';
 require MT;
 require MT::Builder;
 require MT::Template::Context;
@@ -21,6 +20,7 @@ use File::Basename;
 use File::Find;
 use File::Copy;
 use Cwd;
+use Net::FTP;
 
 my $mt = MT->new() or die MT->errstr;
 my $app = MT->instance();
@@ -307,11 +307,10 @@ if ($backup_doc) {
 }
 
 if ($use_ftp) {
-    eval { require Net::FTP };
-    if ($@) {
-        die $app->log( $plugin->translate('Net::FTP is not available.') );
-    }
-    use Net::FTP;
+    #eval { require Net::FTP };
+    #if ($@) {
+    #    die $app->log( $plugin->translate('Net::FTP is not available.') );
+    #}
     my $ftp = Net::FTP->new($up2server);
     my $login = $ftp->login( $user_id, $password )
         or die $app->log( $plugin->translate('FTP login failed.') );

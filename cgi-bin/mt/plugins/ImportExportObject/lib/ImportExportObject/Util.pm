@@ -110,7 +110,7 @@ sub import_author_from_csv {
                 my $permission = MT::Permission->get_by_key( { author_id => $obj->id, blog_id => 0 } );
                 $permission->created_on( $ts );
                 if ( MT->version_number >= 5 ) {
-                    $permission->permissions( "'administer','create_blog','create_website','edit_templates','manage_plugins','view_log'" );
+                    $permission->permissions( "'administer','create_blog','create_website','edit_templates','manage_plugins','view_log','access_cms'" );
                 } else {
                     $permission->permissions( "'administer','create_blog','view_log','manage_plugins','edit_templates'" );
                 }

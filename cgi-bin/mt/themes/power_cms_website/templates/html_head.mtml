@@ -18,7 +18,7 @@
     </MTIf>
     <$MTSetVar name="item_link" value=""$>
     <$MTSetVar name="item_label" value=""$>
-    <MTSetVar name="has_global_nav" value="1">
+    <$MTSetVar name="has_global_nav" value="1"$>
     <$MTSetVar name="count" op="++"$>
 </MTObjectGroupItems>
 <MTUnless name="has_global_nav">
@@ -46,6 +46,22 @@
                     <MTPages tag="@contact" lastn="1">
                         <li id="hu_contact"><a href="<$MTPagePermalink escape="html"$>"><$MTPageTitle escape="html"$></a></li>
                     </MTPages>
+                    <MTIfDynamic>
+                        <MTIfLogin>
+                            <li id="hu_welcome">
+                                <__trans phrase="Hello, [_1]" params='<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>"><$MTAuthorDisplayName escape="html"$></a>'>
+                                (<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>"><__trans phrase="Sign out"></a>)
+                            </li>
+                        </MTIfLogin>
+                        <MTElse>
+                        <mtml tag="MTIfLogin">
+                            <li id="hu_welcome">
+                                <__trans phrase="Hello, [_1]" params='<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>"><mtml tag="MTAuthorDisplayName" params=' escape="html"'></a>'>
+                                (<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>"><__trans phrase="Sign out"></a>)
+                            </li>
+                        <mtml tag="/MTIfLogin">
+                        </MTElse>
+                    </MTIfDynamic>
                 </ul>
                 <div id="hu_search">
                     <form action="<$MTLink template="<__trans phrase="Search Results">"$>" method="get">

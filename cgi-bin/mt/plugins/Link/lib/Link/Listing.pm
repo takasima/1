@@ -356,7 +356,7 @@ MTML
         'upload_link' => {
             class     => 'icon-none',
             label     => $uploader,
-            condition => sub { MT->app->blog ? 1 : 0 },
+            condition => sub { MT->app->blog &&  MT->app->can_do( 'upload' ) ? 1 : 0 },
             order     => 200,
         },
     };

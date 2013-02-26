@@ -1,39 +1,56 @@
 </div>
 <nav>
 <ul id="global_nav">
-<$MTSetVar name="count" value="1"$>
-<MTObjectGroupItems blog_id="$website_id" group="<__trans phrase="Global menu">">
-    <MTIfObjectGroupItemIsEntry>
-        <$MTEntryPermalink setvar="item_link"$>
-        <$MTEntryTitle setvar="item_label"$>
-    </MTIfObjectGroupItemIsEntry>
-    <MTIfObjectGroupItemIsBlog>
-        <$MTBlogURL setvar="item_link"$>
-        <$MTBlogName setvar="item_label"$>
-        <MTIf tag="MTBlogID" eq="$website_id">
-        <$MTSetVar name="item_label" value="<__trans phrase="Home">"$>
-        </MTIf>
-    </MTIfObjectGroupItemIsBlog>
-    <MTIf name="item_link">
-    <li><a href="<$MTGetVar name="item_link" escape="html"$>"><$MTGetVar name="item_label" escape="html"$></a></li>
-    </MTIf>
-    <$MTSetVar name="item_link" value=""$>
-    <$MTSetVar name="item_label" value=""$>
-    <$MTSetVar name="has_global_nav" value="1"$>
-    <$MTSetVar name="count" op="++"$>
-</MTObjectGroupItems>
-<MTUnless name="has_global_nav">
-    <MTBlogParentWebsite>
-    <li id="hg_home"><a href="<$MTWebsiteURL escape="html"$>"><__trans phrase="Home"></a></li>
-    <MTBlogs include_blogs="children">
-    <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
-    </MTBlogs>
-    </MTBlogParentWebsite>
-</MTUnless>
+<li class="entry on"><a href="<mt:BlogURL>"><mt:BlogName></a></li>
+<li class="entry off nolink"><span>Categories</span>
+    <mt:TopLevelCategories>
+        <mt:SubCatIsFirst>
+        <ul>
+        </mt:SubCatIsFirst>
+        <mt:If tag="CategoryCount">
+            <li  class="entry on"><a href="<$mt:CategoryArchiveLink$>"<mt:If tag="CategoryDescription"> title="<$mt:CategoryDescription remove_html="1" encode_html="1"$>"</mt:If>><$mt:CategoryLabel$> (<$mt:CategoryCount$>)</a>
+        <mt:Else>
+            <li><$mt:CategoryLabel$>
+        </mt:If>
+        <$mt:SubCatsRecurse$>
+            </li>
+        <mt:SubCatIsLast>
+        </ul>
+        </mt:SubCatIsLast>
+    </mt:TopLevelCategories>
+</li>
+<mt:IfArchiveTypeEnabled archive_type="Monthly">
+    <mt:ArchiveList archive_type="Monthly">
+        <mt:ArchiveListHeader>
+<li class="entry off nolink"><span>Archives</span>
+<ul>
+        </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveTitle$> (<$mt:ArchiveCount$>)</a></li>
+        <mt:ArchiveListFooter>
+</ul>
+        </li>
+        </mt:ArchiveListFooter>
+    </mt:ArchiveList>
+</mt:IfArchiveTypeEnabled>
+<mt:Pages lastn="0"><mt:PagesHeader>
+<li class="entry off nolink"><span>Pages</span>
+<ul></mt:PagesHeader>
+<li><a href="<mt:PagePermalink$>"><mt:PageTitle encode_html="1"></a></li>
+<mt:PagesFooter></ul>
+</li>
+</mt:PagesFooter></mt:Pages>
 </ul>
 </nav>
-
 <footer>
+<mt:BlogParentWebsite>
+    <nav id="sitenav">
+        <ul>
+            <li><a href="<mt:BlogURL>"><__trans phrase="Home"></a></li>
+            <MTPages tag="@sitemap" lastn="1"><li><a href="<mt:PagePermalink>"><__trans phrase="Sitemap"></a></li></MTPages>
+            <MTPages tag="@contact" lastn="1"><li><a href="<mt:PagePermalink>"><__trans phrase="Contact"></a></li></MTPages>
+        </ul>
+    </nav>
+</mt:BlogParentWebsite>
     <form action="<$MTLink template="<__trans phrase="Search Results">"$>" method="get">
         <input type="text" name="query" id="search_text">
         <input type="hidden" name="offset" id="hu_search_offset" value="1">
@@ -42,7 +59,7 @@
 <MTBlogParentWebsite>
         <input type="hidden" name="include_blogs" value="<$MTWebsiteID$><MTBlogs include_blogs="children">,<$MTBlogID$></MTBlogs>">
 </MTBlogParentWebsite>
-        <input type="image" alt="<__trans phrase="Search">" src="<$MTBlogURL escape="html"$>common/images/smartphone/search.gif">
+        <input type="image" alt="<__trans phrase="Search">" src="<$MTBlogURL escape="html"$>common/images/smartphone/btn_search.png">
     </form>
     <p><small>Copyright &copy; <$MTDate format="%Y"$></small></p>
 </footer>

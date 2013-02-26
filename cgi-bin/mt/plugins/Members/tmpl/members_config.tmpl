@@ -12,3 +12,93 @@
     <li><label><input type="text" value="<mt:var name="members_email_from" escape="html">" name="members_email_from" id="members_email_from" /></li>
     </ul>
     </mtapp:setting>
+    
+
+    <mtapp:setting
+        id="validate_username_and_password"
+        label="<__trans phrase="Validate username and password">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="validate_username_and_password" id="validate_username_and_password" <mt:if name="validate_username_and_password">checked="checked"</mt:if> />
+    <__trans phrase="Enabled"></label></li>
+    </ul>
+    </mtapp:setting>
+    <h5><__trans phrase="Username validation rules"></h5>
+    <mtapp:setting
+        id="username_deny_multibytes"
+        label="<__trans phrase="Deny Multibytes">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="username_deny_multibytes" id="username_deny_multibytes" <mt:if name="username_deny_multibytes">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="username_allow_alphabet"
+        label="<__trans phrase="Allow Alphabet">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="username_allow_alphabet" id="username_allow_alphabet" <mt:if name="username_allow_alphabet">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="username_allow_number"
+        label="<__trans phrase="Allow Number">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="username_allow_number" id="username_allow_number" <mt:if name="username_allow_number">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="username_allow_special_characters"
+        label="<__trans phrase="Allow Special Characters">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="username_allow_special_characters" id="username_allow_special_characters" <mt:if name="username_allow_special_characters">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="username_minimum_length"
+        label="<__trans phrase="Minimum Length">">
+    <ul>
+    <li><input type="text" class="text num" value="<mt:var name='username_minimum_length' escape='html'>" name="username_minimum_length" id="username_minimum_length"></li>
+    </ul>
+    </mtapp:setting>
+    <h5><__trans phrase="Password validation rules"></h5>
+    <mtapp:setting
+        id="password_deny_multibytes"
+        label="<__trans phrase="Deny Multibytes">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="password_deny_multibytes" id="password_deny_multibytes" <mt:if name="password_deny_multibytes">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="password_combo_upper_lower"
+        label="<__trans phrase="Should contain uppercase and lowercase letters.">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="password_combo_upper_lower" id="password_combo_upper_lower" <mt:if name="password_combo_upper_lower">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="password_combo_letter_number"
+        label="<__trans phrase="Should contain letters and numbers.">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="password_combo_letter_number" id="password_combo_letter_number" <mt:if name="password_combo_letter_number">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="password_require_special_characters"
+        label="<__trans phrase="Should contain special characters.">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="password_require_special_characters" id="password_require_special_characters" <mt:if name="password_require_special_characters">checked="checked"</mt:if> />
+    <__trans phrase="Yes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="password_minimum_length"
+        label="<__trans phrase="Minimum Length">">
+    <ul>
+    <li><input type="text" class="text num" value="<mt:var name='password_minimum_length' escape='html'>" name="password_minimum_length" id="password_minimum_length"></li>
+    </ul>
+    </mtapp:setting>

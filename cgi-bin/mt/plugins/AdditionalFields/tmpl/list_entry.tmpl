@@ -96,11 +96,13 @@ TC.attachLoadEvent( init );
     <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
         </mt:if>
         <mt:if name="dialog_view">
+    <input type="hidden" name="dialog" value="1" />
     <input type="hidden" name="dialog_view" value="1" />
         </mt:if>
     <input id="filter" type="hidden" name="filter" value="" />
     <input id="filter_val" type="hidden" name="filter_val" value="" />
     <input type="hidden" name="class" value="<mt:var name="class">" />
+    <input type="hidden" name="edit_field" value="<mt:var name="edit_field" escape="html">" />
 </form>
 <div class="listing-filter">
     <div class="listing-filter-inner inner pkg">
@@ -119,7 +121,7 @@ TC.attachLoadEvent( init );
                     <span id="filter-text-col" style="display:none">&nbsp;</span>
                 </mt:else>
                 </mt:unless></strong>
-                    <a href="<mt:var name="script_url">?__mode=<mt:var name="mode" escape="url"><mt:if name="blog_id">&amp;blog_id=<mt:var name="blog_id"></mt:if><mt:if name="dialog_view">&amp;dialog_view=1&amp;dialog=1</mt:if>&amp;class=<mt:var name="class">">[ <__trans phrase="Remove filter"> ]</a>
+                    <a href="<mt:var name="script_url">?__mode=<mt:var name="mode" escape="url"><mt:if name="blog_id">&amp;blog_id=<mt:var name="blog_id"></mt:if><mt:if name="dialog_view">&amp;dialog_view=1&amp;dialog=1</mt:if>&amp;class=<mt:var name="class">&amp;edit_field=<mt:var name="edit_field" escape="html">">[ <__trans phrase="Remove filter"> ]</a>
                 </mt:unless>
                 </div>
         <div id="filter-select" class="page-title" style="display: none">

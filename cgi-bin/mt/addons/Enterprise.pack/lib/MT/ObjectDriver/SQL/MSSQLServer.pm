@@ -56,18 +56,11 @@ sub new {
 sub as_sql {
     my $stmt = shift;
     my $sql  = '';
-    if ( my $cols = $stmt->date_columns ) {
-        foreach my $col ( keys %$cols ) {
-            next unless $stmt->select_map->{$col};
-            my $val = delete $stmt->select_map->{$col};
-            delete $stmt->select_map_reverse->{$val};
-            map { $_ = "CONVERT($VARCHAR, $_, 20) AS $_" if $_ eq $col }
-                @{ $stmt->select };
-            my $conv = "CONVERT($VARCHAR, $col, 20) AS $col";
-            $stmt->select_map->{$conv}        = $val;
-            $stmt->select_map_reverse->{$val} = $conv;
-        }
+
+    for ( my $i = 0; $i < scalar @{ $stmt->select }; $i++ ) {
+        $stmt->select->[$i] =~ s/(\A\d+\z|\A'.*'\z)/$1 AS _immediate_$i/;
     }
+
     my $lob_cols = $stmt->lob_columns;
     if ( !(%$lob_cols) && defined( $stmt->from_stmt ) ) {
         $lob_cols = $stmt->from_stmt->lob_columns;
@@ -113,8 +106,9 @@ sub as_sql {
     my $limit  = $stmt->limit;
     my $offset = $stmt->offset;
     if ($offset) {
+        my $sub_stmt  = __PACKAGE__->new;
         my $main_stmt = __PACKAGE__->new;
-        my $group_by = ( $stmt->group && @{ $stmt->group } ) ? 1 : 0;
+        my $group_by  = ( $stmt->group && @{ $stmt->group } ) ? 1 : 0;
 
         my $sort_clause;
 
@@ -131,6 +125,7 @@ sub as_sql {
                         && ( 'row_number' ne $func )
                         && ( 'over' ne $func ) )
                     {
+                        $sub_stmt->add_select($as_col);
                         $main_stmt->add_select($as_col);
                         foreach ( @{ $stmt->order } ) {
                             if ( $as_col eq $_->{column} ) {
@@ -143,13 +138,16 @@ sub as_sql {
                     }
                 }
             }
+            $sub_stmt->add_select( $orig_col => $orig_col );
             $main_stmt->add_select( $orig_col => $orig_col );
         }
         foreach my $orig_bind ( @{ $stmt->bind } ) {
+            push @{ $sub_stmt->bind },  $orig_bind;
             push @{ $main_stmt->bind }, $orig_bind;
         }
 
         my $over_clause = $stmt->as_aggregate('order');
+        $over_clause ||= 'ORDER BY ' . $stmt->select->[0];
         unless ($sort_clause) {
             $sort_clause = $over_clause;
             my $order = $stmt->order;
@@ -162,14 +160,16 @@ sub as_sql {
                 $col =~ s{ \A [^_]+_ }{}xms;    # appropriate for all?
                 next if exists( $stmt->select_map_reverse->{$col} );
                 $stmt->add_select( $_->{column} );
+                $sub_stmt->add_select( $_->{column} );
                 $main_stmt->add_select( $_->{column} );
             }
         }
 
-        $stmt->add_select( "ROW_NUMBER() OVER($over_clause) as line" =>
-                "ROW_NUMBER() OVER($over_clause) as line" );
         $stmt->order(undef);
-        $main_stmt->from_stmt($stmt);
+        $sub_stmt->add_select( "ROW_NUMBER() OVER($over_clause) as line" =>
+                "ROW_NUMBER() OVER($over_clause) as line" );
+        $sub_stmt->from_stmt($stmt);
+        $main_stmt->from_stmt($sub_stmt);
         if ($limit) {
             my $where
                 = 'BETWEEN '
@@ -185,7 +185,7 @@ sub as_sql {
         $stmt->offset(0);
         $sql = $main_stmt->SUPER::as_sql(@_);
         $sql = $main_stmt->_do_as_sqls( $sql, $sort_clause );
-        return $sql;
+        return $stmt->_convert_column_format($sql);
     }
     elsif ($limit) {
         $stmt->limit(0);
@@ -212,7 +212,7 @@ sub as_sql {
         # a parameter passed in where clause when there
         # are more than one statement in sequence.
         $sql =~ s/^SELECT( (?:DISTINCT )?)/SELECT$1TOP($limit) /i;
-        return $sql;
+        return $stmt->_convert_column_format($sql);
     }
     elsif ( $stmt->distinct ) {
         if ( $stmt->as_aggregate('order') ) {
@@ -232,7 +232,35 @@ sub as_sql {
         }
     }
     $sql .= $stmt->SUPER::as_sql(1);
-    $sql;
+    $stmt->_convert_column_format($sql);
+}
+
+sub _convert_column_format {
+    my $stmt = shift;
+    my ($sql) = @_;
+
+    my $date_columns = $stmt->date_columns || {};
+    my $has_date_column = 0;
+
+    my @columns = map {
+        my $col = $_;
+        $col =~ s/(.*\s+AS\s+)?(.*\.)?//;
+        $col =~ s{ \A [^_]+_ }{}xms;        # appropriate for all?
+
+        if ( $date_columns->{$col} ) {
+            $has_date_column = 1;
+            $col             = "CONVERT($VARCHAR, $col, 20) AS $col";
+        }
+
+        $col
+    } @{ $stmt->select };
+
+    if ($has_date_column) {
+        'SELECT ' . join( ', ', @columns ) . " FROM ($sql) t\n";
+    }
+    else {
+        $sql;
+    }
 }
 
 sub field_decorator {

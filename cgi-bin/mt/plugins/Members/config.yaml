@@ -1,20 +1,19 @@
 name: Members
 id: Members
 key: members
-version: 1.2
+version: 1.6
 schema_version: 0.25
 description: <__trans phrase='Enable members area.'>
 author_name: Alfasado Inc.
 author_link: 'http://alfasado.net/'
 l10n_class: Members::L10N
-
 config_settings:
     MemberScript:
         default: mt-members.cgi
-
+    MembersCleanupUserpicPeriod:
+        default: 43200
 system_config_template: members_sysconfig.tmpl
 blog_config_template: members_config.tmpl
-
 settings:
     members_path_base:
         default:
@@ -32,7 +31,39 @@ settings:
         default:
     members_registration_all:
         default: 0
-
+    validate_username_and_password:
+        default: 0
+        scope: blog
+    username_deny_multibytes:
+        default: 1
+        scope: blog
+    username_allow_alphabet:
+        default: 1
+        scope: blog
+    username_allow_number:
+        default: 1
+        scope: blog
+    username_allow_special_characters:
+        default: 1
+        scope: blog
+    username_minimum_length:
+        default: 6
+        scope: blog
+    password_deny_multibytes:
+        default: 1
+        scope: blog
+    password_combo_upper_lower:
+        default: 0
+        scope: blog
+    password_combo_letter_number:
+        default: 0
+        scope: blog
+    password_require_special_characters:
+        default: 0
+        scope: blog
+    password_minimum_length:
+        default: 6
+        scope: blog
 object_types:
     template:
         subject: text revisioned
@@ -44,7 +75,6 @@ object_types:
         mail_token: string meta
         regist_blog_id: integer meta
         is_mobile_signup: integer meta
-
 callbacks:
     MT::App::Upgrader::post_run: $Members::Members::Callbacks::_post_run
     MT::App::CMS::template_param.cfg_prefs:        $Members::Members::Callbacks::_cfg_prefs_param
@@ -64,15 +94,38 @@ callbacks:
             my $blog = $app->blog;
             if ( $blog && $blog->is_members ) {
                 $app->{ requires_login } = 1;
+                if ( PowerCMS::Util::is_ua_keitai() ) {
+                    if ( my $sessid = $app->param( 'sessid' ) ) {
+                        require MT::App::CMS::Members;
+                        my $user = MT::App::CMS::Members::_get_author( $app, $sessid );
+                        if ( $user ) {
+                            $app->user( $user );
+                            my %param = (
+                                -name  => $app->user_cookie,
+                                -value => $user->name . '::' . $sessid . '::0',
+                                -path  => '/',
+                            );
+                            my $cookie = CGI::Cookie->new(%param);
+                            $app->{ cookies } = {
+                                $app->user_cookie => $cookie,
+                            };
+                        }
+                    }
+                }
             }
         }
-
+    MT::App::Comments::template_source.login: $Members::Members::Callbacks::_cb_tmpl_source
 permissions:
     blog.view:
         label: View Site
         group: blog_comment
         order: 100
-
+tasks:
+    members_cleanup_userpic:
+        key: MembersCleanupUserpic
+        label: Clean up temporary userpic
+        frequency: 3600
+        code: $Members::Members::Callbacks::_tasks_members_cleanup_userpic
 tags:
     block:
         IfMemberLogin?: $Members::Members::Tags::_hdlr_if_member_login
@@ -85,6 +138,9 @@ tags:
     modifier:
         add_session_for_mobile:   $Members::Members::Tags::_fltr_add_session_for_mobile
         external_link_for_mobile: $Members::Members::Tags::_hdlr_modifier
-
 system_filters:
     author: $Members::Members::Listing::system_filters
+applications:
+    members:
+        handler: MT::App::CMS::Members
+        script: sub { MT->config->MemberScript }

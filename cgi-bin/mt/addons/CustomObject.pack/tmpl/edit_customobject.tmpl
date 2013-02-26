@@ -5,6 +5,7 @@
 <mt:setvarblock name="html_head" append="1">
 <style type="text/css">
 fieldset textarea { height:240px }
+fieldset #body-field textarea { height:240px }
 .field input.full-width, .field textarea.full-width { width:100% }
 .field .text { width:100% }
 dd { margin-left:0px }
@@ -27,39 +28,25 @@ function validation() {
 </script>
 <mt:if name="use_wysiwyg">
 <script type="text/javascript">
+jQuery(function($){
+
     <mt:IfPlugin component="TinyMCE">
-    var editor_another_setting = true;
-    var theme_advanced_buttons1 = '<$mt:var name="theme_advanced_buttons1" escape="js"$>';
-    var theme_advanced_buttons2 = '<$mt:var name="theme_advanced_buttons2" escape="js"$>';
-    var theme_advanced_buttons3 = '<$mt:var name="theme_advanced_buttons3" escape="js"$>';
-    var theme_advanced_buttons4 = '<$mt:var name="theme_advanced_buttons4" escape="js"$>';
-    var theme_advanced_buttons5 = '<$mt:var name="theme_advanced_buttons5" escape="js"$>';
-    var editor_content_css = '<$mt:var name="editor_style_css" escape="js"$>';
+    $.extend(MT.Editor.TinyMCE.config, {
+        plugin_mt_wysiwyg_buttons1: '<mt:var name="theme_advanced_buttons1" escape="js">',
+        plugin_mt_wysiwyg_buttons2: '<mt:var name="theme_advanced_buttons2" escape="js">',
+        plugin_mt_wysiwyg_buttons3: '<mt:var name="theme_advanced_buttons3" escape="js">',
+        plugin_mt_wysiwyg_buttons4: '<mt:var name="theme_advanced_buttons4" escape="js">',
+        plugin_mt_wysiwyg_buttons5: '<mt:var name="theme_advanced_buttons5" escape="js">',
+        content_css: '<mt:var name="editor_style_css" escape="js">'
+    });
+
     <mt:else>
-    <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/TinyMCE/css/TinyMCE.css" type="text/css" />
-    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/TinyMCE/lib/tinymce/jquery.tinymce.js"></script>
-    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/TinyMCE/js/TinyMCE.js"></script>
-    <script type="text/javascript">
-    tinymce_editor.init['language'] = '<mt:if name="lang" eq="ja">ja<mt:else>en</mt:else></mt:if>';
-    tinymce_editor.init['plugins'] = 'advhr,advimage,advlink,contextmenu,emotions,fullscreen,inlinepopups,insertdatetime,layer,lists,media,pagebreak,paste,style,table,template,visualchars,xhtmlxtras';
-    tinymce_editor.init['theme_advanced_buttons1'] = '<$mt:var name="theme_advanced_buttons1" escape="js"$>';
-    tinymce_editor.init['theme_advanced_buttons2'] = '<$mt:var name="theme_advanced_buttons2" escape="js"$>';
-    tinymce_editor.init['theme_advanced_buttons3'] = '<$mt:var name="theme_advanced_buttons3" escape="js"$>';
-    tinymce_editor.init['theme_advanced_buttons4'] = '<$mt:var name="theme_advanced_buttons4" escape="js"$>';
-    tinymce_editor.init['theme_advanced_buttons5'] = '<$mt:var name="theme_advanced_buttons5" escape="js"$>';
-    tinymce_editor.init['content_css'] = '<$mt:var name="editor_style_css" escape="js"$>';
-    tinymce_editor.sub_init['blog_id'] = '<$mt:var name="blog_id" escape="js"$>';
-    tinymce_editor.trans['Insert_Image'] = '<__trans phrase="Insert Image" escape="js">';
-    tinymce_editor.trans['Insert_File'] = '<__trans phrase="Insert File" escape="js">';
-    tinymce_editor.trans['Insert_Link'] = '<__trans phrase="Insert Link" escape="js">';
-    </mt:else>
     </mt:IfPlugin>
 
     <mt:unless name="editor_select">
-    jQuery(function(){
-        jQuery('#main-content textarea[name="body"]').tinymce(tinymce_editor.init);
-    });
+    new MT.EditorManager('body')
     </mt:unless>
+});
 </script>
 </mt:if>
 </mt:setvarblock>
@@ -348,7 +335,7 @@ function validation() {
         label="<__trans phrase="Body">"
         show_hint="0"
         >
-    <textarea class="text" name="body"><mt:var name="body" escape="html"></textarea>
+    <textarea class="text low" name="body" id="body"><mt:var name="body" escape="html"></textarea>
     </mtapp:setting>
 
     <mtapp:setting

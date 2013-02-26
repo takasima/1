@@ -4,7 +4,7 @@ use MT;
 use MT::Plugin;
 use base qw( MT::Plugin );
 
-our $VERSION = '0.5';
+our $VERSION = '0.6';
 our $SCHEMA_VERSION = '0.1';
 
 my $plugin = __PACKAGE__->new( {

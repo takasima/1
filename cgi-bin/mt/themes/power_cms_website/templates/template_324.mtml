@@ -104,7 +104,6 @@ Layout
     width: 940px;
 }
 
-
 /*============================================================**
 #header
 **============================================================*/
@@ -131,7 +130,8 @@ Layout
 #header_util {
     float: right;
     padding-top: 11px;
-    width: 280px;
+    /*width: 280px;*/
+    width: 500px;
     line-height: 1.0em;
 }
 
@@ -144,6 +144,8 @@ Layout
     float: left;
     padding: 0 4px 0 0;
     font-size: 85%;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 #hu_nav li#hu_sitemap {
@@ -152,9 +154,16 @@ Layout
     border-right: 1px solid #7B7B7B;
 }
 
+#hu_nav li#hu_welcome {
+    border-left: 1px solid #7B7B7B;
+    margin: 0 0 0 4px;
+    padding: 0 0 0 8px;
+}
+
 #hu_search {
     margin-bottom: 14px;
     text-align: right;
+    clear:both;
 }
 
 #hu_search input {

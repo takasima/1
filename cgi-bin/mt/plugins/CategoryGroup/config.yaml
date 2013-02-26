@@ -1,7 +1,7 @@
 id  : CategoryGroup
 key : categorygroup
 name: Category Group
-version: 1.1
+version: 1.2
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
 description: '<__trans phrase="Categories Grouping and Sorting Interface.">'

@@ -68,7 +68,7 @@ sub list_props {
                         join      => MT->model('tag')->join_on(
                             undef,
                             {   name => '@userpic',
-                                id   => \'= objecttag_tag_id', # baka editors ',
+                                id   => \'= objecttag_tag_id', # FOR-EDITOR ',
                             }
                         ),
                     }
@@ -265,7 +265,7 @@ sub list_props {
                     MT->model('asset')->meta_pkg->join_on(
                     undef,
                     {   type     => $prop->meta_type,
-                        asset_id => \"= asset_id", # baka editor ",
+                        asset_id => \"= asset_id",      # FOR-EDITOR ",
                         %$super_terms,
                     },
                     );
@@ -304,15 +304,16 @@ sub list_props {
                         undef,
                         [   [   { tag_id => { not => $tag->id }, },
                                 '-or',
-                                { tag_id => \'IS NULL', # baka editors ',
-                                }, 
+                                {   tag_id => \'IS NULL',    # FOR-EDITOR ',
+                                },
                             ],
                             '-and',
                             [   {   object_datasource => MT::Asset->datasource
                                 },
                                 '-or',
-                                { object_datasource => \'IS NULL' # baka editors ',
-                                }, 
+                                {   object_datasource => \
+                                        'IS NULL'            # FOR-EDITOR ',
+                                },
                             ],
                         ],
                         {   unique    => 1,
@@ -336,10 +337,11 @@ sub list_props {
                     push @{ $base_args->{joins} },
                         MT->model('author')->join_on(
                         undef,
-                        { id => \'is null', # baka editors ',
+                        {   id => \'is null',    # FOR-EDITOR ',
                         },
                         {   type      => 'left',
-                            condition => { id => \'= asset_created_by' # baka editors ',
+                            condition => {
+                                id => \'= asset_created_by'    # FOR-EDITOR ',
                             },
                         },
                         );
@@ -355,7 +357,7 @@ sub list_props {
                     push @{ $base_args->{joins} },
                         MT->model('author')->join_on(
                         undef,
-                        {   id     => \'= asset_created_by', # baka editors ',
+                        {   id     => \'= asset_created_by',  # FOR-EDITORS ',
                             status => $status,
                         },
                         );
@@ -520,7 +522,7 @@ sub remove {
             my $app = MT->instance;
             $app->log(
                 {   message => $app->translate(
-                        "Could not remove asset file [_1] from filesystem: [_2]",
+                        "Could not remove asset file [_1] from the filesystem: [_2]",
                         $file,
                         $fmgr->errstr
                     ),
@@ -585,7 +587,7 @@ sub remove_cached_files {
                         my $app = MT->instance;
                         $app->log(
                             {   message => $app->translate(
-                                    "Could not remove asset file [_1] from filesystem: [_2]",
+                                    "Could not remove asset file [_1] from the filesystem: [_2]",
                                     $file,
                                     $fmgr->errstr
                                 ),
@@ -742,15 +744,17 @@ sub thumbnail_url {
     return $asset->stock_icon_url(@_);
 }
 
+sub display_name {
+    $_[0]->label || $_[0]->file_name;
+}
+
 sub as_html {
-    my $asset   = shift;
+    my $asset = shift;
     my ($param) = @_;
-    my $fname   = $asset->file_name;
     require MT::Util;
     my $text = sprintf '<a href="%s">%s</a>',
         MT::Util::encode_html( $asset->url ),
-        MT::Util::encode_html($fname);
-    my $app = MT->instance;
+        MT::Util::encode_html( $asset->display_name );
     return $param->{enclose} ? $asset->enclose($text) : $text;
 }
 
@@ -852,6 +856,14 @@ sub _make_cache_path {
         = File::Spec->catdir( ( $pseudo ? $format : $root_path ),
         $path, $year_stamp, $month_stamp );
     $asset_cache_path;
+}
+
+sub tagged_count {
+    my $obj = shift;
+    my ( $tag_id, $terms ) = @_;
+    $terms ||= {};
+    $terms->{class} = '*';
+    return $obj->SUPER::tagged_count( $tag_id, $terms );
 }
 
 1;
@@ -978,6 +990,10 @@ if fails stock_icon_url. %params is passed directly to them.
 
 If %param contains a 'Pseudo' key, will return the URL with %r, %s or %a
 in the beginning, as explained in $asset->url
+
+=head2 $asset->display_name
+
+returns a name to display. Usually, returns label or a file name.
 
 =head2 $asset->as_html( [ $params ] )
 

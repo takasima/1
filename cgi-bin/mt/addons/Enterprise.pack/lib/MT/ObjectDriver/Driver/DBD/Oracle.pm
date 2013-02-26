@@ -23,6 +23,9 @@ use Data::ObjectDriver::Errors;
 use constant ERROR_MAP =>
     { 1 => Data::ObjectDriver::Errors->UNIQUE_CONSTRAINT, };
 
+# Oracle has problems with prepare_cached
+sub can_prepare_cached_statements { 0 }
+
 sub sql_class {
     require MT::ObjectDriver::SQL::Oracle;
     return 'MT::ObjectDriver::SQL::Oracle';

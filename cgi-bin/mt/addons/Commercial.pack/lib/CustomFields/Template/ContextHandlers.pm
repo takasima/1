@@ -9,7 +9,7 @@
 package CustomFields::Template::ContextHandlers;
 
 use strict;
-use CustomFields::Util qw( get_meta field_loop _get_html );
+use CustomFields::Util qw( get_meta field_loop _get_html load_meta_to_cache );
 use MT::Util qw( asset_cleanup );
 
 sub _hdlr_app_fields {
@@ -149,12 +149,8 @@ sub _hdlr_customfield_value {
     my $obj_id   = $obj->id;
     my $res      = '';
 
-    my $meta = $ctx->stash("${obj_type}_meta_${obj_id}");
-    if ( !$meta ) {
-        $meta = get_meta($obj);
-        $ctx->stash( "${obj_type}_meta_${obj_id}", $meta );
-    }
-    my $value = $meta->{ $field->basename };
+    load_meta_to_cache($obj);
+    my $value = get_meta( $obj, $field->basename );
     if ( defined $value ) {
         my $fld_type = $field->type;
         if ( $fld_type eq 'textarea' ) {
@@ -327,7 +323,8 @@ sub _hdlr_customfield_html {
     my $field_value;
     my $app = MT->instance();
     if (   ( ( ref $app ) =~ /^MT::App::/ )
-        && ( $app->param('customfield_beacon') ) )
+        && ( $app->param('customfield_beacon') )
+        && ( $ctx->var('app_page_template') ) )
     {
         $field_value = $app->param("customfield_$basename");
     }

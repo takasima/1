@@ -42,6 +42,15 @@ function toggleExtFieldsOptions() {
         document.getElementById('newFldLabel').focus();
     }
 }
+
+var formatValueToString = {
+    1  : '0',
+    2  : '__default__',
+    11 : 'markdown',
+    12 : 'markdown_with_smartypants',
+    9  : 'richtext',
+    13 : 'textile_2'
+};
 </MTJSCompressor>
 </script>
 <script language="javascript" type="text/javascript">
@@ -49,37 +58,27 @@ function toggleExtFieldsOptions() {
 //=========================================================
 //    textareaCustom
 //=========================================================
-var textareaCustom = function(ele,textareaID){
+var textareaCustom = function(ele, textareaID){
     var fldProperty = textareaID.split('-');
     fldProperty = fldProperty[2]
     var elm = jQuery("#" + textareaID);
-    if(ele.value == '9'){
-<mt:ifPlugin component="TinyMCE">
-        tinymce_editor.show(elm);
-</mt:ifPlugin>
-    }else{
-        try{
-            jQuery('#' + textareaID).tinymce().remove();
-        }catch(e){}
-    }
+    elm.data('mt-editor').setFormat(formatValueToString[ele.value]);
 }
 
-<mt:ifPlugin component="TinyMCE">
 //=========================================================
 //    check format TinyMCE
 //=========================================================
-jQuery(function(){
-    jQuery('.ext-field-formatselect').each(function(){
-        if(this.value == 9){
-            var nm = this.id.split('-textformat')[0];
-            if(nm.match('file')){
-                nm = nm + '-desctext';
-            }
-            tinymce_editor.show(jQuery('#' + nm));
+jQuery(function($){
+    $('.ext-field-formatselect').each(function(){
+        var nm = this.id.split('-textformat')[0];
+        if(nm.match('file')){
+            nm = nm + '-desctext';
         }
-    })
+        new MT.EditorManager(nm, {
+            format: formatValueToString[this.value]
+        });
+    });
 });
-</mt:ifPlugin>
 
 function overwrite_extfile (obj, id1, id2, id3, cb){
     var tg1 = jQuery("#" + id1);

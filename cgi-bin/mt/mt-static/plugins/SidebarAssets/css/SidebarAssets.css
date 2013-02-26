@@ -33,6 +33,7 @@
 #tab_sidebarassets .asset_list_box .indicate.load_add {
 	position: static;
 	margin: 0px;
+	clear: both;
 }
 
 #tab_sidebarassets .asset_list_box .loading {
@@ -84,8 +85,8 @@
 }
 
 #tab_sidebarassets .asset_list_box .thumbnail img {
-    max-width: 54px;
-    max-height: 54px;
+    max-width: 50px;
+    max-height: 50px;
     -ms-interpolation-mode: bicubic;
     vertical-align: middle;
 }
@@ -142,8 +143,8 @@
 #tab_sidebarassets .asset_list_box table.audio .thumbnail a {
     display: block;
     margin: 0 auto;
-    width: 54px;
-    height: 54px;
+    width: 50px;
+    height: 50px;
     overflow: hidden;
 /*    text-indent: -9999px;*/
     background-color: #EEE;
@@ -378,7 +379,8 @@
     padding-right: 16px;
     padding-left: 14px;
     margin: 2px 10px;
-
+	clear: both;
+	white-space: nowrap;
 }
 
 #tab_sidebarassets .multi_upload .sidebar_blocks .disabled {
@@ -386,27 +388,43 @@
     color: #999;
 }
 
+#tab_sidebarassets .multi_upload .sidebar_blocks * {
+	vertical-align: middle;
+}
+
 #tab_sidebarassets .multi_upload .sidebar_blocks img {
-    position: absolute;
+    display: inline-block;
+/*
+	position: absolute;
     top: 4px;
     left: 0;
+*/
 }
 
 #tab_sidebarassets .multi_upload .sidebar_blocks .file_name {
+    display: inline-block;
     font-size: 10px;
-    width: auto;
+	margin: 0px 5px;
+/*
+	position: absolute;
+	left: 15px;
+*/
 }
 
 #tab_sidebarassets .multi_upload .sidebar_blocks span {
-    position: absolute;
+/*
+	position: absolute;
     top: 1px;
     right: 0;
-    display: block;
+*/
+    display: inline-block;
+	
     width: 11px;
     height: 17px;
     background: url(../images/ico_multiupload.gif) 0 0 no-repeat;
     overflow: hidden;
     cursor: pointer;
+	position: relative;
 }
 
 #tab_sidebarassets .multi_upload .sidebar_blocks .select_icon {
@@ -420,6 +438,7 @@
     position: absolute;
     right: 0px;
     height: 100%;
+	width: 11px;
     cursor: pointer;
     opacity: 0;
     -moz-opacity: 0;
@@ -457,6 +476,7 @@
 #tab_sidebarassets .multi_upload p {
 	margin: 0px;
 	padding: 5px 0px;
+	clear: both;
 }
 
 #tab_sidebarassets .multi_upload p button {

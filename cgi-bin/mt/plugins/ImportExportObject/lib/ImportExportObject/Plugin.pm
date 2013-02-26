@@ -2,9 +2,12 @@ package ImportExportObject::Plugin;
 
 use strict;
 use lib qw( addons/Commercial.pack/lib addons/PowerCMS.pack/lib );
+use File::Temp qw( tempfile );
+use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use PowerCMS::Util qw( utf8_off current_ts upload utf8_on file_label save_asset
                        allow_upload csv_new plugin_template_path site_path get_all_blogs
                        uniq_filename path2relative association_link is_windows );
+use MT::Util qw( trim );
 
 sub _start_im_export {
     my $app = shift;
@@ -69,17 +72,15 @@ sub _import_object {
     if ( $model eq 'author' ) {
         return _upload_user( $app );
     }
-    my $tmp_dir = $app->config( 'TempDir' );
-    $tmp_dir = $app->config( 'TmpDir' ) unless $tmp_dir;
+    my $tmp_dir = $app->config( 'TempDir' ) || $app->config( 'TmpDir' );
     if ( $model eq 'asset' ) {
         my %params = ( rename => 1, format_LF => 0, singler => 1, no_asset => 1, );
         my $import_zip = upload( $app, $blog, 'zip', site_path( $blog ), \%params );
         return $app->error( $plugin->translate( 'Upload failed.' ) ) unless (-f $import_zip );
-        eval { require Archive::Zip };
-        if ( $@ ){
-            return $app->trans_error( 'Archive::Zip is required.' );
-        }
-        use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+        #eval { require Archive::Zip };
+        #if ( $@ ) {
+        #    return $app->trans_error( 'Archive::Zip is required.' );
+        #}
         require File::Basename;
         require MT::FileMgr;
         my $dir = File::Basename::dirname( $import_zip );
@@ -92,6 +93,7 @@ sub _import_object {
         my $fmgr = MT::FileMgr->new( 'Local' );
         for my $member ( @members ) {
             my $out = $member->fileName;
+            $out =~ s!^(?:/|\\)+!!;
             my $original = $out;
             my $basename = file_label( File::Basename::basename( $out ) );
             next if ( $basename =~ /^\./ );
@@ -135,14 +137,14 @@ sub _import_object {
         $object_ds = $model;
     }
     my $blog_id = $app->param( 'blog_id' );
-    my $csv = csv_new() || return $app->trans_error( 'Neither Text::CSV_XS nor Text::CSV is available.' );
+    my $csv = csv_new() or return $app->trans_error( 'Neither Text::CSV_XS nor Text::CSV is available.' );
     my %params = ( rename => 1, format_LF => 1, singler => 1, no_asset => 1, );
     my $import_csv = upload( $app, $blog, $model, $tmp_dir, \%params );
     if ( $model eq 'asset' ) {
         if (! -f $import_csv ) {
             if ( $do ) {
                 if ( MT->version_id =~ /^5\.0/ ) {
-                    return $app->redirect( $app->uri( mode => 'list_' . $model ,
+                    return $app->redirect( $app->uri( mode => 'list_' . $model,
                                                       args => { blog_id => $blog_id, saved => 1 } ) );
                 } else {
                     return $app->redirect( $app->uri( mode => 'list',
@@ -151,9 +153,9 @@ sub _import_object {
             }
         }
     }
-    return $app->error( $plugin->translate( 'Upload failed.' ) ) unless (-f $import_csv );
+    return $app->error( $plugin->translate( 'Upload failed.' ) ) unless ( -f $import_csv );
     my $i = 0;
-    open my $fh, "<", $import_csv;
+    open my $fh, '<', $import_csv;
     my @column_names;
     while ( my $columns = $csv->getline( $fh ) ) {
         if (! $i ) {
@@ -191,10 +193,7 @@ sub _import_object {
             if ( $object_ds eq 'asset' ) {
                 $obj_blog_id = undef;
             }
-            my $cat_blog_id = $obj_blog_id;
-            if (! $cat_blog_id ) {
-                $cat_blog_id = $blog_id;
-            }
+            my $cat_blog_id = $obj_blog_id || $blog_id;
             my $k = 0;
             if ( ( $object_ds eq 'category' ) && (! $category_parent ) ) {
                 $object = __get_the_category( $cat_blog_id, $model, $category_label, $category_key, $category_sep )
@@ -213,6 +212,7 @@ sub _import_object {
                     $cell = utf8_on( MT::I18N::encode_text( $cell, 'cp932', 'utf8' ) );
                 }
                 my $cname = $column_names[ $k ];
+                $cname = trim( $cname );
                 if ( $object->has_column( $cname ) ) {
                     if ( $column_names[ $k ] =~ /_on$/ ) {
                         if ( $cell ) {
@@ -240,7 +240,7 @@ sub _import_object {
                         if ( $field_type ) {
                             if ( ( $field_type eq 'file' ) || ( $field_type eq 'image' ) ||
                                  ( $field_type eq 'video' ) || ( $field_type eq 'audio' ) ) {
-                                if ( $cell && ( ( $cell =~ /^\%r/ ) || ( $cell =~ /^\%a/ ) ) ) {
+                                if ( $cell && $cell =~ /^%[ar]/ ) {
                                     my $asset = MT::Asset->load( { blog_id => $field_blog_id,
                                                                    file_path => $cell,
                                                                    class => '*', } );
@@ -305,7 +305,7 @@ sub _import_object {
                         push( @categories, $category );
                     }
                 } elsif ( $cname eq 'asset' ) {
-                    if ( $cell && ( ( $cell =~ /^\%r/ ) || ( $cell =~ /^\%a/ ) ) ) {
+                    if ( $cell && $cell =~ /^%[ar]/ ) {
                         my $asset = MT::Asset->load( { blog_id => $object->blog_id,
                                                        file_path => $cell,
                                                        class => '*', } );
@@ -397,7 +397,7 @@ sub _export_object {
     my $user = $app->user;
     my $admin = $user->is_superuser;
     my $blog_id = $app->param( 'blog_id' );
-    my $csv = csv_new() || return $app->trans_error( 'Neither Text::CSV_XS nor Text::CSV is available.' );
+    my $csv = csv_new() or return $app->trans_error( 'Neither Text::CSV_XS nor Text::CSV is available.' );
     my $terms;
     $terms = { blog_id => $blog_id } if $blog_id;
     if ( $model eq 'asset' ) {
@@ -411,7 +411,7 @@ sub _export_object {
     my $ts = current_ts();
     $app->set_header( 'Content-Disposition' => "attachment; filename=csv_$ts.csv" );
     $app->send_http_header( 'text/csv' );
-    my $publishcharset = $app->config( 'PublishCharset' );
+    my $publishcharset = uc($app->config( 'PublishCharset' ) || '');
     my $column_names = $app->model( $model )->column_names;
     my @header = ();
     push( @header, 'id' );
@@ -444,19 +444,19 @@ sub _export_object {
     } else {
         $object_ds = $model;
     }
-    my $category_sep = $app->config( 'ImportExportCategorySeparator' ) || '_';
-    my $category_key = $app->config( 'ImportExportCategoryKey' ) || 'label';
-    my $category_delim = $app->config( 'ImportExportCategoryDelim' ) || ',';
-    my $snippet_sep = $app->config( 'ImportExportSnippetSeparator' ) || ':';
-    my $snippet_delim = $app->config( 'ImportExportSnippetDelimiter' ) || ';';
+    my $category_sep   = $app->config( 'ImportExportCategorySeparator' ) || '_';
+    my $category_key   = $app->config( 'ImportExportCategoryKey' )       || 'label';
+    my $category_delim = $app->config( 'ImportExportCategoryDelim' )     || ',';
+    my $snippet_sep    = $app->config( 'ImportExportSnippetSeparator' )  || ':';
+    my $snippet_delim  = $app->config( 'ImportExportSnippetDelimiter' )  || ';';
     unshift( @$column_names, 'id' );
     if ( $csv->combine( @header ) ) {
         my $string = $csv->string;
-        if ( $publishcharset ne 'Shift_JIS' ) {
+        if ( $publishcharset ne 'shift_jis' ) {
             $string = utf8_off( $string );
             $string = MT::I18N::encode_text( $string, 'utf8', 'cp932' );
         }
-        print $string, "\n";
+        $app->print( $string, "\n" );
     }
     while ( my $object = $iter->() ) {
         my @fields = ();
@@ -467,7 +467,7 @@ sub _export_object {
                 if (! grep( /^$column$/, @snippets ) ) {
                     if ( $column =~ /_on$/ ) {
                         if ( $value ) {
-                            $value = "\t" . $value;
+                            $value = "\t$value";
                         }
                     }
                     if ( $model eq 'asset' ) {
@@ -488,7 +488,7 @@ sub _export_object {
                     my @snippet;
                     for my $key( keys %$params ) {
                         my $val = $params->{ $key };
-                        my $data = $key . $snippet_sep . $val ;
+                        my $data = $key . $snippet_sep . $val;
                         push ( @snippet, $data );
                     }
                     push( @fields, join( $snippet_delim, @snippet ) );
@@ -517,16 +517,17 @@ sub _export_object {
                 }
             }
         }
+        MT->run_callbacks( 'MT::App::CMS::export_object.' . $model, $app, $object, \@header, \@fields );
         if ( $csv->combine( @fields ) ) {
             my $string = $csv->string;
-            if ( $publishcharset ne 'Shift_JIS' ) {
+            if ( $publishcharset ne 'shift_jis' ) {
                 $string = utf8_off( $string );
                 $string = MT::I18N::encode_text( $string, 'utf8', 'cp932' );
             }
-            print $string, "\n";
+            $app->print( $string, "\n" );
         } else {
             my $err = $csv->error_input;
-            print "combine() failed on argument: ", $err, "\n";
+            $app->print( "combine() failed on argument: ", $err, "\n" );
         }
     }
 }
@@ -536,9 +537,9 @@ sub _cb_ts_list_author {
     my $insert = _tmpl();
     if ( MT->version_number >= 5 ) {
         $insert = '<ul>' . $insert . '</li></ul>';
-        $$tmpl =~ s/(<div\sclass="listing\-filter">)/$insert$1/sg;
+        $$tmpl =~ s/(<div\sclass="listing-filter">)/$insert$1/sg;
     } else {
-        $$tmpl =~ s/(<ul\sclass="action\-link\-list">.*?<\/li>).*?(<\/ul>)/$1$insert$2/sg;
+        $$tmpl =~ s{(<ul\sclass="action-link-list">.*?</li>).*?(</ul>)}{$1$insert$2}sg;
     }
 }
 
@@ -546,21 +547,19 @@ sub _download_user {
     my $app = shift;
     my $plugin = MT->component( 'UploadUser' );
     my $user = $app->user;
-    my $admin = $user->is_superuser;
-    if (! $admin ) {
-        return $app->trans_error( 'Permission denied.' );
-    }
+    my $admin = $user->is_superuser
+        or return $app->trans_error( 'Permission denied.' );
     require MT::Author;
     my $iter = MT::Author->load_iter( undef );
-    my $csv = csv_new() || return $app->error( $plugin->translate( 'Neither Text::CSV_XS nor Text::CSV is available.' ) );
+    my $csv = csv_new() or return $app->error( $plugin->translate( 'Neither Text::CSV_XS nor Text::CSV is available.' ) );
     $app->{ no_print_body } = 1;
     my $ts = current_ts();
-    $app->set_header( "Content-Disposition" => "attachment; filename=csv_$ts.csv" );
+    $app->set_header( 'Content-Disposition' => "attachment; filename=csv_$ts.csv" );
     if ( $app->is_secure ) {
-        $app->set_header( "pragma" => "" );
+        $app->set_header( 'Pragma' => '' );
     }
     $app->send_http_header( 'text/csv' );
-    my $publishcharset = $app->config( 'PublishCharset' );
+    my $publishcharset = uc($app->config( 'PublishCharset' ) || '');
     require MT::Role;
     require MT::Association;
     my $column_names = MT->model( 'author' )->column_names;
@@ -577,16 +576,16 @@ sub _download_user {
     }
     if ( $csv->combine( @header ) ) {
         my $string = $csv->string;
-        if ( $publishcharset ne 'Shift_JIS' ) {
+        if ( $publishcharset ne 'shift_jis' ) {
             $string = utf8_off( $string );
             $string = MT::I18N::encode_text( $string, 'utf8', 'cp932' );
         }
-        print $string, "\n";
+        $app->print( $string, "\n" );
     }
     while ( my $author = $iter->() ) {
         my @fields = ();
         for my $column ( @$column_names ) {
-            if ( ( $column ne 'password' ) && ( $column ne 'entry_prefs' ) 
+            if ( ( $column ne 'password' ) && ( $column ne 'entry_prefs' )
                     && ( $column ne 'id' ) ) {
                 my $value = $author->$column;
                 if ( ( $column =~ /_on$/ ) && ( $value =~ /^[0-9]{14}$/ ) ) {
@@ -609,14 +608,14 @@ sub _download_user {
         }
         if ( $csv->combine( @fields ) ) {
             my $string = $csv->string;
-            if ( $publishcharset ne 'Shift_JIS' ) {
+            if ( $publishcharset ne 'shift_jis' ) {
                 $string = utf8_off( $string );
                 $string = MT::I18N::encode_text( $string, 'utf8', 'cp932' );
             }
-            print $string, "\n";
+            $app->print( $string, "\n" );
         } else {
             my $err = $csv->error_input;
-            print "combine() failed on argument: ", $err, "\n";
+            $app->print( "combine() failed on argument: ", $err, "\n" );
         }
     }
 }
@@ -628,21 +627,18 @@ sub _upload_user {
     require MT::Role;
     require MT::Permission;
     my $user  = $app->user;
-    my $admin = $user->is_superuser;
-    if (! $admin ) {
-        return $app->trans_error( 'Permission denied.' );
-    }
+    my $admin = $user->is_superuser
+        or return $app->trans_error( 'Permission denied.' );
     $app->validate_magic or return $app->trans_error( 'Permission denied.' );
-    my $tmp_dir = $app->config( 'TempDir' );
-    $tmp_dir = $app->config( 'TmpDir' ) unless $tmp_dir;
+    my $tmp_dir = $app->config( 'TempDir' ) || $app->config( 'TmpDir' );
     my %params = ( rename => 1, format_LF => 1, singler => 1, no_asset => 1, );
     my $default = $app->config( 'UploadableMode' );
     $app->config( 'UploadableMode', ( $default ? $default . ',' . $app->mode : $app->mode ) );
     my $tmp_filename = upload( $app, undef, 'author', $tmp_dir, \%params );
-    
+
     require ImportExportObject::Util;
     ImportExportObject::Util::import_author_from_csv( $tmp_filename );
-    
+
     unlink $tmp_filename;
     $app->add_return_arg( saved => 1 );
     $app->call_return;
@@ -654,17 +650,14 @@ sub _download_assets {
     require MT::Asset;
     require File::Basename;
     require File::Spec;
-    use File::Temp qw( tempfile );
-    eval { require Archive::Zip };
-    if ( $@ ) {
-        return $app->trans_error( 'Archive::Zip is required.' );
-    }
-    use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+    #eval { require Archive::Zip };
+    #if ( $@ ) {
+    #    return $app->trans_error( 'Archive::Zip is required.' );
+    #}
     my @dirs;
     my $archiver = Archive::Zip->new();
     my @assets = MT::Asset->load( { blog_id => $blog->id, class => '*' } );
-    my $tmp_dir = $app->config( 'TempDir' );
-    $tmp_dir = $app->config( 'TmpDir' ) unless $tmp_dir;
+    my $tmp_dir = $app->config( 'TempDir' ) || $app->config( 'TmpDir' );
     for my $asset ( @assets ) {
         my $new = path2relative( $asset->file_path, $blog );
         $new =~ s!^.*?/!/!;
@@ -676,15 +669,15 @@ sub _download_assets {
     if ( -f $tmp_file ) {
         $app->{ no_print_body } = 1;
         my $basename = File::Basename::basename( $tmp_file );
-        $app->set_header( "Content-Disposition" => "attachment; filename=$basename" );
-        $app->set_header( "pragma" => '' );
+        $app->set_header( 'Content-Disposition' => "attachment; filename=$basename" );
+        $app->set_header( 'Pragma' => '' );
         $app->send_http_header( 'application/zip' );
-        if ( open( my $fh, "<", $tmp_file ) ) {
+        if ( open( my $fh, '<', $tmp_file ) ) {
             binmode $fh;
             my $data;
             while ( read $fh, my ( $chunk ), 8192 ) {
                 $data .= $chunk;
-                print $chunk;
+                $app->print( $chunk );
             }
             close $fh;
         }
@@ -694,10 +687,7 @@ sub _download_assets {
 
 sub __set_the_category {
     my ( $entry, $categories ) = @_;
-    my $is_new = 0;
-    if (! $entry->category ) {
-        $is_new = 1;
-    }
+    my $is_new = $entry->category ? 0 : 1;
     my @saved_cats;
     my $i = 1;
     my $blog = $entry->blog;
@@ -732,10 +722,7 @@ sub __set_the_category {
 
 sub __set_entry_default {
     my ( $app, $entry ) = @_;
-    my $blog = $entry->blog;
-    if (! $blog ) {
-        $blog = $app->blog;
-    }
+    my $blog = $entry->blog || $app->blog;
     my $user = $app->user;
     if (! $entry->author_id ) {
         unless ( defined $user ) {

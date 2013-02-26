@@ -98,6 +98,17 @@ our %Lexicon = (
     'You have attempted to use a feature that you do not have permission to access. If you believe you are seeing this message in error contact your system administrator.'
         => 'アクセス権がありません。システム管理者に連絡してください。',
 
+    'Password should not include multi-byte characters.'
+        => 'パスワードにマルチバイト文字を含めることはできません。',
+    'Password should contain uppercase and lowercase letters.'
+        => 'パスワードは大文字と小文字を含める必要があります。',
+    'Password Should contain letters and numbers.'
+        => 'パスワードは文字と数字を含める必要があります。',
+    'Password Should contain special characters.'
+        => 'パスワードは記号を含める必要があります。',
+    'Password should be longer than [_1] characters'
+        => 'パスワードは最低[_1]文字以上です。',
+
     # CMS
     'Member\'s'        => '会員限定サイト',
     'View Only Member' => '会員限定サイトにする',
@@ -116,6 +127,21 @@ our %Lexicon = (
     'Register to All member\'s site.' =>
         'すべての会員サイトに同時登録する',
     'Send registered mail to author' => 'ユーザー登録時にメール通知する',
+    'Validate username and password' => 'ユーザー名/パスワードの形式チェックを行う',
+    'Username validation rules' => 'ユーザー名の検証ルール',
+    'Deny Multibytes' => 'マルチバイト文字を含めない。',
+    'Allow Alphabet' => 'アルファベットを含められる。',
+    'Allow Number' => '数字を含められる。',
+    'Allow Special Characters' => '記号を含められる。',
+    'Minimum Length' => '最低文字数の設定',
+    'Password validation rules' => 'パスワードの検証ルール',
+    'Should contain uppercase and lowercase letters.' => '大文字と小文字の両方を必ず含める。',
+    'Should contain letters and numbers.' => '文字と数字の両方を必ず含める。',
+    'Should contain special characters.' => '記号を必ず含める。',
+
+    # Tasks
+    'Clean up temporary userpic' => '未登録のプロフィール画像のクリーンアップ',
+
 );
 
 1;

@@ -20,10 +20,6 @@ class MTDatabaseoracle extends MTDatabase {
         return true;
     }
 
-    public function escape($str) {
-        return str_replace("'", "''", str_replace("''", "'", stripslashes($str)));
-    }
-
     public function set_names($mt) {
         return;
     }

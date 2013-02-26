@@ -304,6 +304,7 @@ callbacks:
     template_param.cfg_registration: $Enterprise::MT::Enterprise::CMS::cfg_registration
     template_param.cfg_system_users: $Enterprise::MT::Enterprise::CMS::cfg_registration
     template_param.cfg_archives: $Enterprise::MT::Enterprise::CMS::cfg_archives
+    backup.plugin_objects: $Enterprise::MT::Group::backup_plugin_cb
     MT::Author::pre_save: $Enterprise::MT::Enterprise::Author::pre_save_author
     cms_delete_ext_author_filter: $Enterprise::MT::Enterprise::Author::delete_author_ext_auth_filter
     cms_pre_load_filtered_list.group_member: >

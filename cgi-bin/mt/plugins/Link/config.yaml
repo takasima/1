@@ -1,7 +1,7 @@
 name: Link
 id: Link
 key: link
-version: 1.9
+version: 2.0
 schema_version: 0.297
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
@@ -126,6 +126,7 @@ applications:
                     - blog
         compose_menus:
             link:
+                id: link
                 label: Link
                 order: 900
                 mode: view

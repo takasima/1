@@ -7,7 +7,7 @@ use MT;
 use MT::Plugin;
 use base qw( MT::Plugin );
 
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 my $plugin = __PACKAGE__->new( {
     id => 'RequiredFields',

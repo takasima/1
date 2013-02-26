@@ -2,9 +2,20 @@ package CustomGroup::Util;
 use strict;
 use base qw( Exporter );
 
-our @EXPORT_OK = qw( is_user_can is_cms current_ts include_exclude_blogs permitted_blog_ids );
+our @EXPORT_OK = qw( is_user_can is_cms current_ts include_exclude_blogs permitted_blog_ids uniq_array );
 
 use MT::Util qw( offset_time_list );
+
+sub uniq_array {
+    my $array = shift;
+    my %hash  = ();
+    for my $value ( @$array ) {
+        $hash{ $value } = 1;
+    }
+    return (
+        keys %hash
+    );
+}
 
 sub permitted_blog_ids {
     my ( $app, $permissions ) = @_;

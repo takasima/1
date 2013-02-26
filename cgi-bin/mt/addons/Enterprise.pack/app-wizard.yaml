@@ -46,9 +46,3 @@ optional_packages:
         link: http://search.cpan.org/dist/perl-ldap
         label: This module is required in order to use the LDAP Authentication.
         version: 0.34
-    IO::Socket::SSL:
-        link: http://search.cpan.org/dist/IO-Socket-SSL
-        label: This module is required in order to use SSL/TLS connection with the LDAP Authentication.
-    Authen::SASL:
-        link: http://search.cpan.org/dist/Authen-SASL/
-        label: This module and its dependencies are required in order to use CRAM-MD5, DIGEST-MD5 or LOGIN as a SASL mechanism.

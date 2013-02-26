@@ -12,7 +12,7 @@ my $plugin = __PACKAGE__->new( {
     author_name => 'Alfasado Inc.',
     author_link => 'http://alfasado.net/',
     description => '<__trans phrase="Fast Loading PluginData.">',
-    version => '0.2',
+    version => '0.3',
 } );
 
 sub init_registry {
@@ -33,6 +33,7 @@ sub init_registry {
 MT->add_plugin( $plugin );
 
 sub _pre_run {
+    return 1 if MT->config( 'ObjectDriver' ) ne 'DBI::mysql';
     my $app = MT->instance;
     # my $start = Time::HiRes::time();
     return if ( MT->request( 'plugin-fastplugin-init' ) );

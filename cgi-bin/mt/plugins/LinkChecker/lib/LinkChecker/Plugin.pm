@@ -153,7 +153,7 @@ sub _add_mail_tmpl {
                                                       blog_id => 0,
                                                     }
                                                   );
-    if ( $tmpl->id ) {
+    if ( $tmpl && $tmpl->id ) {
         return 1;
     }
     my %values;
@@ -169,6 +169,7 @@ sub _add_mail_tmpl {
     my $body = "$title\n$body1\n\n$body2\n\n$body3\n\n$body4";
     $values{ text } = $body;
     $values{ name } = $plugin->translate( 'Notify Link Check' );
+    $values{ identifier } = 'notify_linkcheck';
     $tmpl->set_values( \%values );
     $tmpl->save
         or die $tmpl->errstr;

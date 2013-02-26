@@ -1,21 +1,15 @@
 <MTSetVars>
 page_title=<$MTArchiveTitle escape="html"$>
-description=<$MTBlogDescription strip_linefeeds="1" escape="html"$>
-keywords=<MTTags glue="," sort_by="rank" limit="10"><$MTTagName escape="html"$></MTTags>
-<MTBlogParentWebsite>
-website_id=<$MTWebsiteID$>
-website_url=<$MTWebsiteURL$>
-website_name=<$MTWebsiteName$>
-</MTBlogParentWebsite>
 </MTSetVars>
 <MTSetVarBlock name="html_head" append="1">
 </MTSetVarBlock>
 <$MTInclude module="<__trans phrase="PC-HTML Header">"$>
 <$MTInclude module="<__trans phrase="PC-Header">"$>
-    <!-- [contents] -->
-    <div id="contents">
+        <!-- [contents] -->
+        <div id="contents" class="clf">
+<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
             <ul class="breadcrumb clf">
-                <li><a href="<$MTVar name="website_url" escape="html"$>"><__trans phrase="Home"></a></li>
+                <li><a href="<MTBlogParentWebsite><$MTWebsiteURL escape="html"$></MTBlogParentWebsite>"><__trans phrase="Home"></a></li>
                 <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
                 <MTIf tag="MTArchiveType" eq="Monthly">
                 <li class="last"><$mt:ArchiveTitle$></li>
@@ -27,17 +21,16 @@ website_name=<$MTWebsiteName$>
                 </MTElse>
                 </MTIf>
             </ul>
-        <div id="single_contents" class="info">
-<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
-            <h1 class="heading_1"><$MTBlogName escape="html"$>:<MTIf tag="MTArchiveType" eq="Monthly"><$mt:ArchiveTitle$><MTElse><$MTArchiveTitle$></MTElse></MTIf></h1>
-
+            <h1 id="blogPageTile" class="heading_1"><$MTBlogName escape="html"$>:<MTIf tag="MTArchiveType" eq="Monthly"><$mt:ArchiveTitle$><MTElse><$MTArchiveTitle$></MTElse></MTIf></h1>
+            <div id="main_contents" class="component_section">
 <$MTGetVar name="pager"$>
 <$MTGetVar name="entries"$>
 <$MTGetVar name="pager"$>
+            </div>
 
-        </div>
+            <MTIgnore><$MTInclude module="<__trans phrase="PC-Sidebar">"$></MTIgnore>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
-    </div>
-    <!-- /[contents] -->
+        </div>
+        <!-- /[contents] -->
 <$MTInclude module="<__trans phrase="PC-Footer">"$>

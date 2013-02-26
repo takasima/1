@@ -1,6 +1,6 @@
-<__trans phrase="This email is notifications about new content on [_1] by [_2]." params="<$mt:var name="blog_name"$>%%<$mt:var name="author_name"$>">
+<__trans_section component="EntryWorkflow"><__trans phrase="This email is notifications about new content on [_1] by [_2]." params="<$mt:var name="blog_name"$>%%<$mt:var name="author_name"$>">
 
-<mt:if name="entry_class" eq 'page'><__trans phrase="Access to Page"><mt:else><__trans phrase="Access to Entry"></mt:else></mt:if>:
+<__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="Access to Page"><mt:else><__trans phrase="Access to Entry"></mt:else></mt:if>:
 <<$mt:var name="entry_permalink"$>>
 ------------------------------------------------------------------------
 

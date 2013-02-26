@@ -148,7 +148,9 @@ sub find_title {
             = grep { ref $_ eq 'XML::Elemental::Element' }
             @{ $title->contents };
         return join '', map {
-            ref $_ eq 'XML::Elemental::Element' ? as_xhtml($_) : $_->data
+            ref $_ eq 'XML::Elemental::Element'
+                ? as_xhtml($_)
+                : $_->data
             } @{ $div->contents
             };    # generate markup while removing div from output.
     }
@@ -219,10 +221,10 @@ sub process_fetch {
 
 sub nodelist {
     my ( $node, $ns, $name ) = @_;
-    my @nodes
-        = grep {
-        ref($_) eq 'XML::Elemental::Element' && $_->name eq "{$ns}$name"
-        } @{ $node->contents };
+    my @nodes = grep {
+        ref($_) eq 'XML::Elemental::Element'
+            && $_->name eq "{$ns}$name"
+    } @{ $node->contents };
     @nodes;
 }
 

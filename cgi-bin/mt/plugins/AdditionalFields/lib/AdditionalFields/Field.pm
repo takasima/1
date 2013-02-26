@@ -13,23 +13,25 @@ sub _init_tags {
     my $cache = $r->cache( 'plugin-additionalfields-init' );
     return 1 if $cache;
     $r->cache( 'plugin-additionalfields-init', 1 );
-    if ( ref $app eq 'MT::App::CMS' ) {
-        if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
-            # pass
-        } else {
-            my $load_at = [ 'view', 'rebuild', 'preview', 'save', 'delete', 'cfg', 'default', 'recover', 'itemset' ];
-            require CGI;
-            $CGI::POST_MAX = $app->config->CGIMaxUpload;
-            my $q = new CGI;
-            my $mode = $q->param( '__mode' );
-            return unless $mode;
-            $mode =~ s/_.*$//;
-            if (! grep { $mode =~ /^\Q$_\E/ } @$load_at ) {
-                return;
-            }
-            my $type = $q->param( '_type' );
-            if ( $type && ( $type eq 'field' ) ) {
-                return;
+    unless ( $ENV{FAST_CGI} || MT->config->PIDFilePath ) {
+        if ( ref $app eq 'MT::App::CMS' ) {
+            if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
+                # pass
+            } else {
+                require CGI;
+                $CGI::POST_MAX = $app->config->CGIMaxUpload;
+                my $q = new CGI;
+                my $mode = $q->param( '__mode' )
+                    or return;
+                $mode =~ s/_.*$//;
+                my @load_at = qw/view rebuild preview save delete cfg default recover itemset publish/;
+                unless ( grep { $mode =~ /^\Q$_\E/ } @load_at ) {
+                    return;
+                }
+                my $type = $q->param( '_type' );
+                if ( $type && ( $type eq 'field' ) ) {
+                    return;
+                }
             }
         }
     }
@@ -136,6 +138,16 @@ sub _init_tags {
                     return $value;
                 }
                 my @options = split( /,/, $value );
+                my $selectables = $field->options;
+                $selectables =~ s/^,//;
+                $selectables =~ s/,$//;
+                my @selectables = split( /,/, $selectables );
+                @options = grep {
+                    my $opt = $_;
+                    grep {
+                        $opt eq $_;
+                    } @selectables;
+                } @options;
                 my $tokens = $ctx->stash( 'tokens' );
                 my $builder = $ctx->stash( 'builder' );
                 my $i = 0; my $res = '';
@@ -182,6 +194,7 @@ sub _pre_save_field {
         my @default_vals = $app->param( 'default' );
         my @default;
         for my $value ( @default_vals ) {
+            $value = trim( $value );
             if ( grep( /^$value$/, @opts ) ) {
                 push ( @default, $value );
             }
@@ -283,7 +296,22 @@ sub _customfield_types {
             label      => 'Multi-Line with editor',
             field_html => {
                 default => q{
-                    <textarea name="<mt:var name="field_name" escape="html">" id="<mt:var name="field_id">" class="text high editor"><mt:var name="field_value" escape="html"></textarea>
+                    <textarea name="<mt:var name="field_name" escape="html">" id="<mt:var name="field_id">" class="text high"><mt:var name="field_value" escape="html"></textarea>
+                    <script type="text/javascript">
+                        jQuery(function($) {
+                            if (! MT || ! MT.EditorManager) {
+                                return;
+                            }
+
+                            var id = '<mt:var name="field_id">';
+                            var $field = $('#' + id);
+                            if ($field.data('mt-editor')) {
+                                return;
+                            }
+
+                            new MT.EditorManager(id);
+                        });
+                    </script>
                 },
             },
             column_def => 'vclob',
@@ -382,6 +410,7 @@ sub _field_html_params_mv {
         my @options = split( /,/, $option );
         my $i = 1;
         for my $value ( @options ) {
+            $value = trim( $value );
             my $checked;
             if ( $field_value && ( grep( /^$value$/, @default ) ) ) {
                 $checked = 1;

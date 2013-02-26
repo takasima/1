@@ -138,8 +138,10 @@ sub export {
     my ( $app, $blog, $settings ) = @_;
     my @fields;
     if ( defined $settings ) {
-        my @ids = $settings->{custom_fields_export_ids};
-        @fields = MT->model('field')->load( { id => \@ids, } );
+        my $ids = $settings->{custom_fields_export_ids};
+        if (@$ids) {
+            @fields = MT->model('field')->load( { id => $ids, } );
+        }
     }
     else {
         @fields = MT->model('field')->load( { blog_id => $blog->id, } );

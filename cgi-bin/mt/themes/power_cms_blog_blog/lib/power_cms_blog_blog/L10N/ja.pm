@@ -242,6 +242,7 @@ our %Lexicon = (
     'Invalid value' => '不正な値です',
     'Saving failed.' => '保存に失敗しました。',
     'Please enter requires.' => '必須項目を入力してください。',
+    'Please enter your user name.' => 'ユーザー名を入力してください',
     'Please enter your display name.' => '表示名を入力してください。',
     'Please enter your E-mail.' => '電子メールを入力してください。',
     'The value you entered was not a valid E-mail.' => '電子メールが不正です。',
@@ -250,6 +251,19 @@ our %Lexicon = (
     'Are you sure secede?' => '退会しますか?',
     'Secede Confirm' => '退会の確認',
     'Secedes' => '退会する',
+    'The multi-byte character is contained in the user name.' => 'ユーザー名にマルチバイト文字が含まれています。',
+    'The alphabet is contained in the user name.' => 'ユーザー名にアルファベットが含まれています。',
+    'The number is included in the user name.' => 'ユーザー名に数字が含まれています。',
+    'The sign is included in the user name.' => 'ユーザー名に記号が含まれています。',
+    'The user name is too short.' => 'ユーザー名が短すぎます。',
+    'The multi-byte character is contained in the password.' => 'パスワードにマルチバイト文字が含まれています。',
+    'You have to include both a capital letter and a small letter in a password.'
+        => 'パスワードには大文字と小文字の両方を必ず含めなければなりません。',
+    'You have to include both a character and a number in a password.'
+        => 'パスワードには文字と数字の両方を必ず含めなければなりません。',
+    'You have to include a sign in a password.' => 'パスワードには記号を含めなければなりません。',
+    'The password is too short.' => 'パスワードが短すぎます。',
+    'Account is created by the following contents.' => '以下の内容でアカウントを作成します。',
 
     # Members
     'Member\'s account confirmation on \'[_1]\'' => '「[_1]」への新規アカウント登録の確認',
@@ -258,6 +272,7 @@ our %Lexicon = (
     'A new user \'[_1]\' has successfully registered on 「[_2]」' => '「[_2]」への新規ユーザー「[_1]」の登録通知',
 
     'System administrator of \'[_1]\' trusted you.' => '「[_1]」のシステム管理者があなたを承認しました。',
+    'Finished signing up to \'[_1]\'.' => '「[_1]」への新規アカウント登録が完了しました。',
     '[_1] registered to the \'[_2]\'' => '[_1]がブログ「[_2]」に登録されました。',
     'Please click to regist \'[_1]\'' => 'クリックして「[_1]」への登録を完了してください',
     'Login to \'[_1]\'' => '「[_1]」へログイン',
@@ -324,6 +339,7 @@ our %Lexicon = (
     'Contact form' => 'お問い合わせフォーム',
     'Mail Subscription' => 'メールマガジンの購読',
     'Subscribe' => '購読する',
+    'Not subscribe' => '購読しない',
     '[_1] results ([_2]-[_3])' => '[_1]件がマッチしました (うち[_2]件から[_3]件を表示)',
     'All' => 'すべて',
     'Keyword Search' => 'キーワード検索',
@@ -347,13 +363,22 @@ our %Lexicon = (
     ' - ' => '～',
     'Thanks for the confirmation. This account has been disabled. Please wait for a while until it is approved by the administrator.'
         => 'ご登録ありがとうございます。システム管理者によって承認されるまでしばらくお待ちください。',
+    'Thanks for the confirmation. This account has been active. <br /><a href="[_1]">Please login from here.</a>'
+        => 'ご登録ありがとうございます。アカウントが有効化されました。<br /><a href="[_1]">こちらからログインしてください。</a>',
     'You have attempted to use a feature that you do not have permission to access. If you believe you are seeing this message in error contact your system administrator.'
         => 'アクセス権がありません。システム管理者に連絡してください。',
     'Access to Page' => 'ウェブページにアクセス',
     'Access to Entry' => 'ブログ記事にアクセス',
+    'Home' => 'ホーム',
 
     # template_6385 template_6383 template_6390
     'Return to <a href="[_1]">your comment</a>.' => '<a href="[_1]">元のコメント</a>に戻る',
+
+    'A request has been made to change your password in Movable Type. To complete this process click on the link below to select a new password.' => 'パスワードをリセットしようとしています。以下のリンクをクリックして、新しいパスワードを設定してください。',
+    'This URL is out of this site.' => '他のサイトに移動しようとしています',
+    'Are you sure want to move to this url?' => 'このURLに移動してもよろしいですか?',
+    'Hello, [_1]' => 'ようこそ[_1]さん',
+    'Contact' => 'お問い合わせ',
 );
 
 1;

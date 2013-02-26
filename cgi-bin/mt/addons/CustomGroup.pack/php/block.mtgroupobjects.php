@@ -222,8 +222,9 @@ function smarty_block_mtgroupobjects( $args, $content, &$ctx, &$repeat ) {
         $ctx->__stash[ 'vars' ][ '__last__' ] = ( $count == count( $groupobjects ) );
         $repeat = TRUE;
     } else {
+        $orig_groupobject = $ctx->stash( 'orig_groupobject' );
         $ctx->restore( $localvars );
-        $ctx->stash( $args[ 'stash' ], $ctx->stash( 'orig_groupobject' ) );
+        $ctx->stash( $args[ 'stash' ], $orig_groupobject );
         $repeat = FALSE;
     }
     return $content;

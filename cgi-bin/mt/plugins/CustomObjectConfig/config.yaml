@@ -1,7 +1,7 @@
 id  : CustomObjectConfig
 key : customobjectconfig
 name: Custom Object
-version: 3.4
+version: 3.5
 schema_version: 0.12
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/

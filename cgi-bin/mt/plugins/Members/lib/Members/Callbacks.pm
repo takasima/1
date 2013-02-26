@@ -327,4 +327,22 @@ sub _cb_build_file_filter {
     1;
 }
 
+sub _tasks_members_cleanup_userpic {
+    my $period = MT->config( 'MembersCleanupUserpicPeriod' ) || 43200;
+    my $period_point = time - 43200;
+    require MT::Session;
+    my @userpic_session = MT::Session->load( {
+                email => 'temporary_userpic@powercms.jp' }, {
+                sort  => 'start',
+                start_val => $period_point,
+                direction => 'descend', } );
+    for my $sess ( @userpic_session ) {
+        if ( -f $sess->name ) {
+            unlink ( $sess->name );
+        }
+        $sess->remove or die $sess->errstr;
+    }
+    return 1;
+}
+
 1;

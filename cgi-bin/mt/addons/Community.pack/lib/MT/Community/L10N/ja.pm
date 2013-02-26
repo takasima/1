@@ -16,6 +16,7 @@ use utf8;
 %Lexicon = (
 
 ## addons/Community.pack/config.yaml
+	'http://www.sixapart.com/movabletype/' => 'http://www.sixapart.jp/movabletype/',
 	'Increase reader engagement - deploy features to your website that make it easier for your readers to engage with your content and your company.' => 'ブログの読者も参加して、コミュニティでコンテンツを更新するグループブログです。',
 	'Create forums where users can post topics and responses to topics.' => 'フォーラム形式のコミュニティ掲示板です。トピックを公開して、返信を投稿します。',
 	'Users followed by [_1]' => '[_1]に注目されているユーザー',
@@ -74,24 +75,27 @@ use utf8;
 
 ## addons/Community.pack/lib/MT/App/Community.pm
 	'No login form template defined' => 'ログインフォームのテンプレートがありません。',
-	'Before you can sign in, you must authenticate your email address. <a href="[_1]">Click here</a> to resend the verification email.' => 'ログインする前にメールアドレスを確認する必要があります。確認メールを再送したい場合は<a href="[_1]">ここをクリック</a>してください。',
-	'You are trying to redirect to external resources. If you can trust the site, please click the link: [_1]' => '外部のサイトへリダイレクトしようとしています。あなたがそのサイトを信頼できる場合、リンクをクリックしてください。[_1]',
+	'Before you can sign in, you must authenticate your email address. <a href="[_1]">Click here</a> to resend the verification email.' => 'サインインする前にメールアドレスを確認する必要があります。確認メールを再送したい場合は<a href="[_1]">ここをクリック</a>してください。',
+	'You are trying to redirect to external resources: [_1]' => '外部のサイトへリダイレクトしようとしています。[_1]',
+	'Successfully authenticated but signing up is not allowed.  Please contact system administrator.' => '認証されましたが、登録は許可されていません。システム管理者に連絡してください。',
 	'(No email address)' => '(メールアドレスがありません)',
-	'Your confirmation have expired. Please register again.' => '有効期限が過ぎています。再度登録してください。',
 	'User \'[_1]\' (ID:[_2]) has been successfully registered.' => 'ユーザー「[_1]」(ID: [_2])が登録されました。',
-	'Thanks for the confirmation.  Please sign in.' => '確認されました。ログインしてください。',
+	'Thanks for the confirmation.  Please sign in.' => '確認されました。サインインしてください。',
 	'[_1] registered to Movable Type.' => '[_1]はMovable Typeに登録しました。',
-	'Login required' => 'ログインしてください。',
+	'Login required' => 'サインインしてください。',
 	'Title or Content is required.' => '本文とタイトルを入力してください。',
+	'Publish failed: [_1]' => '公開できませんでした: [_1]',
 	'System template entry_response not found in blog: [_1]' => 'ブログ記事の確認テンプレートがありません。',
 	'New entry \'[_1]\' added to the blog \'[_2]\'' => 'ブログ「[_2]」に新しいブログ記事「[_1]」が投稿されました。',
 	'Id or Username is required' => 'IDまたはユーザー名が必要です。',
 	'Unknown user' => 'ユーザーが不明です。',
+	'All required fields must have valid values.' => '必須フィールドのすべてに正しい値を設定してください。',
 	'Recent Entries from [_1]' => '[_1]の最近のブログ記事',
 	'Responses to Comments from [_1]' => '[_1]のコメントへの返信',
 	'Actions from [_1]' => '[_1]のアクション',
 
 ## addons/Community.pack/lib/MT/Community/CMS.pm
+	'Movable Type was unable to write on the "Upload Destination". Please make sure that the folder is writable from the web server.' => 'アップロード先のディレクトリに書き込みできません。ウェブサーバーから書き込みできるパーミッションを与えてください。',
 
 ## addons/Community.pack/lib/MT/Community/Tags.pm
 	'You used an \'[_1]\' tag outside of the block of MTIfEntryRecommended; perhaps you mistakenly placed it outside of an \'MTIfEntryRecommended\' container?' => '[_1]をコンテキスト外で利用しようとしています。MTIfEntryRecommendedコンテナタグの外部で使っていませんか?',
@@ -107,6 +111,7 @@ use utf8;
 ## addons/Community.pack/templates/blog/archive_index.mtml
 
 ## addons/Community.pack/templates/blog/archive_widgets_group.mtml
+	'This is a custom set of widgets that are conditioned to serve different content based upon what type of archive it is included. More info: [_1]' => 'アーカイブの種類に応じて異なる内容を表示するように設定されたウィジェットです。詳細: [_1]',
 
 ## addons/Community.pack/templates/blog/categories.mtml
 
@@ -168,6 +173,7 @@ use utf8;
 ## addons/Community.pack/templates/blog/main_index.mtml
 
 ## addons/Community.pack/templates/blog/main_index_widgets_group.mtml
+	'This is a custom set of widgets that are conditioned to only appear on the homepage (or "main_index"). More info: [_1]' => 'main_indexのテンプレートだけに表示されるように設定されているウィジェットのセットです。詳細: [_1]',
 
 ## addons/Community.pack/templates/blog/monthly_archive_list.mtml
 
@@ -308,7 +314,9 @@ use utf8;
 ## addons/Community.pack/templates/global/email_verification_email.mtml
 	'Thank you registering for an account to [_1].' => '[_1]にご登録いただきありがとうございます。',
 	'For your own security and to prevent fraud, we ask that you please confirm your account and email address before continuing. Once confirmed you will immediately be allowed to sign in to [_1].' => 'セキュリティおよび不正利用を防ぐ観点から、アカウントとメールアドレスの確認をお願いしています。確認され次第、[_1]にサインインできるようになります。',
+	'To confirm your account, please click on or cut and paste the following URL into a web browser:' => 'アカウントの確認のため、次のURLをクリックするか、コピーしてブラウザのアドレス欄に貼り付けてください。',
 	q{If you did not make this request, or you don't want to register for an account to [_1], then no further action is required.} => q{このメールに覚えがない場合や、[_1]に登録するのをやめたい場合は、何もする必要はありません。},
+	'Thank you very much for your understanding.' => 'ご協力ありがとうございます。',
 
 ## addons/Community.pack/templates/global/footer.mtml
 
@@ -376,11 +384,11 @@ use utf8;
 ## addons/Community.pack/templates/global/register_confirmation.mtml
 	'Authentication Email Sent' => '確認メール送信完了',
 	'Profile Created' => 'プロフィールを作成しました。',
-	'<a href="[_1]">Return to the original page.</a>' => '<a href="[_1]">元のページに戻る</a>',
 
 ## addons/Community.pack/templates/global/register_form.mtml
 
 ## addons/Community.pack/templates/global/register_notification_email.mtml
+	q{This email is to notify you that a new user has successfully registered on the blog '[_1]'. Listed below you will find some useful information about this new user.} => q{これは新しいユーザーがブログ「[_1]」に登録を完了したことを通知するメールです。新しいユーザーの情報は以下に記載されています。},
 
 ## addons/Community.pack/templates/global/search.mtml
 
@@ -393,7 +401,7 @@ use utf8;
 ## addons/Community.pack/tmpl/cfg_community_prefs.tmpl
 	'Community Settings' => 'コミュニティの設定',
 	'Anonymous Recommendation' => '匿名での投票',
-	'Check to allow anonymous users (users not logged in) to recommend discussion.  IP address is recorded and used to identify each user.' => 'ログインしていないユーザーでもお気に入りに登録できるようにします。IPアドレスを記録して重複を防ぎます。',
+	'Check to allow anonymous users (users not logged in) to recommend discussion.  IP address is recorded and used to identify each user.' => 'サインインしていないユーザーでもお気に入りに登録できるようにします。IPアドレスを記録して重複を防ぎます。',
 	'Allow anonymous user to recommend' => '匿名での投票を許可する',
 	'Junk Filter' => 'スパムフィルター',
 	'If enabled, all moderated entries will be filtered by Junk Filter.' => 'すべてのブログ記事をスパムフィルターの対象にします。',

@@ -15,6 +15,7 @@ use utf8;
 %Lexicon = (
 
 ## addons/Commercial.pack/config.yaml
+	'http://www.sixapart.com/movabletype/' => 'http://www.sixapart.jp/movabletype/',
 	'Professional designed, well structured and easily adaptable web site. You can customize default pages, footer and top navigation easily.' => 'バナー画像、水平型のナビゲーションなど、ホームページ用途に適したデザインです。あらかじめ用意されたページをカスタマイズして、簡単にウェブサイトを作成できます。',
 	'_PWT_ABOUT_BODY' => '
 <p><strong>以下の文章はサンプルです。内容を適切に書き換えてください。</strong></p>
@@ -44,6 +45,7 @@ use utf8;
 	'Template tag' => 'テンプレートタグ',
 	'Updating Universal Template Set to Professional Website set...' => '汎用テンプレートセットをプロフェッショナルウェブサイトテンプレートセットにアップデートしています...',
 	'Migrating CustomFields type...' => 'カスタムフィールドのタイプをアップデートしています...',
+	'Converting CustomField type...' => 'カスタムフィールドのタイプを変換しています...',
 	'Professional Styles' => 'プロフェッショナルスタイル',
 	'A collection of styles compatible with Professional themes.' => 'プロフェッショナルテーマと互換のあるスタイルです。',
 	'Professional Website' => 'プロフェッショナル ウェブサイト',
@@ -62,7 +64,7 @@ use utf8;
 	'Blog Archives' => 'アーカイブ',
 
 ## addons/Commercial.pack/lib/CustomFields/App/CMS.pm
-	'Show' => '表示件数',
+	'Show' => '表示項目',
 	'Date & Time' => '日付と時刻',
 	'Date Only' => '日付',
 	'Time Only' => '時刻',
@@ -102,7 +104,7 @@ use utf8;
 	'The template tag \'[_1]\' is already in use in the system level' => '[_1]というタグは既にシステムに存在します。',
 	'The template tag \'[_1]\' is already in use in [_2]' => '[_1]というタグは既に[_2]に存在します。',
 	'The template tag \'[_1]\' is already in use in this blog' => '[_1]というタグは既にこのブログに存在します。',
-	'The \'[_1]\' of the template tag \'[_2]\' that is already in use in [_3] is [_4].' => '\'[_2]\'というタグの\'[_1]\'は[_3]では[_4]です。',
+	'The \'[_1]\' of the template tag \'[_2]\' that is already in use in [_3] is [_4].' => '[_1]が違う\'[_2]\'というタグが[_3]に見つかったため、保存できません。([_1]: [_4])',
 	'_CF_BASENAME' => 'ベースネーム',
 
 ## addons/Commercial.pack/lib/CustomFields/Template/ContextHandlers.pm
@@ -273,6 +275,7 @@ use utf8;
 ## addons/Commercial.pack/templates/professional/website/search.mtml
 
 ## addons/Commercial.pack/templates/professional/website/search_results.mtml
+	'By default, this search engine looks for all words in any order. To search for an exact phrase, enclose the phrase in quotes:' => 'すべての単語が順序に関係なく検索されます。フレーズで検索したいときは引用符で囲んでください。',
 
 ## addons/Commercial.pack/templates/professional/website/sidebar.mtml
 

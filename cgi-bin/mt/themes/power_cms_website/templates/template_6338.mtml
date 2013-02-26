@@ -76,6 +76,28 @@
 </MTLoop>
 </MTPagesFooter>
 </MTPages>
+                    <MTIfDynamic>
+                        <MTIfLogin>
+                            <div style="text-align:center;font-size:x-small">
+                                <a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>&amp;sessid=<$MTGetVar name="request.sessid" escape="html"$>"><__trans phrase="Edit Profile"></a>
+                                |
+                                <a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>&amp;sessid=<$MTGetVar name="request.sessid" escape="html"$>"><__trans phrase="Sign out"></a>
+                                <br />
+                                <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+                            </div>
+                        </MTIfLogin>
+                        <MTElse>
+                        <mtml tag="MTIfLogin">
+                            <div style="text-align:center;font-size:x-small">
+                                <a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>&amp;sessid=<mtml tag="MTGetVar" params='name="request.sessid" escape="html"'>"><__trans phrase="Edit Profile"></a>
+                                |
+                                <a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>&amp;sessid=<mtml tag="MTGetVar" params='name="request.sessid" escape="html"'>"><__trans phrase="Sign out"></a>
+                                <br />
+                                <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+                            </div>
+                        <mtml tag="/MTIfLogin">
+                        </MTElse>
+                    </MTIfDynamic>
 
 <div style="text-align:center;background-color:#EDEDED;padding:0 6px">
 <div style="font-size:x-small">

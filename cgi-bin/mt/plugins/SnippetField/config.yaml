@@ -1,7 +1,7 @@
 id  : SnippetField
 key : snippetfield
 name: Snippet Custom Field
-version: 1.0
+version: 1.2
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
 l10n_class: SnippetField::L10N

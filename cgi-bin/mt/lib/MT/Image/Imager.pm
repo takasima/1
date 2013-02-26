@@ -16,7 +16,7 @@ sub load_driver {
     eval { require Imager };
     if ( my $err = $@ ) {
         return $image->error(
-            MT->translate( "Can't load Imager: [_1]", $err ) );
+            MT->translate( "Cannot load Imager: [_1]", $err ) );
     }
     1;
 }
@@ -103,6 +103,31 @@ sub crop {
     $image->{width} = $image->{height} = $size;
 
     wantarray ? ( $image->blob, $size, $size ) : $image->blob;
+}
+
+sub flipHorizontal {
+    my $image = shift;
+    $image->{imager} = $image->{imager}->flip( dir => 'h' );
+
+    wantarray ? ( $image->blob, @$image{qw(width height)} ) : $image->blob;
+}
+
+sub flipVertical {
+    my $image = shift;
+    $image->{imager} = $image->{imager}->flip( dir => 'v' );
+
+    wantarray ? ( $image->blob, @$image{qw(width height)} ) : $image->blob;
+}
+
+sub rotate {
+    my $image = shift;
+    my ( $degrees, $w, $h ) = $image->get_degrees(@_);
+
+    $image->{imager} = $image->{imager}->rotate( right => $degrees );
+
+    wantarray
+        ? ( $image->blob, $w, $h )
+        : $image->blob;
 }
 
 sub convert {

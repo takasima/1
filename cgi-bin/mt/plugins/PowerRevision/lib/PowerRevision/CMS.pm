@@ -118,8 +118,7 @@ sub _mode_recover_entry {
         }
     } else {
         my $class = $entry->class;
-        $class =~ s/(^.)/uc($1)/e;
-        $app->log( $plugin->translate( '[_1] is not recovered from backup (XML file was not found).', encode_html( $plugin->translate( $class ) ) ) );
+        $app->log( $plugin->translate( '[_1] is not recovered from backup (XML file was not found).', encode_html( $plugin->translate( ucfirst($class) ) ) ) );
         my $redirect_url = $app->base . $app->uri( mode => 'view',
                                                    args => { _type => $entry->class,
                                                              id => $entry->id,
@@ -208,7 +207,7 @@ sub _mode_preview_history {
         eval {
             require ExtFields::Extfields;
         };
-        unless ( $@ ){
+        unless ( $@ ) {
             my @fields = ExtFields::Extfields->load( { entry_id => $entry_id } );
             for my $field( @fields ) {
                 $field->remove or die $field->errstr;

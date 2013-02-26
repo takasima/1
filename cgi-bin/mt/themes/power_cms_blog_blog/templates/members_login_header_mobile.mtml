@@ -1,6 +1,6 @@
 <$mt:setvar name="mobile" value="1"$>
 <mt:Unless name="return_url">
-	<mt:setvarBlock name="return_url"><$mt:BlogRelativeURL$></mt:setvarBlock>
+    <mt:setvarBlock name="return_url"><$mt:BlogRelativeURL$></mt:setvarBlock>
 </mt:Unless>
 <mt:Unless name="page_title"><$mt:BlogName remove_html="1" setvar="page_title"$></mt:Unless>
 <mt:setvar name="not_static" value="">
@@ -10,36 +10,36 @@
 <$mt:XMLDocument$>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<$mt:DefaultLanguage$>" xml:lang="<$mt:DefaultLanguage$>">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=<$mt:PublishCharset$>" />
-		<title><$mt:Var name="title"$></title>
-		<style type="text/css">
-			a {color: #006cff;}
-			a:link {color: #006cff;}
-			a:visited {color: #006cff;}
-			a:hover {color: #006cff;}
-			a:active {color: #006cff;}
-		</style>
-	</head>
-	<body>
-		<div style="padding:5px 0;background:#484848;text-align:center;">
-			<h1 accesskey="0">
-				<mt:unless name="login_page">
-				<a href="<$mt:BlogRelativeURL$>mobile/index.html" accesskey="0"><span style="font-size:x-large;color:#FFF;"><$mt:BlogName encode_html="1"$></span></a>
-				<mt:else>
-				<span style="font-size:x-large;color:#FFF;"><$mt:BlogName encode_html="1"$></span>
-				</mt:else>
-				</mt:unless>
-			</h1>
-		</div>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=<$mt:PublishCharset$>" />
+        <title><$mt:Var name="title"$></title>
+        <style type="text/css">
+            a {color: #006cff;}
+            a:link {color: #006cff;}
+            a:visited {color: #006cff;}
+            a:hover {color: #006cff;}
+            a:active {color: #006cff;}
+        </style>
+    </head>
+    <body>
+        <div style="padding:5px 0;background:#484848;text-align:center;">
+            <h1 accesskey="0">
+                <mt:unless name="login_page">
+                <a href="<$mt:BlogRelativeURL$>mobile/index.html" accesskey="0"><span style="font-size:x-large;color:#FFF;"><$mt:BlogName encode_html="1"$></span></a>
+                <mt:else>
+                <span style="font-size:x-large;color:#FFF;"><$mt:BlogName encode_html="1"$></span>
+                </mt:else>
+                </mt:unless>
+            </h1>
+        </div>
 
-		<div style="padding-bottom:0.3em;border-bottom:1px dotted #484848;margin-bottom:0.3em;">
-			<h2>
-				<a href="#top" accesskey="*" name="top" id="top"></a>
-				<span style="font-size:medium;"><$mt:Var name="page_title" encode_html="1"$></span>
-			</h2>
-		</div>
+        <div style="padding-bottom:0.3em;border-bottom:1px dotted #484848;margin-bottom:0.3em;">
+            <h2>
+                <a href="#top" accesskey="*" name="top" id="top"></a>
+                <span style="font-size:medium;"><$mt:Var name="page_title" encode_html="1"$></span>
+            </h2>
+        </div>
 
-		<mt:if name="sub_title">
-			<h3 style="text-align:center"><$mt:Var name="sub_title" remove_html="1"$></h3>
-		</mt:if>
+        <mt:if name="sub_title">
+            <h3 style="text-align:center"><$mt:Var name="sub_title" remove_html="1"$></h3>
+        </mt:if>

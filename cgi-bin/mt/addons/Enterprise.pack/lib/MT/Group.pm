@@ -246,6 +246,88 @@ sub backup_terms_args {
     }
 }
 
+sub backup_plugin_cb {
+    my ( $cb, $blog_ids, $progress, $else_xml, $backuped_objs ) = @_;
+    return 1 unless defined($blog_ids) && scalar(@$blog_ids);
+    my @group_ids = @{ $backuped_objs->{'MT::Group'} || [] };
+
+    my $backuped_authors = ( $backuped_objs->{'MT::Author'} ||= [] );
+    my %backuped_authors = map { ( $_ => 1 ) } @$backuped_authors;
+    my $out = '';
+    my %authors_to_backup;
+
+    if (@group_ids) {
+
+        my $class = MT->model('association');
+        my $iter  = $class->load_iter(
+            {   blog_id  => 0,
+                type     => MT::Association::USER_GROUP(),
+                group_id => \@group_ids
+            }
+        );
+        return 1 unless $iter;
+
+        my @assoc_meta;
+        if ( exists( $class->properties->{meta} )
+            && $class->properties->{meta} )
+        {
+            require MT::Meta;
+            @assoc_meta = MT::Meta->metadata_by_class($class);
+        }
+
+        my $as_count = 0;
+
+        my $state = MT->translate( 'Backing up [_1] records:', $class );
+        $progress->( $state, $class->class_type || $class->datasource );
+        while ( my $as = $iter->() ) {
+            $out .= $as->to_xml( undef, \@assoc_meta ) . "\n";
+            $as_count++;
+            next if exists $backuped_authors{ $as->author_id };
+            $authors_to_backup{ $as->author_id } = 1;
+        }
+        $progress->(
+            $state . " "
+                . MT->translate( "[_1] records backed up.", $as_count ),
+            $class->class_type || $class->datasource
+        );
+    }
+
+    if (%authors_to_backup) {
+        my $class = MT->model('author');
+        my @author_meta;
+        if ( exists( $class->properties->{meta} )
+            && $class->properties->{meta} )
+        {
+            require MT::Meta;
+            @author_meta = MT::Meta->metadata_by_class($class);
+        }
+
+        my $state = MT->translate( 'Backing up [_1] records:', $class );
+        $progress->( $state, $class->class_type || $class->datasource );
+        my $author_count = 0;
+
+        my @authors_to_backup = keys %authors_to_backup;
+        while (@authors_to_backup) {
+            my @ids = splice( @authors_to_backup, 0, 50 );
+            my $iter = $class->load_iter( { id => \@ids } );
+            next unless $iter;
+            while ( my $author = $iter->() ) {
+                $out .= $author->to_xml( undef, \@author_meta ) . "\n";
+                $author_count++;
+                $backuped_authors{ $author->author_id } = 1;
+                push @$backuped_authors, $author->author_id;
+            }
+        }
+        $progress->(
+            $state . " "
+                . MT->translate( "[_1] records backed up.", $author_count ),
+            $class->class_type || $class->datasource
+        );
+    }
+
+    push @$else_xml, $out if $out;
+}
+
 1;
 __END__
 

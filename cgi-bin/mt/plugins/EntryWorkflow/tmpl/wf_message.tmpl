@@ -1,4 +1,4 @@
-<mt:if name="entry_class" eq 'page'><__trans phrase="[_1] does the Page to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"><mt:else><__trans phrase="[_1] does the Entry to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"></mt:else></mt:if>
+<__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="[_1] does the Page to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"><mt:else><__trans phrase="[_1] does the Entry to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"></mt:else></mt:if>
 
 <__trans phrase="Access to Movable Type">:<mt:if name="revision_id">
 <<$mt:var name="script_uri"$>?__mode=preview_history&blog_id=<$mt:var name="blog_id"$>&entry_id=<$mt:var name="entry_id"$>&_type=<$mt:var name="entry_class"$>&revision_id=<$mt:var name="revision_id"$>><mt:else>

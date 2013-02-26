@@ -510,7 +510,7 @@ sub _download_link_csv {
     push ( @$column_names, 'tags' );
     if ( $csv->combine( @$column_names ) ) {
         my $string = $csv->string;
-        print $string;
+        $app->print( "$string" );
     }
     my $weblog_ids = get_weblog_ids( $blog );
     my $iter = $model->load_iter( { blog_id => $weblog_ids } );
@@ -528,7 +528,7 @@ sub _download_link_csv {
         if ( $csv->combine( @fields ) ) {
             my $string = $csv->string;
             $string = encode_utf8_string_to_cp932_octets( $string );
-            print "\n$string";
+            $app->print( "\n$string" );
         }
     }
 }
@@ -749,9 +749,12 @@ sub _task_link_check {
                         require Digest::MD5;
                         $content = Digest::MD5::md5_hex( $content );
                         if ( (! $obj->digest ) || ( $obj->digest ne $content ) ) {
-                            my ( $year, $mon, $day, $hour, $min, $sec, $tz ) = HTTP::Date::parse_date( $response->header( "Last-Modified" ) );
-                            my $modified = sprintf( "%04d%02d%02d%02d%02d%02d", $year, $mon, $day, $hour, $min, $sec );
-                            if (! valid_ts( $modified ) ) {
+                            my $modified;
+                            if ( $response->header( "Last-Modified" ) ) {
+                                my ( $year, $mon, $day, $hour, $min, $sec, $tz ) = HTTP::Date::parse_date( $response->header( "Last-Modified" ) );
+                                $modified = sprintf( "%04d%02d%02d%02d%02d%02d", $year, $mon, $day, $hour, $min, $sec );
+                            }
+                            if (! $modified || ! valid_ts( $modified ) ) {
                                 $modified = current_ts( $obj->blog );
                             }
                             $obj->urlupdated_on( $modified );
@@ -1036,6 +1039,14 @@ sub _edit_link {
     $param->{ search_label } = $plugin_link->translate( 'Link' );
     $param->{ screen_group } = 'link';
     $param->{ return_args } = _force_view_mode_return_args( $app );
+    my $perms = $app->user->permissions( $blog->id );
+    if ( $perms && $perms->can_do( 'use_tools:search' ) ) {
+        my $search_apis = $app->search_apis( 'blog' );
+        foreach my $search_api ( @$search_apis ) {
+            my $key = "can_use_tools_search_@{[ $search_api->{key} ]}";
+            $param->{ $key } = 1
+        }
+    }
 }
 
 sub _edit_linkgroup {

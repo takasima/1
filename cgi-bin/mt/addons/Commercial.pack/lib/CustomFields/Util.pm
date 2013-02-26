@@ -12,7 +12,8 @@ use strict;
 use Exporter;
 @CustomFields::Util::ISA = qw( Exporter );
 use vars qw( @EXPORT_OK );
-@EXPORT_OK = qw( get_meta save_meta field_loop _get_tmpl _get_html );
+@EXPORT_OK = qw( get_meta save_meta field_loop _get_tmpl _get_html
+    load_meta_to_cache );
 use MT::Util qw( format_ts );
 
 sub load_meta_fields {
@@ -131,6 +132,14 @@ sub install_field_tags {
     }
 
     if ( $fields && @$fields ) {
+        my $handler
+            = MT->handler_to_coderef(
+            '$Commercial::CustomFields::Template::ContextHandlers::_hdlr_customfield_value_by_tag'
+            );
+        my $handler_asset
+            = MT->handler_to_coderef(
+            '$Commercial::CustomFields::Template::ContextHandlers::_hdlr_customfield_asset_by_tag'
+            );
     FIELD: for my $field (@$fields) {
             my $tag = $field->tag
                 or next FIELD;
@@ -141,15 +150,10 @@ sub install_field_tags {
             $tags->{function}->{$tag} = sub {
                 local $_[0]->{__stash}{tag}   = $tag;
                 local $_[0]->{__stash}{field} = $field;
-                my $meth
-                    = MT->handler_to_coderef(
-                    '$Commercial::CustomFields::Template::ContextHandlers::_hdlr_customfield_value_by_tag'
-                    );
-                $meth->(@_);
+                $handler->(@_);
             };
             if ( $assets{ ( lc $field->type ) } ) {
-                $tags->{block}->{ $tag . 'asset' }
-                    = '$Commercial::CustomFields::Template::ContextHandlers::_hdlr_customfield_asset_by_tag';
+                $tags->{block}->{ $tag . 'asset' } = $handler_asset;
             }
         }
     }
@@ -329,28 +333,35 @@ sub field_loop {
     return \@pre_sort;
 }
 
-sub get_meta {
-    my $plugin  = MT->component("Commercial");
-    my $obj     = shift;
-    my $blog_id = $obj->can('blog_id') ? $obj->blog_id : '';
+sub load_meta_to_cache {
+    $_[0]->meta_obj->lazy_load_objects;
+}
 
-    # my $datasources = $plugin->get_config_hash("blog:$blog_id");
-    my $obj_type
-        = $obj->can('class_type') ? $obj->class_type : $obj->datasource;
+sub get_meta {
+    my $plugin = MT->component("Commercial");
+    my ( $obj, $key ) = @_;
 
     if ( $obj->has_meta ) {
-        return $obj->meta_obj->get_collection('field');
+        return $key
+            ? $obj->meta( 'field.' . $key )
+            : $obj->meta_obj->get_collection('field');
     }
     else {
+        my $blog_id = $obj->can('blog_id') ? $obj->blog_id : '';
+        my $obj_type
+            = $obj->can('class_type') ? $obj->class_type : $obj->datasource;
         my $id = $obj->id;
 
         require MT::PluginData;
         my $meta_data = MT::PluginData->get_by_key(
             { plugin => 'CustomFields', key => "${obj_type}_${id}" } );
 
-        return ( ref $meta_data->data eq 'HASH' )
+        my $hash
+            = ( ref $meta_data->data eq 'HASH' )
             ? $meta_data->data->{customfields}
             : {};
+
+        return $key ? $hash->{$key} : $hash;
     }
 }
 

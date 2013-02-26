@@ -4,7 +4,7 @@ name: ExtFields
 description: <__trans phrase="The Entry Fields can be extend.">
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
-version: 2.1
+version: 3
 schema_version: 0.93
 settings:
     enable_upload:

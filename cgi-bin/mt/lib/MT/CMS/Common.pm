@@ -134,6 +134,13 @@ sub save {
         )
         )
     {
+        if (    $values{site_path}
+            and $values{site_path}
+            =~ m!^(?:/|[a-zA-Z]:\\|\\\\[a-zA-Z0-9\.]+)! )
+        {
+            return $app->errtrans("Invalid request.");
+        }
+
         unless ( $obj->id ) {
             my $subdomain = $q->param('site_url_subdomain');
             $subdomain = '' if !$q->param('use_subdomain');
@@ -143,7 +150,8 @@ sub save {
             $values{site_url} = "$subdomain/::/$path";
 
             $values{site_path} = $app->param('site_path_absolute')
-                if $app->param('use_absolute')
+                if !$app->config->BaseSitePath
+                    && $app->param('use_absolute')
                     && $app->param('site_path_absolute');
         }
 
@@ -155,8 +163,7 @@ sub save {
                 delete $values{site_path};
                 delete $values{archive_url};
                 delete $values{archive_path};
-                delete $values{site_path_absolute}
-                    if $values{site_path_absolute};
+                delete $values{site_path_absolute};
             }
             if ( $id && !( $perms->can_do('save_blog_config') ) ) {
                 delete $values{$_} foreach grep {
@@ -184,6 +191,28 @@ sub save {
                     foreach grep { $_ ne 'site_path' && $_ ne 'site_url' }
                     @$names;
             }
+        }
+        if ( $values{site_path} and $app->config->BaseSitePath ) {
+            my $l_path = $app->config->BaseSitePath;
+            my $s_path = $values{site_path};
+
+            # making sure that we have a '/' in the end of the paths
+            $l_path = File::Spec->catdir( $l_path, "PATH" );
+            $l_path =~ s/PATH$//;
+            $l_path = quotemeta($l_path);
+            $s_path = File::Spec->catdir( $s_path, "PATH" );
+            $s_path =~ s/PATH$//;
+
+            if ( $s_path !~ m/^$l_path/i ) {
+                return $app->errtrans(
+                    "The website root directory must be within [_1]",
+                    $l_path );
+            }
+        }
+        if ( $values{site_path}
+            and not File::Spec->file_name_is_absolute( $values{site_path} ) )
+        {
+            return $app->errtrans("Invalid request.");
         }
     }
 
@@ -382,6 +411,11 @@ sub save {
                 }
             );
         }
+        if ($id) {
+            my $cache_key = $original->get_cache_key();
+            require MT::Cache::Negotiate;
+            MT::Cache::Negotiate->new()->delete($cache_key);
+        }
     }
 
     # TODO: convert this to use $app->call_return();
@@ -498,6 +532,8 @@ sub save {
 
     $app->add_return_arg( 'id' => $obj->id ) if !$original->id;
     $app->add_return_arg( 'saved' => 1 );
+    $app->add_return_arg(
+        ( $original->id ? 'saved_changes' : 'saved_added' ) => 1 );
     $app->call_return;
 }
 
@@ -592,6 +628,9 @@ sub edit {
             return $class->load($id) || undef;
         }
     );
+
+    $app->run_callbacks( 'cms_object_scope_filter.' . $type, $app, $id )
+        || return $app->return_to_dashboard( redirect => 1 );
 
     if ( !$author->is_superuser ) {
         $app->run_callbacks( 'cms_view_permission_filter.' . $type,
@@ -693,7 +732,14 @@ sub edit {
         require MT::Theme;
         my $themes = MT::Theme->load_all_themes;
         $param{theme_loop} = [
-            map { { key => $_->{id}, label => $_->label, } }
+            map {
+                my ( $errors, $warnings ) = $_->validate_versions;
+                {   key      => $_->{id},
+                    label    => $_->label,
+                    errors   => @$errors ? $errors : undef,
+                    warnings => @$warnings ? $warnings : undef,
+                }
+                }
                 grep {
                        !defined $_->{class}
                     || $_->{class} eq 'both'
@@ -701,6 +747,10 @@ sub edit {
                 } values %$themes
         ];
         $param{'master_revision_switch'} = $app->config->TrackRevisions;
+        my $limit = File::Spec->catdir( $cfg->BaseSitePath, 'PATH' );
+        $limit =~ s/PATH$//;
+        $param{'sitepath_limited_trail'} = $limit;
+        $param{'sitepath_limited'}       = $cfg->BaseSitePath;
     }
 
     my $res = $app->run_callbacks( 'cms_edit.' . $type, $app, $id, $obj,
@@ -1707,7 +1757,7 @@ sub delete {
                 require MT::Placement;
                 my $blog = MT::Blog->load($blog_id)
                     or return $app->error(
-                    $app->translate( 'Can\'t load blog #[_1].', $blog_id ) );
+                    $app->translate( 'Cannot load blog #[_1].', $blog_id ) );
                 my $at = $blog->archive_type;
                 if ( $at && $at ne 'None' ) {
                     my @at = split /,/, $at;
@@ -1766,24 +1816,28 @@ sub delete {
                 next;
             }
         }
+        elsif ( $type eq 'template' ) {
+            my $cache_key = $obj->get_cache_key();
+            require MT::Cache::Negotiate;
+            MT::Cache::Negotiate->new()->delete($cache_key);
 
-        # FIXME: enumeration of types
-        if (   $type eq 'template'
-            && $obj->type
-            !~ /(custom|index|archive|page|individual|category|widget|backup)/o
-            )
-        {
-            $required_items++;
+            # FIXME: enumeration of types
+            if ( $obj->type
+                !~ /(custom|index|archive|page|individual|category|widget|backup)/
+                )
+            {
+                $required_items++;
+                next;
+            }
         }
-        else {
-            $obj->remove
-                or return $app->errtrans(
-                'Removing [_1] failed: [_2]',
-                $app->translate($type),
-                $obj->errstr
-                );
-            $app->run_callbacks( 'cms_post_delete.' . $type, $app, $obj );
-        }
+
+        $obj->remove
+            or return $app->errtrans(
+            'Removing [_1] failed: [_2]',
+            $app->translate($type),
+            $obj->errstr
+            );
+        $app->run_callbacks( 'cms_post_delete.' . $type, $app, $obj );
         $delete_count++;
     }
 
@@ -1824,7 +1878,7 @@ sub delete {
     }
     if ($required_items) {
         $return_arg{error}
-            = $app->translate("System templates can not be deleted.");
+            = $app->translate("System templates cannot be deleted.");
     }
 
     if ( $app->param('xhr') ) {

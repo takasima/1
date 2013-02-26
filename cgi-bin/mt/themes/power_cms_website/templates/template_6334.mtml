@@ -24,14 +24,10 @@ website_name=<$MTWebsiteName$>
 <meta charset="<$MTPublishCharset$>">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 <title><$MTGetVar name="page_title" escape="html"$><MTUnless name="body_class" eq="mt-main-index"> | <$MTGetVar name="website_name" escape="html"$></MTUnless></title>
-<MTIf name="description"><meta name="description" content="<$MTGetVar name="description"$>"></MTIf>
-<MTIf name="keywords"><meta name="keywords" content="<$MTGetVar name="keywords"$>"></MTIf>
-<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="<$MTLink template="<__trans phrase="Feed - Recent Entries">" blog_id="$website_id"$>">
-<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(import.css)">" blog_id="$website_id"$>" rel="stylesheet" type="text/css" media="screen,print">
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="<$MTLink template="<__trans phrase="Feed - Recent Entries">"$>">
+<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(import.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
 <script src="<$MTLink template="JavaScript(jquery.js)"$>"></script>
 <script src="<$MTLink template="JavaScript"$>"></script>
-<script src="<$MTLink template="<__trans phrase="SP-JavaScript(main.js)">" blog_id="$website_id"$>"></script>
-<$MTGetVar name="html_head"$>
-<$MTSetVar name="html_head" value=""$>
+<script src="<$MTLink template="<__trans phrase="SP-JavaScript(main.js)">"$>"></script>
 </head>
-<body<$MTGetVar name="preview"$><$MTSetVar name="html_head" value=""$>>
+<body>

@@ -826,7 +826,7 @@ sub upload_author_bulk {
         read $fh, $bom, 3;
         if ( $bom !~ /^\x{EF}\x{BB}\x{BF}$/ ) {
             seek( $fh, 0, 0 )
-                or return $app->error( $app->translate("Can't rewind") );
+                or return $app->error( $app->translate("Cannot rewind") );
         }
     }
     while ( !eof($fh) ) {
@@ -1042,7 +1042,16 @@ sub grant_role {
         map { MT::Role->load($_) }
         map { my $id = $_; $id =~ s/\D//g; $id } @role_ids;
 
+    # Load permission which has administer_blog
     require MT::Association;
+    require MT::Role;
+    my @admin_roles = MT::Role->load_by_permission("administer_blog");
+    my $admin_role;
+    foreach my $r (@admin_roles) {
+        next if $r->permissions =~ m/\'administer_website\'/;
+        $admin_role = $r;
+        last;
+    }
 
     # TBD: handle case for associating system roles to users/groups
     foreach my $blog (@blogs) {
@@ -1053,6 +1062,16 @@ sub grant_role {
                 && ( $role->has('administer_blog') ) );
             foreach my $ug (@groups) {
                 MT::Association->link( $ug => $role => $blog );
+                if (   $admin_role
+                    && $role->has('manage_member_blogs')
+                    && !$blog->is_blog )
+                {
+                    my $blogs = $blog->blogs;
+                    foreach my $mem_blog (@$blogs) {
+                        MT::Association->link(
+                            $ug => $admin_role => $mem_blog );
+                    }
+                }
             }
         }
     }
@@ -1095,7 +1114,7 @@ sub CMSPreSave_author {
         elsif ( $original->id && ( $original->name ne $obj->name ) ) {
             return $eh->error(
                 $app->translate(
-                    "A user can't change his/her own username in this environment."
+                    "A user cannot change his/her own username in this environment."
                 )
             );
         }

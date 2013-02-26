@@ -1,15 +1,76 @@
 <mtml tag="mt:IfUserAgent" params='wants="keitai" trim="1"'>
+<MTSetVarBlock name="entries">
+<MTBlogParentWebsite>
+  <$MTWebsiteID setvar="site_id"$>
+  <$MTWebsiteURL setvar="site_url"$>
+  <$MTWebsiteName setvar="site_name"$>
+  <$MTWebsiteRelativeURL setvar="site_path"$>
+  <$MTVar name="site_path" cat="common/" setvar="common_path"$>
+</MTBlogParentWebsite>
+
+<MTEntries offset="0" limit="10">
+    <MTEntriesHeader>
+        <img src="<$MTVar name="common_path" encode_html="1"$>images/heading_icon.gif" alt="heading_icon" width="14" height="13" /> <$MTArchiveTitle$>
+        <div style="background-color:#E7E7E7">
+            <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+        </div>
+        <div>
+            <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+        </div>
+    </MTEntriesHeader>
+    <div>
+        <$MTVar __counter__$>. <a href="<$MTEntryPermalink encode_html="1"$>"><$MTEntryTitle encode_html="1"$></a><br />
+        <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+    </div>
+</MTEntries>
+</MTSetVarBlock>
+<MTSetVarBlock name="pager">
+    <MTPager>
+    <MTIfPagerHeader>
+    <div style="background-color:#E7E7E7">
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="2">
+    </div>
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="10">
+    <div style="text-align:center">
+    <MTIfPagerPrev>
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_on.gif" alt="<__trans phrase="Previous">" width="8" height="12"> <a href="<MTPagerPrevLink>"><__trans phrase="Previous"></a>
+    <MTElse>
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_off.gif" alt="<__trans phrase="Previous">" width="8" height="12"> <__trans phrase="Previous">
+    </MTElse>
+    </MTIfPagerPrev>
+    </MTIfPagerHeader>
+    <MTIfPagerCurrent>
+    <$MTPagerCounter$>
+    <MTElse>
+    <a href="<MTPagerLink>"><$MTPagerCounter$></a>
+    </MTElse>
+    </MTIfPagerCurrent>
+    <MTIfPagerFooter>
+    <MTIfPagerNext>
+    <a href="<MTPagerNextLink>"><__trans phrase="Next"></a> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_on.gif" alt="next_off" width="8" height="12">
+    <MTElse>
+    <__trans phrase="Next"> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_off.gif" alt="next_off" width="8" height="12">
+    </MTElse>
+    </MTIfPagerNext>
+    </div>
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="10">
+    <div style="background-color:#E7E7E7">
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="2">
+    </div>
+    </MTIfPagerFooter>
+    </MTPager>
+</MTSetVarBlock>
 <$MTInclude module="<__trans phrase="Mobile-Entry Listing">"$>
 <mtml tag="mt:else">
     <mtml tag="mt:IfUserAgent" params='wants="SmartPhone"'>
 <MTSetVarBlock name="entries">
     <MTEntries offset="0" limit="10">
     <MTEntriesHeader>
-        <ul class="nav2">
+        <section><ul class="archivelist">
     </MTEntriesHeader>
-        <li><h2><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></h2></li>
+        <li><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></li>
     <MTEntriesFooter>
-        </ul>
+        </ul></section>
     </MTEntriesFooter>
     </MTEntries>
 </MTSetVarBlock>
@@ -45,14 +106,28 @@
     <mtml tag="mt:else">
 <MTSetVarBlock name="entries">
     <MTEntries offset="0" limit="10">
-        <MTEntriesHeader>
-        <dl class="info_list">
-        </MTEntriesHeader>
-            <dt><$MTEntryDate format="%x"$></dt>
-            <dd><a href="<$MTEntryPermalink escape="html"$>"><$MTEntryTitle escape="html"$></a></dd>
-        <MTEntriesFooter>
+    <div class="blog_entries clf">
+        <h2><$MTEntryTitle escape="html"$></h2>
+        <div class="blog_entries_body clf">
+            <$MTEntryBody mteval="1"$>
+            <MTIf tag="MTEntryMore">
+            <p><a href="<$MTEntryPermalink$>#more"><__trans phrase="Read More"></a></p>
+            </MTIf>
+        </div>
+        <MTIf tag="MTEntryCategory">
+        <dl class="blog_entries_categories list1">
+            <dt><__trans phrase="Categories">:</dt>
+            <dd><MTEntryCategories><a href="<$MTCategoryArchiveLink escape="html"$>"><$MTCategoryLabel escape="html"$></a></MTEntryCategories></dd>
         </dl>
-        </MTEntriesFooter>
+        </MTIf>
+        <ul class="blog_entries_footer">
+            <li><__trans phrase="Posted by">: <$MTEntryAuthorDisplayName escape="html"$></li>
+            <li><__trans phrase="Date">: <$MTEntryDate format="%x %X"$></li>
+            <li<MTIfCommentsActive><MTElse><MTIfPingsActive><MTElse> class="last"</MTElse></MTIfPingsActive></MTElse></MTIfCommentsActive>><a href="<$MTEntryPermalink escape="html"$>"><__trans phrase="Permalink"></a></li>
+            <MTIfCommentsActive><li<MTIfPingsActive><MTElse> class="last"</MTElse></MTIfPingsActive>><a href="<$MTEntryPermalink$>#trackbacks"><__trans phrase="TrackBacks">(<$MTEntryTrackbackCount$>)</a></li></MTIfCommentsActive>
+            <MTIfPingsActive><li class="last"><a href="<$MTEntryPermalink$>#comments"><__trans phrase="Comments">(<$MTEntryCommentCount$>)</a></li></MTIfPingsActive>
+        </ul>
+    </div>
     </MTEntries>
 </MTSetVarBlock>
 <MTSetVarBlock name="pager">

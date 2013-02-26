@@ -155,6 +155,7 @@ sub __estraier_block {
             my $c = '';
             for my $id (@target) {
                 my $target_blog = MT::Blog->load( { id => $id } );
+                next unless $target_blog;
                 if ( $target_blog->has_column( 'is_members' ) && $target_blog->is_members ) {
                     if (!MT::App::CMS::SearchEstraier::_is_login(
                             $app, $target_blog, $plugin

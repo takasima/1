@@ -12,12 +12,25 @@
 <MTInclude module="<__trans phrase="SP-Login">">
 <MTElse>
 
+<MTSetVars>
+page_title=<__trans phrase="Search Results">
+description=<$MTPageExcerpt strip_linefeeds="1" escape="html"$>
+keywords=<$MTPageKeywords escape="html"$>
+website_id=<$MTWebsiteID$>
+website_url=<$MTWebsiteURL$>
+website_name=<$MTWebsiteName$>
+</MTSetVars>
+<MTSetVarBlock name="html_head" append="1">
+
+</MTSetVarBlock>
+
 <$MTSetVar name="body_class" value="alt-search"$>
 <$MTSetVar name="alt_search" value="1"$>
 <MTSetVarBlock name="contents">
 <$MTBlogEntryCount setvar="entry_count"$>
 <$MTBlogPageCount setvar="page_count"$>
 <MTSetVarBlock name="count"><$MTGetVar name="entry_count" op="+" value="$page_count"$></MTSetVarBlock>
+
 <MTIf name="count" ne="0">
 <h2>
 <MTIfAltSearchquery>
@@ -29,12 +42,12 @@
 <__trans phrase="Results matching tag &ldquo;[_1]&rdquo;" params="<$MTAltSearchQuery remove_html="1"$>">
 </MTIfAltSearchModeisTag>
 
-
 <MTElse>
 <__trans phrase="Blog Search">
 </MTElse>
 </MTIfAltSearchquery>
 </h2>
+
 <div class="panel">
 <form name="search" action="<$MTBlogURL escape="html"$><MTAltSearchPath>" method="get">
 <p>
@@ -255,19 +268,15 @@
 <MTSetVarBlock name="offset"><MTAltSearchCurrent></MTSetVarBlock>
 <MTIfAltSearchNoneMatch>
 <h2><__trans phrase="No results found"></h2>
-<div class="panel">
 <MTElse>
 <h2><__trans phrase="[_1] results ([_2]-[_3])" params="<MTAltSearchMatch>%%<MTAltSearchOffset>%%<MTAltSearchLast>"></h2>
-<div class="panel">
 <p><__trans phrase="Page: [_1]/[_2]" params="<MTAltSearchCurrent>%%<MTAltSearchPages>"></p>
-<div class="alt-search-results">
-<dl class="search_result">
+<ul class="archivelist alt-search-results">
 <MTAltSearchresults>
-<dt><a href="<$MTAltSearchResultPermalink$>"><$MTEntryTitle encode_html="1" highlight="1"$></a></dt>
-<dd><MTIf tag="MTEntryExcerpt"><$MTEntryExcerpt remove_html="1" highlight="1"$><MTElse>&nbsp;</MTElse></MTIf></dd>
+<li><a href="<$MTAltSearchResultPermalink$>"><span><$MTEntryTitle encode_html="1" highlight="1"$></span>
+<MTIf tag="MTEntryExcerpt"><$MTEntryExcerpt remove_html="1" highlight="1"$><MTElse>&nbsp;</MTElse></MTIf></a></li>
 </MTAltSearchresults>
-</dl>
-</div>
+</ul>
 <ul class="pager">
 <MTIfAltSearchResultPrev>
 <li class="prev"><a href="<MTAltSearchurl>?query=<$MTAltSearchQuery encode_url="1"$>&amp;offset=<MTAltSearchPrev>&amp;limit=<MTAltSearchLimit>&amp;blog_id=<$MTAltSearchblogid$><MTIfAltSearchModeisTag>&amp;tag=1</MTIfAltSearchModeisTag><MTIfAltSearchModeiscategories>&amp;categories=<MTAltSearchCategoryids></MTIfAltSearchModeiscategories><MTIfAltSearchAnd_or>&amp;and_or=<MTAltSearchAnd_or></MTIfAltSearchAnd_or><MTIfAltSearchCategories_and_or>&amp;categories_and_or=<MTAltSearchCategories_and_or></MTIfAltSearchCategories_and_or><MTIfAltSearchSort_by>&amp;sort_by=<MTAltSearchSort_by></MTIfAltSearchSort_by><MTIfAltSearchSort_order>&amp;sort_order=<MTAltSearchSort_order></MTIfAltSearchSort_order><MTIfAltSearchDate>&amp;<MTAltSearchDateParams></MTIfAltSearchDate><$MTGetVar name="request.include_blogs" setvar="include_blogs"$><MTIf name="include_blogs">&amp;include_blogs=<$MTGetVar name="include_blogs" escape="html"$></MTIf>" title="Previous"><__trans phrase="Previous"></a></li>
@@ -294,8 +303,7 @@
 </MTElse>
 </MTIfAltSearchResultNext>
 </ul>
-<p><__trans phrase="[_1] seconds" params="<MTAltSearchBench>"></p>
-</div>
+
 </MTIfAltSearchMetadatasFooter>
 </MTElse>
 </MTIfAltSearchNoneMatch>
@@ -309,17 +317,7 @@
 </MTIf>
 </MTSetVarBlock>
 
-<MTSetVars>
-page_title=<__trans phrase="Search Results">
-description=<$MTPageExcerpt strip_linefeeds="1" escape="html"$>
-keywords=<$MTPageKeywords escape="html"$>
-website_id=<$MTWebsiteID$>
-website_url=<$MTWebsiteURL$>
-website_name=<$MTWebsiteName$>
-</MTSetVars>
-<MTSetVarBlock name="html_head" append="1">
 
-</MTSetVarBlock>
 <$MTInclude module="<__trans phrase="SP-HTML Header">"$>
 <$MTInclude module="<__trans phrase="SP-Header">"$>
     <section>

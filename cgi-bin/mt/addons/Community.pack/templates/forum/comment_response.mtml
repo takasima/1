@@ -27,7 +27,13 @@
 
 <$mt:Var name="message"$>
 
-<p><__trans phrase="Return to the <a href="[_1]">original topic</a>." params="<mt:If name="comment_error">javascript:history.back()<mt:Else><$mt:EntryLink$></mt:If>"></p>
+<p>
+<mt:If name="comment_error">
+    <a href="javascript:history.back()"><__trans phrase="Back"></a>
+<mt:Else>
+    <__trans phrase="Return to the <a href="[_1]">original topic</a>." params="<$mt:EntryLink$>">
+</mt:If>
+</p>
 
 <$mt:Include module="<__trans phrase="Footer">"$>
 </__trans_section>

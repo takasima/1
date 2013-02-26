@@ -45,6 +45,16 @@
                         <MTIf name="error_name" eq="password_not_verify"><MTSetVarBlock name="error_password_not_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
                         <MTIf name="error_name" eq="password"><MTSetVarBlock name="error_password"><__trans phrase="Select a password for your account."><br /></MTSetVarBlock></MTIf>
                         <MTIf name="error_name" eq="pass_verify"><MTSetVarBlock name="error_pass_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_deny_multibytes"><MTSetVarBlock name="error_username_deny_multibytes"><__trans phrase="The multi-byte character is contained in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_alphabet"><MTSetVarBlock name="error_username_allow_alphabet"><__trans phrase="The alphabet is contained in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_number"><MTSetVarBlock name="error_username_allow_number"><__trans phrase="The number is included in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_special_characters"><MTSetVarBlock name="error_username_allow_special_characters"><__trans phrase="The sign is included in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_minimum_length"><MTSetVarBlock name="error_username_minimum_length"><__trans phrase="The user name is too short."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_deny_multibytes"><MTSetVarBlock name="error_password_deny_multibytes"><__trans phrase="The multi-byte character is contained in the password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_combo_upper_lower"><MTSetVarBlock name="error_password_combo_upper_lower"><__trans phrase="You have to include both a capital letter and a small letter in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_combo_letter_number"><MTSetVarBlock name="error_password_combo_letter_number"><__trans phrase="You have to include both a character and a number in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_require_special_characters"><MTSetVarBlock name="error_password_require_special_characters"><__trans phrase="You have to include a sign in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_minimum_length"><MTSetVarBlock name="error_password_minimum_length"><__trans phrase="The password is too short."><br /></MTSetVarBlock></MTIf>
                     </MTLoop>
                     <$MTSetVar name="error_detail" value=""$>
                     <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_required"$></MTSetVarBlock>
@@ -71,6 +81,36 @@
                     </MTIf>
                     <MTIf name="error_detail">
                         <MTSetVarBlock name="msg" append="1"><$MTVar name="error_detail"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_deny_multibytes">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_deny_multibytes"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_alphabet">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_alphabet"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_number">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_number"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_special_characters">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_special_characters"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_minimum_length">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_minimum_length"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_deny_multibytes">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_deny_multibytes"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_combo_upper_lower">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_upper_lower"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_combo_letter_number">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_letter_number"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_require_special_characters">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_require_special_characters"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_minimum_length">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_minimum_length"$></MTSetVarBlock>
                     </MTIf>
                     <MTUnless name="msg">
                         <MTSetVarBlock name="msg"><__trans phrase="Saving failed."></MTSetVarBlock>
@@ -224,7 +264,7 @@
                                 <input type="<$mt:var name="time_input_type"$>" id="t_<$mt:var name="field_id"$>" name="t_<$mt:var name="field_id"$>" value="<$mtvar name="time_value"$>" />
                             </span>
                         <mt:elseif name="type" eq="select">
-                            <$mt:setvar name="options_loop"$ value="">
+                            <$mt:setvar name="options_loop" value=""$>
                             <$mt:var name="options" set_loop="options_loop"$>
                             <mt:loop name="options_loop">
                                 <mt:if name="__first__">
@@ -242,7 +282,7 @@
                                 </mt:if>
                             </mt:loop>
                         <mt:elseif name="type" eq="radio">
-                            <$mt:setvar name="options_loop"$ value="">
+                            <$mt:setvar name="options_loop" value=""$>
                             <$mt:var name="options" set_loop="options_loop"$>
                             <mt:loop name="options_loop">
                                 <mt:if name="__first__">
@@ -259,11 +299,11 @@
                             </div>
                                 </mt:if>
                             </mt:loop>
-                            <mt:elseif name="type" eq="embed">
+                        <mt:elseif name="type" eq="embed">
                             <span class="post_input">
                                 <textarea name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>" rows="3" cols="50"><$mtvar name="value"$></textarea>
                             </span>
-                            </mtif>
+                        </mtif>
                     </p>
                     </mt:Loop>
                     <$mtvar name="customfield_hidden_param"$>
@@ -342,6 +382,16 @@
                             <MTIf name="error_name" eq="password_not_verify"><MTSetVarBlock name="error_password_not_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
                             <MTIf name="error_name" eq="password"><MTSetVarBlock name="error_password"><__trans phrase="Select a password for your account."><br /></MTSetVarBlock></MTIf>
                             <MTIf name="error_name" eq="pass_verify"><MTSetVarBlock name="error_pass_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="username_deny_multibytes"><MTSetVarBlock name="error_username_deny_multibytes">ユーザー名にマルチバイト文字が含まれています。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="username_allow_alphabet"><MTSetVarBlock name="error_username_allow_alphabet">ユーザー名にアルファベットが含まれています。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="username_allow_number"><MTSetVarBlock name="error_username_allow_number">ユーザー名に数字が含まれています。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="username_allow_special_characters"><MTSetVarBlock name="error_username_allow_special_characters">ユーザー名に記号が含まれています。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="username_minimum_length"><MTSetVarBlock name="error_username_minimum_length">ユーザー名が短すぎます。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="password_deny_multibytes"><MTSetVarBlock name="error_password_deny_multibytes">パスワードにマルチバイト文字が含まれています。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="password_combo_upper_lower"><MTSetVarBlock name="error_password_combo_upper_lower">パスワードには大文字と小文字の両方を必ず含めなければなりません。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="password_combo_letter_number"><MTSetVarBlock name="error_password_combo_letter_number">パスワードには文字と数字の両方を必ず含めなければなりません。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="password_require_special_characters"><MTSetVarBlock name="error_password_require_special_characters">パスワードには記号を含めなければなりません。<br /></MTSetVarBlock></MTIf>
+                            <MTIf name="error_name" eq="password_minimum_length"><MTSetVarBlock name="error_password_minimum_length">パスワードが短すぎます。<br /></MTSetVarBlock></MTIf>
                         </MTLoop>
                         <$MTSetVar name="error_detail" value=""$>
                         <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_required"$></MTSetVarBlock>
@@ -368,6 +418,36 @@
                         </MTIf>
                         <MTIf name="error_detail">
                             <MTSetVarBlock name="msg" append="1"><$MTVar name="error_detail"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_username_deny_multibytes">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_deny_multibytes"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_username_allow_alphabet">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_alphabet"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_username_allow_number">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_number"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_username_allow_special_characters">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_special_characters"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_username_minimum_length">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_minimum_length"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_password_deny_multibytes">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_deny_multibytes"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_password_combo_upper_lower">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_upper_lower"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_password_combo_letter_number">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_letter_number"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_password_require_special_characters">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_require_special_characters"$></MTSetVarBlock>
+                        </MTIf>
+                        <MTIf name="error_password_minimum_length">
+                            <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_minimum_length"$></MTSetVarBlock>
                         </MTIf>
                         <MTUnless name="msg">
                             <MTSetVarBlock name="msg"><__trans phrase="Saving failed."></MTSetVarBlock>
@@ -540,7 +620,7 @@
                                     <input type="<$mt:var name="time_input_type"$>" id="t_<$mt:var name="field_id"$>" name="t_<$mt:var name="field_id"$>" value="<$mtvar name="time_value"$>" />
                                 </span>
                             <mt:elseif name="type" eq="select">
-                                <$mt:setvar name="options_loop"$ value="">
+                                <$mt:setvar name="options_loop" value=""$>
                                 <$mt:var name="options" set_loop="options_loop"$>
                                 <mt:loop name="options_loop">
                                     <mt:if name="__first__">
@@ -558,7 +638,7 @@
                                     </mt:if>
                                 </mt:loop>
                             <mt:elseif name="type" eq="radio">
-                                <$mt:setvar name="options_loop"$ value="">
+                                <$mt:setvar name="options_loop" value=""$>
                                 <$mt:var name="options" set_loop="options_loop"$>
                                 <mt:loop name="options_loop">
                                     <mt:if name="__first__">

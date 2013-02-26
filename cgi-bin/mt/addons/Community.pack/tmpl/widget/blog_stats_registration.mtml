@@ -44,7 +44,7 @@
     <mt:if var="author_userpic_url">
                 <img src="<mt:var name="author_userpic_url" escape="html">" width="<mt:var name="author_userpic_width">" height="<mt:var name="author_userpic_height">" alt="<$mt:var name="nickname" escape="html"$>" />
     <mt:else>
-                <img src="<$MTStaticWebPath$>images/default-userpic-50.jpg" width="<mt:var name="author_userpic_width">" height="<mt:var name="author_userpic_height">" alt="<__trans phrase="default userpic">" />
+                <img src="<mt:var name="static_uri">images/default-userpic-50.jpg" width="<mt:var name="author_userpic_width">" height="<mt:var name="author_userpic_height">" alt="<__trans phrase="default userpic">" />
     </mt:if>
             </a>
         </div>

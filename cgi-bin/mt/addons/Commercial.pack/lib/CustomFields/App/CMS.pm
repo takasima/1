@@ -12,6 +12,14 @@ use strict;
 use CustomFields::Util qw( get_meta save_meta field_loop _get_html );
 use MT::Util qw( dirify encode_js );
 
+sub init_app {
+    my ( $cb, $app ) = @_;
+    for my $k (qw(post_save post_remove post_remove_all)) {
+        $app->add_callback( 'CustomFields::Field::' . $k,
+            0, $app, sub { $app->reboot } );
+    }
+}
+
 sub load_system_filters {
     my $plugin  = shift;
     my $app     = MT->app;
@@ -349,6 +357,7 @@ sub edit_field {
         while ( my ( $key, $val ) = each %{ $field->column_values() } ) {
             $param->{$key} ||= $val;
         }
+        $param->{basename_old} = $field->basename;
     }
 
     $param->{basename_limit} = ( $blog ? $blog->basename_limit : 0 ) || 30;
@@ -640,6 +649,8 @@ sub CMSPostSave_customfield_objs {
                 else {
                     $meta->{$field_name}
                         = $q->param("customfield_$field_name");
+                    $meta->{$field_name} =~ tr/\r//d
+                        if $meta->{$field_name} && $field->type eq 'textarea';
                 }
             }
         }
@@ -829,21 +840,33 @@ sub CMSSaveFilter_customfield_objs {
         if ( $type_def && ( my $h = $type_def->{validate} ) ) {
             $h = MT->handler_to_coderef($h) unless ref($h);
             if ( ref $h ) {
-                my $value = $q->param($field_name);
-                $app->error(undef);
-                $value = $h->($value);
-                if ( my $err = $app->errstr ) {
-                    return $eh->error($err);
+                my @values     = $q->param($field_name);
+                my @new_values = ();
+                foreach my $value (@values) {
+                    $app->error(undef);
+                    $value = $h->($value);
+                    if ( my $err = $app->errstr ) {
+                        return $eh->error($err);
+                    }
+                    else {
+                        push( @new_values, $value );
+                    }
                 }
-                else {
-                    $q->param( $field_name, $value );
-                }
+                $q->param( $field_name, @new_values );
             }
         }
         elsif ( $q->param($field_name) ) {
 
             # Sanitize if the value is submitted from an app other than CMS
-            $q->param( $field_name, $sanitizer->( $q->param($field_name) ) );
+            my @values = $q->param($field_name);
+            my $new_values;
+            foreach my $value (@values) {
+                my $sanitized = $sanitizer->($value);
+                push( @$new_values, $sanitized );
+            }
+            $q->param( $field_name,
+                ( scalar @$new_values > 1 ? $new_values : $new_values->[0] )
+            );
         }
     }
 
@@ -921,29 +944,100 @@ sub CMSPostSave_field {
         unless ( $q->param('basename_manual')
         && $q->param('basename_old') );
 
+    # Updates existing meta records, changing the existing
+    # field.old_basename to field.new_basename
     my $basename_old = $q->param('basename_old');
     my $basename_new = $field->basename;
 
-    my $class = $app->model( $field->obj_type . ':meta' );
-
-    # Updates existing meta records, changing the existing
-    # field.old_basename to field.new_basename
+    my $class  = $app->model( $field->obj_type . ':meta' );
     my $driver = $class->driver;
     my $dbd    = $driver->dbd;
 
-    my $stmt = $dbd->sql_class->new;
-    my $virtual_col = $dbd->db_column_name( $class->datasource, 'type' );
-    $stmt->add_complex_where(
-        [ { $virtual_col => 'field.' . $basename_old } ] );
+    my $class_pri = $class->primary_key_tuple->[0];
+    my $class_pri_col
+        = $dbd->db_column_name( $class->datasource, $class_pri );
 
-    my $sql = join q{ }, 'UPDATE', $driver->table_for($class), 'SET',
-        $virtual_col, '= ?', $stmt->as_sql_where();
+    my $obj_class = $app->model( $field->obj_type );
+    my $obj_pri   = $obj_class->primary_key_tuple->[0];
+    my $obj_pri_col
+        = $dbd->db_column_name( $obj_class->datasource, $obj_pri );
 
-    my $dbh = $driver->rw_handle;
-    $dbh->do( $sql, {}, 'field.' . $basename_new, @{ $stmt->{bind} } )
-        or return $app->error( $dbh->errstr || $DBI::errstr );
+    my $type = 'field.' . $basename_old;
+    my @objs = $obj_class->load(
+        {   (   $field->blog_id && $obj_class->has_column('blog_id')
+                ? ( blog_id => $field->blog_id )
+                : ()
+            ),
+        },
+        {   join => [
+                $class, undef,
+                {   type         => $type,
+                    $obj_pri_col => \"= $obj_pri_col"
+                }
+            ],
+            fetchonly => [$obj_pri],
+        }
+    );
+
+    if (@objs) {
+        my @ids         = map { $_->id } @objs;
+        my $stmt        = $dbd->sql_class->new;
+        my $virtual_col = $dbd->db_column_name( $class->datasource, 'type' );
+        $stmt->add_complex_where(
+            [   {   $virtual_col   => $type,
+                    $class_pri_col => \@ids,
+                }
+            ]
+        );
+
+        my $sql = join q{ }, 'UPDATE', $driver->table_for($class), 'SET',
+            $virtual_col, '= ?', $stmt->as_sql_where();
+
+        my $dbh = $driver->rw_handle;
+        $dbh->do( $sql, {}, 'field.' . $basename_new, @{ $stmt->{bind} } )
+            or return $app->error( $dbh->errstr || $DBI::errstr );
+    }
+
+    if ( $app->config->UpdateDisplayOptionByFollowingField ) {
+        _update_display_option_by_following_field( $app, $field,
+            $basename_old, $basename_new )
+            or return;
+    }
 
     1;
+}
+
+sub _update_display_option_by_following_field {
+    my ( $app, $field, $basename_old, $basename_new ) = @_;
+
+    return 1 unless grep { $_ eq $field->obj_type } qw(entry page);
+
+    my $pref_old  = 'customfield_' . $basename_old;
+    my $pref_new  = 'customfield_' . $basename_new;
+    my $pref_type = $field->obj_type . '_prefs';
+
+    my @perms = $app->model('permission')->load(
+        {   $pref_type => { like => "%$pref_old%" },
+            ( $field->blog_id ? ( blog_id => $field->blog_id ) : () )
+        }
+    );
+
+    foreach my $perm (@perms) {
+
+        # Replace basename
+        # "...,$pref_old,..." => "...,$pref_new,..."
+        my ( $prefs, $pos ) = split /\|/, $perm->$pref_type;
+        $prefs = join( ',',
+            map( { $pref_old eq $_ ? $pref_new : $_ } split( ',', $prefs ) )
+        );
+        $perm->$pref_type( join( '|', $prefs, $pos ) );
+
+        $perm->save
+            or return $app->errtrans( "Saving permissions failed: [_1]",
+            $perm->errstr );
+    }
+
+    return 1;
 }
 
 sub CMSSaveFilter_field {
@@ -1061,7 +1155,8 @@ sub CMSPrePreview_customfield_objs {
             my $type = $1 || '';
             my $mf = $2;
 
-            if (!$obj->has_meta( 'field.' . $mf )) {
+            if ( !$obj->has_meta( 'field.' . $mf ) ) {
+
                 # special support for check boxs
                 next unless $mf =~ m/(.*)_cb_beacon$/;
                 $mf = $1;

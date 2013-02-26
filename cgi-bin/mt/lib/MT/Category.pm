@@ -24,7 +24,8 @@ __PACKAGE__->install_properties(
             'allow_pings' => 'boolean',
             'basename'    => 'string(255)',
 
-            'show_fields' => 'string meta',
+            # META
+            'show_fields' => 'text meta',
         },
         indexes => {
             blog_id       => 1,
@@ -597,8 +598,11 @@ sub entry_count {
                     status  => $class->RELEASE()
                 },
                 {   'join' => [
-                        'MT::Placement', 'entry_id',
-                        { category_id => $cat->id }
+                        'MT::Placement',
+                        'entry_id',
+                        {   category_id => $cat->id,
+                            blog_id     => $cat->blog_id,
+                        }
                     ]
                 }
             );

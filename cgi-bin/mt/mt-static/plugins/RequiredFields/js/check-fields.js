@@ -3,20 +3,19 @@
 /* validator.js が必要  */
 
 (function($) {
-    
+
     var fieldValidator = new Validator();
-    
+
     /* カテゴリ入力チェック */
     fieldValidator.append(function (form, params) {
         if (!params.category_equired) return true;
-        
+
         var caregory_id = parseInt(form.find("input[name='category_ids']").val().split(/,/)[0]);
         if (isFinite(caregory_id) && caregory_id > 0) {
             return true;
-        } else {
-            this.errors.push('カテゴリは必須項目です。');
-            return false;
         }
+        this.errors.push('カテゴリは必須項目です。');
+        return false;
     });
 
     /* フィールド入力チェック */
@@ -43,11 +42,11 @@
         });
         return true;
     });
-    
+
     /* カスタムフィールド入力チェック */
     fieldValidator.append(function (form, params) {
         var self = this;
-        
+
         form.find('.field').filter('.required').each(function() {
             var field = $(this);
             var name = field.attr('id').replace(/-field/, '');
@@ -79,7 +78,7 @@
                 }
                 return;
             }
-            
+
             var select = form.find('select[name="'+name+'"]');
             if (select.length == 1) {
                 if (! select.val().match(/\S/)) {
@@ -87,7 +86,7 @@
                 }
                 return;
             }
-            
+
             // 日付と時刻, 日付, 時刻 どれでもフィールド自体は両方ある
             // 日付がtype="hidden" => 時刻
             // 時刻がtype="hidden" => 日付
@@ -105,7 +104,7 @@
                 } else {
                     val = date_val && time_val ? date_val+' '+time_val : '';
                 }
-                
+
                 if (!(val && val.match(/\S/))) {
                     self.errors.push(label + 'は必須項目です。');
                 }
@@ -114,7 +113,7 @@
         });
         return true;
     });
-    
+
     /* 拡張フィールド入力チェック */
     /* 拡張フィールドのラベル名がhiddenフィールドで渡されることを利用してname値を得る
        また、nameにフィールドの型名が含まれることから型別に適切な処理に振り分ける */
@@ -125,7 +124,7 @@
             var input = form.find('input:hidden[value="'+label+'"]');
             if (input.length == 0) return;
             var label_name = input.attr('name') || '';
-            var matches = label_name.match(/^(.+\-([^\-]+))\-label$/);
+            var matches = label_name.match(/^(.+-([^\-]+))-label$/);
             if (matches == null) return;
             var name = matches[1];
             var type = matches[2];
@@ -192,45 +191,46 @@
     /* フィールド書式チェック */
     fieldValidator.append(function (form, params) {
         var self = this;
-        
-        var datefield_matcher = /^(?:.+_on_date|extfields\-.+\-date|d_customfield_.+)$/;
-        var timefield_matcher = /^(?:.+_on_time|extfields\-.+\-date\-time|t_customfield_.+)$/;
-        
-        var date_format = /^\d{4}\-\d{2}\-\d{2}$/;
+
+        var datefield_matcher = /^(?:.+_on_date|extfields-.+-date|d_customfield_.+)$/;
+        var timefield_matcher = /^(?:.+_on_time|extfields-.+-date-time|t_customfield_.+)$/;
+
+        var date_format = /^\d{4}-\d{2}-\d{2}$/;
         var time_format = /^\d{2}:\d{2}:\d{2}$/;
-        
+
         form.find('input[type="text"]').each(function() {
             var field = $(this);
             var val = field.val();
             var name = field.attr('name') || '';
             if (!(val && val.match(/\S/))) return;
-            
+
             var label = field.closest('.field').find('label').text().replace(/^\s+/, '').replace(/\s+\*$/, '') || name;
-            
+
             // カスタムフィールド「日付と時刻」及び_on_date/on_timeは一方のみの入力は不可（エラーになる）
-            if (name.match(/^d_customfield_(.+)$/)) {
-                var name_t = 't_customfield_' + RegExp.$1;
+            var m;
+            if (m = name.match(/^d_customfield_(.+)$/)) {
+                var name_t = 't_customfield_' + m[1];
                 var field_t = form.find('input[type="text"][name="'+name_t+'"]');
                 if (field_t.length > 0 && !(field_t.val().match(/\S/)))
                     self.errors.push(label + 'の時刻を HH:MM:SS 形式で記入して下さい。');
-            } else if (name.match(/^t_customfield_(.+)$/)) {
-                var name_d = 'd_customfield_' + RegExp.$1;
+            } else if (m = name.match(/^t_customfield_(.+)$/)) {
+                var name_d = 'd_customfield_' + m[1];
                 var field_d = form.find('input[type="text"][name="'+name_d+'"]');
                 if (field_d.length > 0 && !(field_d.val().match(/\S/)))
                     self.errors.push(label + 'の日付を YYYY-MM-DD 形式で記入して下さい。');
             }
-            if (name.match(/^(.+)_on_date$/)) {
-                var name_t = RegExp.$1 + '_on_time';
+            if (m = name.match(/^(.+)_on_date$/)) {
+                var name_t = m[1] + '_on_time';
                 var field_t = form.find('input[type="text"][name="'+name_t+'"]');
                 if (field_t.length > 0 && !(field_t.val().match(/\S/)))
                     self.errors.push(label + 'の時刻を HH:MM:SS 形式で記入して下さい。');
-            } else if (name.match(/(.+)_on_time$/)) {
-                var name_d = RegExp.$1 + '_on_date';
+            } else if (m = name.match(/(.+)_on_time$/)) {
+                var name_d = m[1] + '_on_date';
                 var field_d = form.find('input[type="text"][name="'+name_d+'"]');
                 if (field_d.length > 0 && !(field_d.val().match(/\S/)))
                     self.errors.push(label + 'の日付を YYYY-MM-DD 形式で記入して下さい。');
             }
-            
+
             if (datefield_matcher.test(name) && !date_format.test(val))
                 self.errors.push(label + 'の日付は YYYY-MM-DD 形式で記入して下さい。');
             if (timefield_matcher.test(name) && !time_format.test(val))
@@ -242,10 +242,9 @@
     $.fn.checkFields = function (params) {
         if (fieldValidator.run(this, params)) {
             return true;
-        } else {
-            window.alert(fieldValidator.errors.join("\r\n"));
-            return false;
         }
+        window.alert(fieldValidator.errors.join("\r\n"));
+        return false;
     }
 
 })(jQuery);

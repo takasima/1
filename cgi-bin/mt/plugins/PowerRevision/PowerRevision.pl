@@ -10,7 +10,7 @@ use lib qw( addons/PowerCMS.pack/lib addons/Commercial.pack/lib );
 use PowerCMS::Util qw( permitted_blog_ids );
 use PowerRevision::Util;
 use PowerRevision::Listing;
-my $VERSION = '3.6';
+my $VERSION = '3.7';
 my $SCHEMA_VERSION = '0.12';
 my $plugin = __PACKAGE__->new( {
     id => 'PowerRevision',
@@ -227,14 +227,15 @@ sub init_registry {
                     },
                 },
                 status => {
-                    label => 'Status',
-                    filter_label => 'Status',
-                    base => '__virtual.string',
-                    display => 'none',
-                    terms => sub {
-                        my ( $prop, $args, $db_terms, $db_args ) = @_;
-                        $db_terms->{ status } = $args->{ string };
-                    },
+                    base => 'entry.status',
+                    single_select_options => 
+                        sub {
+                            return [ 
+                                { label => MT->translate( 'Draft' ), value => 1, },
+                                { label => MT->translate( 'Review' ), value => 3, },
+                                { label => MT->translate( 'Scheduled' ), value => 4, },
+                            ],
+                        },
                 },
                 current_context => {
                     base      => '__common.current_context',

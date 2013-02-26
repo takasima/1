@@ -1,7 +1,7 @@
 name: PowerCMS
 id:   PowerCMS
 key:  powercms
-version: 3.15
+version: 3.2
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.
 pack_link: http://powercms.jp/
@@ -135,6 +135,25 @@ powercms_settings:
         unavailable:
             default: 0
         memo:
+        editor_style_css:
+            default: '<$MTStaticWebPath$>addons/PowerCMS.pack/tiny_mce/css/editor_style.css'
+        editor_plugins:
+            default: 'advhr,advimage,advlink,contextmenu,emotions,fullscreen,inlinepopups,insertdatetime,layer,lists,media,pagebreak,paste,style,table,template,visualchars,xhtmlxtras'
+        theme_advanced_buttons1:
+            default: 'bold,|,justifyleft,justifycenter,justifyright,|,bullist,|,forecolor,|,indent,outdent,|,link,unlink,styleselect,formatselect,removeformat'
+        theme_advanced_buttons2:
+            default: 'pastetext,pasteword,|,tablecontrols,|,mt-image,mt-file,|,fullscreen,|,code'
+        theme_advanced_buttons3:
+        theme_advanced_buttons4:
+        theme_advanced_buttons5:
+        source_buttons1:
+            default: 'mt_source_bold,mt_source_italic,mt_source_blockquote,mt_source_unordered_list,mt_source_ordered_list,mt_source_list_item,|,mt_source_link,emoji,mt_insert_file,mt_insert_image,|,mt_fullscreen'
+        source_buttons2:
+        source_buttons3:
+        source_buttons4:
+        source_buttons5:
+        editor_advanced_setting:
+
 applications:
     cms:
         menus: menus.yaml
@@ -220,7 +239,9 @@ callbacks:
           priority: 5
         - handler: $powercms::ViewSite::Plugin::_cfg_system_general
           priority: 5
-    MT::App::CMS::template_param.cfg_prefs: $powercms::PowerCMS::Plugin::_cfg_prefs_param
+    MT::App::CMS::template_param.cfg_prefs:
+        - handler: $powercms::PowerCMS::Plugin::_cfg_prefs_param
+        - handler: $powercms::PowerCMS::TinyMCE::insert_editor_script
     MT::App::CMS::template_param.this_is_you: $powercms::Quickedit::Plugin::_this_is_you
     MT::App::CMS::template_param.powercms_config: $powercms::PowerCMS::Util::powercms_config_param
     MT::App::CMS::template_source.this_is_you: $powercms::Quickedit::Plugin::_this_is_you_source
@@ -239,15 +260,18 @@ callbacks:
     MT::App::CMS::template_source.edit_folder: $powercms::MultipartForm::Plugin::_multipart_form
     MT::App::CMS::template_source.edit_author: $powercms::MultipartForm::Plugin::_multipart_form
     MT::App::CMS::template_source.cfg_prefs: $powercms::MultipartForm::Plugin::_multipart_form
-    MT::App::CMS::template_param.edit_author: $powercms::PowerCMS::Plugin::_edit_author
+    MT::App::CMS::template_param.edit_author:
+        - handler: $powercms::PowerCMS::Plugin::_edit_author
+        - handler: $powercms::PowerCMS::TinyMCE::insert_editor_script
     MT::App::CMS::template_output.edit_entry: $powercms::MoreDisplayOptions::Plugin::prefs_option_output
     MT::App::CMS::template_param.rebuilding: $powercms::RebuildAllBlogs::Plugin::_rebuilding
     MT::App::CMS::template_source.rebuilding: $powercms::RebuildAllBlogs::Plugin::_rebuilding_source
     MT::App::CMS::template_param.rebuilt: $powercms::RebuildAllBlogs::Plugin::_rebuilt
     MT::App::CMS::template_param.rebuild_confirm: $powercms::RebuildAllBlogs::Plugin::_rebuild_confirm
     MT::App::CMS::template_param.edit_template:
-        handler: $powercms::CleanupIndexArchive::Plugin::_edit_template
-        priority: 10
+        - handler: $powercms::CleanupIndexArchive::Plugin::_edit_template
+          priority: 10
+        - handler: $powercms::PowerCMS::TinyMCE::insert_editor_script
     MT::App::CMS::template_source.rebuild_confirm: $powercms::RebuildAllBlogs::Plugin::_confirm_source
     MT::App::CMS::template_source.chromeless_header: $powercms::RebuildAllBlogs::Plugin::_confirm_header
     cms_post_delete.entry: $powercms::RebuildTrigger::Plugin::_cms_post_delete_entry
@@ -263,13 +287,20 @@ callbacks:
           priority: 10
     cms_pre_save.entry: $powercms::EntryUnpublish::Plugin::_cb_cms_pre_save_entry
     cms_pre_save.page: $powercms::EntryUnpublish::Plugin::_cb_cms_pre_save_entry
-    MT::App::CMS::template_param.asset_insert: $powercms::CMSStyle::Plugin::_cb_tp_asset_insert
+    MT::App::CMS::template_param.asset_insert:
+        - handler: $powercms::CMSStyle::Plugin::_cb_tp_asset_insert
+        - handler: $powercms::PowerCMS::TinyMCE::asset_insert_param
+          priority: 10
     cms_post_save.entry: $powercms::CMSStyle::Plugin::_cb_cms_post_save_entry
     cms_post_save.page: $powercms::CMSStyle::Plugin::_cb_cms_post_save_entry
     cms_filtered_list_param.entry: $powercms::PowerCMS::Plugin::_cb_cms_filtered_list_param_entry
     cms_filtered_list_param.page: $powercms::PowerCMS::Plugin::_cb_cms_filtered_list_param_entry
-    MT::App::CMS::template_param.edit_category: $powercms::PowerCMS::Plugin::_cb_tp_edit_category
-    MT::App::CMS::template_param.edit_folder: $powercms::PowerCMS::Plugin::_cb_tp_edit_category
+    MT::App::CMS::template_param.edit_category:
+        - handler: $powercms::PowerCMS::Plugin::_cb_tp_edit_category
+        - handler: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_folder:
+        - handler: $powercms::PowerCMS::Plugin::_cb_tp_edit_category
+        - handler: $powercms::PowerCMS::TinyMCE::insert_editor_script
     cms_post_save.field: $powercms::PowerCMS::Plugin::_cb_cms_post_save_field
     restore: $powercms::PowerCMS::Plugin::_cb_restore
     MT::App::CMS::template_source.footer: $powercms::PowerCMS::Plugin::_footer_source
@@ -278,6 +309,12 @@ callbacks:
         - handler: $powercms::PowerCMS::Plugin::_cb_take_down_reset_environmental_variables
         - handler: $powercms::PowerCMS::Plugin::_cb_take_down_reset_request
     NewUserProvisioning: $powercms::PowerCMS::Plugin::_newuserprovisioning
+    MT::App::CMS::template_param.edit_asset: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_comment: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_campaign: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_link: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_contactformgroup: $powercms::PowerCMS::TinyMCE::insert_editor_script
+    MT::App::CMS::template_param.edit_customobject: $powercms::PowerCMS::TinyMCE::insert_editor_script
 tags:
     block:
         RequestCache: $powercms::RequestCache::Tags::_hdlr_request_cache
@@ -403,6 +440,9 @@ tags:
     # Entry(Un)publish
         EntryPublishedOn: $powercms::EntryUnpublish::Tags::_hdlr_entry_unpublished_on
         EntryUnpublishedOn: $powercms::EntryUnpublish::Tags::_hdlr_entry_unpublished_on
+    # TinyMCE
+        PowerCMSImportTinyMCEConfig: $powercms::PowerCMS::TinyMCE::_hdlr_import_tiny_mce_config
+
     modifier:
         abs_addslash: $powercms::Minifier::Plugin::_fltr_abs_addslash
         cut_firstslash: $powercms::Minifier::Plugin::_fltr_cut_firstslash
@@ -455,3 +495,7 @@ tasks:
         label: Cleanup temporary data for markup validation
         code: $powercms::CMSStyle::Tools::_task_clean_markupvalidation_data
         frequency: 3600
+
+editors:
+    tinymce:
+        extension: powercms_tiny_mce_extension.tmpl

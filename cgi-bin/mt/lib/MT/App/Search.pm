@@ -9,7 +9,7 @@ package MT::App::Search;
 use strict;
 use base qw( MT::App );
 
-use MT::Util qw( encode_html encode_url );
+use MT::Util qw( encode_html encode_url perl_sha1_digest_hex );
 
 sub id {'new_search'}
 
@@ -101,7 +101,7 @@ sub init_request {
         ? $q->param('blog_id')
         : $app->first_blog_id();
     my $blog = $app->model('blog')->load($blog_id)
-        or return $app->errtrans( 'Can\'t load blog #[_1].',
+        or return $app->errtrans( 'Cannot load blog #[_1].',
         MT::Util::encode_html($blog_id) );
     my $page = $q->param('page') ? $q->param('page') : 1;
     my $limit
@@ -195,6 +195,13 @@ sub init_request {
     }
 }
 
+sub takedown {
+    my $app = shift;
+    delete $app->{searchparam};
+    delete $app->{search_string};
+    $app->SUPER::takedown(@_);
+}
+
 sub generate_cache_keys {
     my $app = shift;
 
@@ -208,6 +215,9 @@ sub generate_cache_keys {
                 if ( 'limit' ne lc($p) ) && ( 'offset' ne lc($p) );
         }
     }
+
+    $key       = perl_sha1_digest_hex($key);
+    $count_key = perl_sha1_digest_hex($count_key);
 
     $app->{cache_keys} = {
         result       => $key,
@@ -232,7 +242,7 @@ sub init_cache_driver {
         require MT::Log;
         $app->log(
             {   message => $app->translate(
-                    "Search: failed storing results in cache.  [_1] is not available: [_2]",
+                    "Failed to cache search results.  [_1] is not available: [_2]",
                     $cache_driver,
                     $e
                 ),
@@ -643,13 +653,19 @@ sub first_blog_id {
     my $q   = $app->param;
 
     my $blog_id;
-    if ( $q->param('IncludeBlogs') ) {
+    if (   !$q->param('IncludeBlogs')
+        && exists( $app->{searchparam}{IncludeBlogs} )
+        && @{ $app->{searchparam}{IncludeBlogs} } )
+    {
+        $blog_id = $app->{searchparam}{IncludeBlogs}[0];
+    }
+    else {
 
         # if IncludeBlogs is empty or all, get the first blog id available
         if (   $q->param('IncludeBlogs') eq ''
             || $q->param('IncludeBlogs') eq 'all' )
         {
-            my @blogs = $app->model('blog')->load({}, {limit => 1});
+            my @blogs = $app->model('blog')->load( {}, { limit => 1 } );
             $blog_id = @blogs ? $blogs[0]->id : undef;
         }
 
@@ -658,12 +674,6 @@ sub first_blog_id {
             my @ids = split ',', $q->param('IncludeBlogs');
             $blog_id = $ids[0];
         }
-    }
-    elsif ( exists( $app->{searchparam}{IncludeBlogs} )
-        && @{ $app->{searchparam}{IncludeBlogs} } )
-    {
-        my @blog_ids = $app->{searchparam}{IncludeBlogs};
-        $blog_id = $blog_ids[0] if @blog_ids;
     }
     $blog_id;
 }
@@ -783,7 +793,7 @@ sub load_search_tmpl {
             }
         }
         return $app->errtrans(
-            "No alternate template is specified for the Template '[_1]'",
+            "No alternate template is specified for template '[_1]'",
             encode_html( $q->param('Template') ) )
             unless $filename;
 
@@ -800,9 +810,11 @@ sub load_search_tmpl {
             $tmpl = $app->model('template')->lookup($tmpl_id);
             return $app->errtrans('No such template')
                 unless ($tmpl);
-            return $app->errtrans('template_id cannot be a global template')
+            return $app->errtrans(
+                'template_id cannot refer to a global template')
                 if ( $tmpl->blog_id == 0 );
-            return $app->errtrans('Output file cannot be asp or php')
+            return $app->errtrans(
+                'Output file cannot be of the type asp or php')
                 if (
                    $tmpl->outfile
                 && !$app->config->SearchAlwaysAllowTemplateID
@@ -820,13 +832,13 @@ sub load_search_tmpl {
 
                 if ( $at ne 'Index' ) {
                     return $app->errtrans(
-                        'Template must have identifier entry_listing for non-Index archive types'
+                        'Template must be an entry_listing for non-Index archive types'
                         )
                         unless ( $app->config->SearchAlwaysAllowTemplateID
                         || $tmpl->identifier =~ /entry_listing$/ );
                     my $blog = $app->model('blog')->load( $tmpl->blog_id );
                     return $app->errtrans(
-                        'Blog file extension cannot be asp or php for these archives'
+                        'Filename extension cannot be asp or php for these archives'
                         )
                         if (
                         !$app->config->SearchAlwaysAllowTemplateID
@@ -836,7 +848,7 @@ sub load_search_tmpl {
                 }
                 else {
                     return $app->errtrans(
-                        'Template must have identifier main_index for Index archive type'
+                        'Template must be a main_index for Index archive type'
                         )
                         unless ( $app->config->SearchAlwaysAllowTemplateID
                         || $tmpl->identifier eq 'main_index' );
@@ -913,9 +925,10 @@ sub renderjs {
 #FIXME: template name may not be 'feed' for search feed
 sub renderfeed {
     my $app  = shift;
-    my $tmpl = $app->render(@_);
-    my $out  = $app->build_page($tmpl);
-    my $ctx  = $tmpl->context;
+    my $tmpl = $app->render(@_)
+        or return;
+    my $out = $app->build_page($tmpl);
+    my $ctx = $tmpl->context;
     if ( my $content_type = $ctx->stash('content_type') ) {
         $app->{response_content_type} = $content_type;
     }
@@ -1196,10 +1209,13 @@ sub _default_throttle {
     return $$result if defined $$result;
 
     ## Get login information if user is logged in (via cookie).
-    ( $app->{user} ) = $app->login;
-    ## If session ID saved on cookie has been expired, this fails with error.
-    ## Should clear error.
-    $app->error(undef);
+    {
+        ## If session ID saved on cookie has been expired, this fails with error.
+        ## Should ignore login error in this context.
+        my $save_errstr = $app->errstr;
+        ( $app->{user} ) = $app->login;
+        $app->error($save_errstr);
+    }
 
     ## Don't throttle MT registered users
     if ( $app->{user} && $app->{user}->type == MT::Author::AUTHOR() ) {

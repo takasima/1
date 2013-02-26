@@ -15,6 +15,8 @@ page_title=<__trans phrase="Previewing your Comment">
 <$MTInclude module="<__trans phrase="PC-Header">"$>
         <!-- [contents] -->
         <div id="contents" class="clf">
+
+<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
             <ul class="breadcrumb clf">
                 <li><a href="<MTBlogParentWebsite><$MTWebsiteURL escape="html"$></MTBlogParentWebsite>"><__trans phrase="Home"></a></li>
                 <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
@@ -23,13 +25,13 @@ page_title=<__trans phrase="Previewing your Comment">
                 </MTParentCategories>
                 <li class="last"><$MTEntryTitle escape="html"$></li>
             </ul>
-            <div id="single_contents" class="info_detail">
             <h1 id="blogPageTile" class="heading_1"><$MTBlogName escape="html"$></h1>
-                <div class="clf" id="comments">
-                    <h2 class="heading_3_long"><$MTEntryTitle escape="html"$></h2>
+            <div id="main_contents" class="component_section">
+                <div class="blog_entries clf">
+                    <h2><$MTEntryTitle escape="html"$></h2>
                 </div>
                 <div class="blog_entries clf" id="comments">
-                    <h2><__trans phrase="Comments"></h2>
+                    <h2 class="heading_3_long"><__trans phrase="Comments"></h2>
                     <div class="blog_entries_body clf">
                         <div class="comment" id="comment-<$MTCommentID$>">
                             <div class="inner">
@@ -55,7 +57,7 @@ page_title=<__trans phrase="Previewing your Comment">
 
 <MTIgnore><!-- Comment Form --></MTIgnore>
                         <div class="comments-open" id="comments-open">
-                            <h3 class="comments-open-header"><__trans phrase="Leave a comment"></h3>
+                            <h3><__trans phrase="Leave a comment"></h3>
                             <div class="comments-open-content">
                                 <div id="comment-greeting"></div>
                                     <form method="post" action="<$MTCGIPath$><$MTCommentScript$>" name="comments_form" id="comments-form" onsubmit="return mtCommentOnSubmit(this)">
@@ -104,6 +106,8 @@ page_title=<__trans phrase="Previewing your Comment">
                     </div>
                 </div>
             </div>
+
+            <MTIgnore><$MTInclude module="<__trans phrase="PC-Sidebar">"$></MTIgnore>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
         </div>

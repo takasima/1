@@ -16,9 +16,10 @@ page_title=<__trans phrase="Comment Response">
                 </MTParentCategories>
                 <li class="last"><$MTEntryTitle escape="html"$></li>
             </ul>
-            <div id="single_contents" class="info_detail">
-                <div class="clf">
-                    <h2 class="heading_3_long"><$MTEntryTitle escape="html"$></h2>
+            <h1 id="blogPageTile" class="heading_1"><$MTBlogName escape="html"$></h1>
+            <div id="main_contents" class="component_section">
+                <div class="blog_entries clf">
+                    <h2><$MTEntryTitle escape="html"$></h2>
                     <div class="blog_entries_body clf">
                         <MTIf name="comment_confirmation">
                             <MTIgnore><!-- Success message when comment has been submitted --></MTIgnore>
@@ -27,7 +28,7 @@ page_title=<__trans phrase="Comment Response">
                         <MTElse name="comment_pending">
                             <MTIgnore><!-- Pending message when comment is being held for review --></MTIgnore>
                             <$MTVar name="page_title" value="<__trans phrase="Thank you for commenting.">"$>
-                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been received and held for approval by the blog owner."></p>"$>
+                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been received and held for review by a blog administrator."></p>"$>
                         <MTElse name="comment_error">
                             <MTIgnore><!-- Error message when comment submission fails --></MTIgnore>
                             <$MTVar name="page_title" value="<__trans phrase="Comment Submission Error">"$>
@@ -45,6 +46,7 @@ page_title=<__trans phrase="Comment Response">
                 </div>
             </div>
 
+            <MTIgnore><$MTInclude module="<__trans phrase="PC-Sidebar">"$></MTIgnore>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
         </div>

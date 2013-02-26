@@ -666,6 +666,9 @@ sub _cb_post_save_entry {
     $options->{ message } = $app->param( 'entry-workflow-message' );
     $options->{ is_approval } = $app->param( 'wf_status_approval' );
     $options->{ revision } = $revision;
+    if ( $app->param( 'duplicate' ) && ! $app->param( 'orig_id' ) ) { # FIXME: ad hoc
+        delete $$options{ revision };
+    }
     $options->{ change_author } = $change_author;
     $options->{ params } = {
         entry_class => ( $revision ? $revision->object_class : $obj->class ),

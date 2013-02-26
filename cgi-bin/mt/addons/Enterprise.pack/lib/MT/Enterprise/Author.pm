@@ -22,14 +22,13 @@ sub pre_save_author {
 }
 
 sub delete_author_ext_auth_filter {
-    my ($cb, $app, $obj, $return_arg) = @_;
+    my ( $cb, $app, $obj, $return_arg ) = @_;
     return 1 unless $app->config->ExternalUserManagement;
     return 1 unless $app->config->AuthenticationModule eq 'LDAP';
     require MT::LDAP;
     my $ldap = MT::LDAP->new
-        or return $app->errtrans(
-            "Loading MT::LDAP failed: [_1].", MT::LDAP->errstr
-        );
+        or return $app->errtrans( "Loading MT::LDAP failed: [_1].",
+        MT::LDAP->errstr );
     my $dn = $ldap->get_dn( $obj->name );
     $return_arg->{author_ldap_found} = 1 if $dn;
     return 1;

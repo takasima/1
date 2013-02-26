@@ -194,6 +194,9 @@ sub _pre_run {
 package $package;
 \$Lexicon{\$_} = \$map->{\$_} foreach ( keys( %\$map ) );
 END
+    if ( $package ne 'MT::L10N::ja' ) {
+        return;
+    }
     eval(<<'END');
 package MT::L10N::ja;
 use strict;
@@ -460,7 +463,7 @@ sub _create_customobject {
                     my $data;
                     while ( read $fh, my ( $chunk ), 8192 ) {
                         $data .= $chunk;
-                        print $chunk;
+                        $app->print( $chunk );
                     }
                     close $fh;
                 }
@@ -1227,7 +1230,7 @@ sub _upload_customobject_csv {
                 if (! defined $author ) {
                     $perm = 0;
                 }
-                if (! _customobject_permission( $weblog, $author ) ) {
+                if (! _customobject_permission( $weblog, $class ) ) {
                     $perm = 0;
                 }
             } else {
@@ -1329,7 +1332,7 @@ sub _download_customobject_csv {
     if ( $csv->combine( @$column_names ) ) {
         my $string = $csv->string;
         $string = encode_utf8_string_to_cp932_octets( $string );
-        print $string;
+        $app->print( $string );
     }
     my $iter = $model->load_iter( { blog_id => \@weblog_ids } );
     while ( my $item = $iter->() ) {
@@ -1369,7 +1372,7 @@ sub _download_customobject_csv {
             my $l_string = $csv->string;
             $l_string = utf8_on( $l_string );
             $l_string = MT::I18N::encode_text( $l_string, 'utf8', 'cp932' );
-            print "\n$l_string";
+            $app->print( "\n$l_string" );
         }
     }
 }

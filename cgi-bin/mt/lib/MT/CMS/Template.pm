@@ -197,7 +197,7 @@ sub edit {
         }
 
         # Populate list of included templates
-        foreach my $tag qw( Include IncludeBlock ) {
+        foreach my $tag (qw( Include IncludeBlock )) {
             my $includes = $obj->getElementsByTagName($tag);
             if ($includes) {
                 my @includes;
@@ -279,7 +279,7 @@ sub edit {
                             $other->compile;
                             if ( $other->{errors} && @{ $other->{errors} } ) {
                                 $param->{error} = $app->translate(
-                                    "One or more errors were found in included template module ([_1]).",
+                                    "One or more errors were found in the included template module ([_1]).",
                                     $other->name
                                 );
                                 $param->{error} .= "<ul>\n";
@@ -559,7 +559,8 @@ sub edit {
             $template_type = 'custom' if 'module' eq $template_type;
             $param->{type} = $template_type;
         }
-        return $app->errtrans("Create template requires type")
+        return $app->errtrans(
+            "You must specify a template type when creating a template")
             unless $template_type;
         $param->{nav_templates} = 1;
         my $tab;
@@ -743,7 +744,10 @@ sub edit {
             $param->{cache_expire_type}     = 0;
             $param->{cache_expire_period}   = '';
             $param->{cache_expire_interval} = 0;
-            $param->{ssi_type}              = uc $blog->include_system;
+            $param->{ssi_type}
+                = defined $blog->include_system
+                ? uc $blog->include_system
+                : '';
         }
         if ($obj) {
             $param->{include_with_ssi} = $obj->include_with_ssi
@@ -1092,7 +1096,7 @@ sub preview {
             { blog_id => $blog_id, identifier => 'main_index' } );
         if ( !$preview_tmpl ) {
             return $app->errtrans(
-                "Can't locate host template to preview module/widget.");
+                "Cannot locate host template to preview module/widget.");
         }
         my $req = $app->request;
 
@@ -1392,7 +1396,7 @@ sub reset_blog_templates {
     $app->validate_magic() or return;
     my $blog = MT::Blog->load( $perms->blog_id )
         or return $app->error(
-        $app->translate( 'Can\'t load blog #[_1].', $perms->blog_id ) );
+        $app->translate( 'Cannot load blog #[_1].', $perms->blog_id ) );
     require MT::Template;
     my @tmpl = MT::Template->load( { blog_id => $blog->id } );
 
@@ -1596,12 +1600,16 @@ sub delete_map {
     $app->model('template')
         ->load( { id => $template_id, blog_id => $blog_id } )
         or
-        return $app->errtrans( 'Can\'t load template #[_1].', $template_id );
+        return $app->errtrans( 'Cannot load template #[_1].', $template_id );
 
     require MT::TemplateMap;
     my $map = MT::TemplateMap->load( { id => $id, blog_id => $blog_id } )
-        or return $app->errtrans('Can\'t load templatemap');
+        or return $app->errtrans('Cannot load templatemap');
     $map->remove;
+
+    my $blog = MT->model('blog')->load($blog_id);
+    $blog->flush_has_archive_type_cache();
+
     my $html = _generate_map_table( $app, $blog_id, $template_id );
     $app->{no_print_body} = 1;
     $app->send_http_header("text/plain");
@@ -1630,7 +1638,7 @@ sub add_map {
     $app->model('template')
         ->load( { id => $template_id, blog_id => $blog_id } )
         or
-        return $app->errtrans( 'Can\'t load template #[_1].', $template_id );
+        return $app->errtrans( 'Cannot load template #[_1].', $template_id );
 
     my $map = MT::TemplateMap->new;
     $map->is_preferred( $exist ? 0 : 1 );
@@ -1640,6 +1648,10 @@ sub add_map {
     $map->save
         or return $app->error(
         $app->translate( "Saving map failed: [_1]", $map->errstr ) );
+
+    my $blog = MT->model('blog')->load($blog_id);
+    $blog->flush_has_archive_type_cache();
+
     my $html = _generate_map_table( $app, $blog_id, $template_id );
     $app->{no_print_body} = 1;
     $app->send_http_header("text/plain");
@@ -1746,7 +1758,8 @@ sub pre_save {
     $obj->cache_expire_event( join ',', @events ) if $#events >= 0;
     if ( $cache_expire_type == 1 ) {
         return $eh->error(
-            $app->translate("You should not be able to enter 0 as the time.")
+            $app->translate(
+                "You should not be able to enter zero (0) as the time.")
         ) if $interval == 0;
     }
     elsif ( $cache_expire_type == 2 ) {
@@ -2172,7 +2185,8 @@ BLOG: for my $blog_id (@id) {
                 }
             }
             if (@removed_tids) {
-                $app->model('fileinfo')->remove({ template_id => \@removed_tids });
+                $app->model('fileinfo')
+                    ->remove( { template_id => \@removed_tids } );
             }
 
             if ($blog_id) {
@@ -2857,7 +2871,8 @@ sub edit_widget {
         $param->{cache_expire_type}     = 0;
         $param->{cache_expire_period}   = '';
         $param->{cache_expire_interval} = 0;
-        $param->{ssi_type}              = uc $blog->include_system;
+        $param->{ssi_type}
+            = defined $blog->include_system ? uc $blog->include_system : '';
     }
 
     my $iter

@@ -4,7 +4,7 @@
         <mt:if name="__query__"><__trans phrase="Results matching &ldquo;[_1]&rdquo;" params="<$mt:var name="__query__" escape="html"$>"><mt:else><__trans phrase="Search Results"></mt:else></mt:if>
     </h2>
     <div class="panel">
-    <form action="<$MTCGIRelativeURL$><$MTEstraierScript$>" method="get" name="search_estraier">
+    <form action="<$MTCGIRelativeURL$><$MTEstraierScript$>" method="get" name="search_estraier" id="search_estraier">
         <p>
             <input type="text" name="query" style="width:280px" value="<$mt:var name="__query__" escape="html"$>" />
             <input type="submit" value=" <__trans phrase="Search"> " style="width:70px" />

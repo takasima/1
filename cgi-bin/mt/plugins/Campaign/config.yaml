@@ -1,7 +1,7 @@
 name: Campaign
 id:   Campaign
 key:  campaign
-version: 2.1
+version: 3
 schema_version: 0.194
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.
@@ -84,6 +84,9 @@ settings:
     default_module_mtml:
 blog_config_template: campaign_config.tmpl
 applications:
+    campaign:
+        handler: MT::App::CMS::Campaign
+        script: sub { MT->config->BannerScript || MT->config->CampaignScript }
     cms:
         menus:
             campaign:
@@ -146,6 +149,7 @@ applications:
                 permission: edit_tags
         compose_menus:
             campaign:
+                id: campaign
                 label: Campaign
                 order: 900
                 mode: view

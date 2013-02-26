@@ -121,6 +121,12 @@ If you think this is a server error, please contact the webmaster.'
     'Failed to remove' => '削除に失敗しました',
     'No shortcut available.' => 'ブックマークはありません。',
     'Can not edit bookmark' => '編集する場合は画面を更新してください',
+
+    # TinyMCE
+    'TinyMCE Setting' => 'TinyMCE 設定',
+    'Advanced Setting' => '高度な設定',
+    'e.g' => '例',
+    '&quot;emoji&quot; is enabled when &quot;KeitaiLib plugin&quot; is used' => '&quot;emoji&quot;はKeitaiLibプラグイン使用時のみ利用可能です',
 );
 
 1;

@@ -224,6 +224,7 @@ jQuery(function(jQuery) {
             title="<__trans phrase="Save"> (s)"
             class="save action primary-button primary button"
             onclick="return check_item();"><__trans phrase="Save"></button>
+        <mt:if name="can_edit_templates">
         <mt:if name="id">
         <button
             type="submit"
@@ -231,6 +232,7 @@ jQuery(function(jQuery) {
             title="<__trans phrase="Module"> (m)"
             class="action button"
             onclick="window.location.href='<mt:var name="mt_url">?__mode=view&amp;_type=template<mt:if name="template_id">&amp;id=<mt:var name="template_id"><mt:else>&amp;type=module</mt:else></mt:if>&amp;blog_id=<mt:var name="blog_id">&amp;objectgroup_id=<mt:var name="group_id">';return false"><mt:if name="template_id"><__trans phrase="Edit Module"><mt:else><__trans phrase="Create Module"></mt:if></button>
+        </mt:if>
         </mt:if>
     </div>
 </form>

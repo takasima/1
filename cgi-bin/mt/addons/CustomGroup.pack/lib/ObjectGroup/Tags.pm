@@ -23,7 +23,7 @@ sub _hdlr_og_groupitems {
     if ( $group_id ) {
         $id = $group_id;
     }
-    my $blog_id = $args->{ blog_id };
+    my $blog_id = $args->{ blog_id } || $ctx->stash( 'blog' )->id || 0;
     unless ( $id ) {
         if ( $app->isa( 'MT::App::CMS' ) && $app->mode eq 'objectgroup' ) {
             return '';
@@ -135,6 +135,7 @@ sub _hdlr_og_groupitems {
         local $ctx->{ __stash }{ blog } = $blog;
         local $ctx->{ __stash }{ blog_id } = $blog->id if defined $blog;
         local $ctx->{ __stash }{ category } = $category;
+        local $ctx->{ __stash }{ archive_category } = $category;
         local $ctx->{ __stash }{ entry } = $entry;
         local $ctx->{ __stash }{ object_ds } = $object_ds;
         local $ctx->{ __stash }{ class } = $class;

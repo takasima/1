@@ -7,6 +7,16 @@ jQuery(function($) {
         return false;
     });
 
+    // Top page accordion
+    $.fx.off = true;
+    $('.nav4 > h3 > a', $contents)
+        .click(function() {
+            $(this).parent().next().slideToggle(500);
+            return false;
+        })
+        .trigger('click');
+    $.fx.off = false;
+
     // Big target
     $('.news li', $contents)
         .click(function() {

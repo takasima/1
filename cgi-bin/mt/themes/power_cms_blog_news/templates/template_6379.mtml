@@ -15,19 +15,9 @@ website_name=<$MTWebsiteName$>
 <$MTInclude module="<__trans phrase="SP-Header">"$>
     <section>
 <mtml tag="mt:SetVarBlock" params='name="html_tag"'>
-    <div class="panel">
-    <nav>
 <$MTGetVar name="entries"$>
-    </nav>
-    </div>
 <$MTGetVar name="pager"$>
     </section>
-    <nav>
-        <ul class="nav1">
-            <li><a href="<$MTLink template="<__trans phrase="Categories list">"$>">Categories</a></li>
-            <li><a href="<$MTLink template="<__trans phrase="Monthly list">"$>">Archives</a></li>
-        </ul>
-    </nav>
 <mtml tag="/mt:SetVarBlock">
 <mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
 <$MTInclude module="<__trans phrase="SP-Footer">"$>

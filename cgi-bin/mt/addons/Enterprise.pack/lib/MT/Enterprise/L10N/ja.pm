@@ -30,10 +30,9 @@ use utf8;
 
 ## addons/Enterprise.pack/app-wizard.yaml
 	'This module is required in order to use the LDAP Authentication.' => 'LDAP認証を利用する場合に必要です。',
-	'This module is required in order to use SSL/TLS connection with the LDAP Authentication.' => 'LDAP認証でSSLまたはTLS接続を利用する場合に必要です。',
-	'This module and its dependencies are required in order to use CRAM-MD5, DIGEST-MD5 or LOGIN as a SASL mechanism.' => 'Authen::SASLはCRAM-MD5、DIGEST-MD5又はLOGINをSASLメカニズムとして利用する場合に必要となります。',
 
 ## addons/Enterprise.pack/config.yaml
+	'http://www.sixapart.com/movabletype/' => 'http://www.sixapart.jp/movabletype/',
 	'Permissions of group: [_1]' => 'グループ[_1]の権限',
 	'Group' => 'グループ',
 	'Groups associated with author: [_1]' => 'ユーザー[_1]と関連付けられたグループ',
@@ -47,7 +46,7 @@ use utf8;
 	'Group Name' => 'グループ名',
 	'Manage Group Members' => 'グループメンバーの管理',
 	'Group Members' => 'グループメンバー',
-	'Group Member' => 'メンバー',
+	'Group Member' => 'グループメンバー',
 	'Permissions for Users' => 'ユーザーの権限',
 	'Permissions for Groups' => 'グループの権限',
 	'Active Groups' => '有効なグループ',
@@ -67,9 +66,9 @@ use utf8;
 	'LDAP user [_1] not found.' => 'LDAPサーバー上にユーザーが見つかりません: [_1]',
 	'User [_1] cannot be updated.' => 'ユーザー「[_1]」を更新できませんでした。',
 	'User cannot be updated: [_1].' => 'ユーザーの情報を更新できません: [_1]',
-	'Failed login attempt by user \'[_1]\' who was deleted from LDAP.' => 'LDAPから削除されたユーザー [_1] がログインしようとしました。',
-	'User \'[_1]\' updated with LDAP login name \'[_2]\'.' => 'ユーザー「[_1]」のログイン名をLDAP名「[_2]」に変更しました。',
-	'Failed login attempt by user \'[_1]\'. A user with that username already exists in the system with a different UUID.' => '[_1]がログインできませんでした。同名のユーザーが別の外部IDですでに存在します。',
+	'Failed login attempt by user \'[_1]\' who was deleted from LDAP.' => 'LDAPから削除されたユーザー [_1] がサインインしようとしました。',
+	'User \'[_1]\' updated with LDAP login name \'[_2]\'.' => 'ユーザー「[_1]」のユーザー名をLDAP名「[_2]」に変更しました。',
+	'Failed login attempt by user \'[_1]\'. A user with that username already exists in the system with a different UUID.' => '[_1]がサインインできませんでした。同名のユーザーが別の外部IDですでに存在します。',
 	'User \'[_1]\' account is disabled.' => 'ユーザー「[_1]」を無効化しました。',
 	'LDAP users synchronization interrupted.' => 'LDAPユーザーの同期が中断されました。',
 	'Loading MT::LDAP failed: [_1]' => 'MT::LDAPの読み込みに失敗しました: [_1]',
@@ -92,11 +91,14 @@ use utf8;
 	'Memberships in the group \'[_2]\' (#[_3]) were changed as a result of synchronizing with the external directory.' => '外部ディレクトリとの同期の結果グループ「[_2]」(ID: [_3])を更新しました。',
 	'LDAPUserGroupMemberAttribute must be set to enable synchronizing of members of groups.' => 'グループのメンバーを同期するにはLDAPUserGroupMemberAttributeの設定が必須です。',
 
+## addons/Enterprise.pack/lib/MT/Enterprise/Author.pm
+	'Loading MT::LDAP failed: [_1].' => 'MT::LDAPの読み込みに失敗しました: [_1]',
+
 ## addons/Enterprise.pack/lib/MT/Enterprise/BulkCreation.pm
 	'Formatting error at line [_1]: [_2]' => '[_1]行目でエラーが見つかりました: [_2]',
 	'Invalid command: [_1]' => 'コマンドが認識できません: [_1]',
 	'Invalid number of columns for [_1]' => '[_1] コマンドのカラムの数が不正です',
-	'Invalid user name: [_1]' => 'ログイン名の設定に誤りがあります: [_1]',
+	'Invalid user name: [_1]' => 'ユーザー名の設定に誤りがあります: [_1]',
 	'Invalid display name: [_1]' => '表示名の設定に誤りがあります: [_1]',
 	'Invalid email address: [_1]' => 'メールアドレスが正しくありません: [_1]',
 	'Invalid language: [_1]' => '使用言語の設定に誤りがあります: [_1]',
@@ -107,6 +109,7 @@ use utf8;
 	'Invalid site root: [_1]' => 'サイトパスの設定に誤りがあります: [_1]',
 	'Invalid timezone: [_1]' => '時間帯 (タイムゾーン) の設定に誤りがあります: [_1]',
 	'Invalid theme ID: [_1]' => 'テーマIDの設定に誤りがあります: [_1]',
+	'A theme \'[_1]\' was not found.' => '\'[_1]\'というテーマが見つかりません。',
 	'A user with the same name was found.  The registration was not processed: [_1]' => '同名のユーザーが登録されているため、登録できません: [_1]',
 	'Blog for user \'[_1]\' can not be created.' => 'ブログ「[_1]」へユーザーを登録できませんでした。',
 	'Blog \'[_1]\' for user \'[_2]\' has been created.' => 'ユーザー[_2]のブログ「[_1]」を作成しました。',
@@ -144,7 +147,7 @@ use utf8;
 	'No records were found in the file.  Make sure the file uses CRLF as the line-ending characters.' => '登録するレコードがありません。改行コードがCRLFになっているかどうか確認してください。',
 	'Registered [quant,_1,user,users], updated [quant,_2,user,users], deleted [quant,_3,user,users].' => '登録:[quant,_1,人,人]、更新:[quant,_2,人,人]、削除:[quant,_3,人,人]',
 	'Bulk author export cannot be used under external user management.' => 'ExternalUserManagement環境ではユーザーの一括出力はできません。',
-	'A user can\'t change his/her own username in this environment.' => '自分のユーザー名を変えることはこの構成ではできません。',
+	'A user cannot change his/her own username in this environment.' => '自分のユーザー名を変えることはこの構成ではできません。',
 	'An error occurred when enabling this user.' => 'ユーザーを有効化するときにエラーが発生しました: [_1]',
 
 ## addons/Enterprise.pack/lib/MT/Enterprise/Upgrade.pm
@@ -206,7 +209,7 @@ use utf8;
 	q{Click 'Continue' below to configure your LDAP attribute mappings.} => q{次へをクリックして属性マッピングに進んでください。},
 	'Your LDAP configuration is complete.' => 'LDAPの構成を完了しました。',
 	q{To finish with the configuration wizard, press 'Continue' below.} => q{次へをクリックして構成ウィザードを完了してください。},
-	q{Can't locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.} => q{Net::LDAPが見つかりません。Net::LDAPはLDAP認証を利用するのために必要です。},
+	'Cannot locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.' => 'Net::LDAPが見つかりません。Net::LDAPはLDAP認証を利用するのために必要です。',
 	'Use LDAP' => 'LDAPを利用する',
 	'Authentication URL' => '認証URL',
 	'The URL to access for LDAP authentication.' => 'LDAP認証でアクセスするURL',

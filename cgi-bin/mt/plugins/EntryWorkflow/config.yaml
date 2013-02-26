@@ -1,7 +1,7 @@
 id  : EntryWorkflow
 key : entryworkflow
 name: EntryWorkflow
-version: 0.9
+version: 0.91
 schema_version: 0.035
 description: '<__trans phrase="Chenge entry author and send notification.">'
 l10n_class: EntryWorkflow::L10N

@@ -10,17 +10,27 @@
  */
 require_once('lib/class.exception.php');
 
-define('VERSION', '5.14');
-define('PRODUCT_VERSION', '5.14');
+define('VERSION', '5.2');
+define('PRODUCT_VERSION', '5.2.2');
 
 $PRODUCT_NAME = 'Movable Type Advanced';
 if($PRODUCT_NAME == '__PRODUCT' . '_NAME__')
     $PRODUCT_NAME = 'Movable Type';
 define('PRODUCT_NAME', $PRODUCT_NAME);
 
-$PRODUCT_VERSION_ID = '5.14-ja';
+$RELEASE_NUMBER = '2';
+if ( $RELEASE_NUMBER == '__RELEASE_' . 'NUMBER__' )
+    $RELEASE_NUMBER = 1;
+define('RELEASE_NUMBER', $RELEASE_NUMBER);
+
+$PRODUCT_VERSION_ID = '5.2.2';
 if ( $PRODUCT_VERSION_ID == '__PRODUCT_' . 'VERSION_ID__' )
     $PRODUCT_VERSION_ID = PRODUCT_VERSION;
+$VERSION_STRING;
+if ( $RELEASE_NUMBER > 0 )
+    $VERSION_STRING = $PRODUCT_VERSION_ID . "." . $RELEASE_NUMBER;
+else
+    $VERSION_STRING = $PRODUCT_VERSION_ID;
 define('VERSION_ID', $PRODUCT_VERSION_ID);
 
 global $Lexicon;
@@ -198,7 +208,7 @@ class MT {
      * Retreives a handle to the database and assigns it to
      * the member variable 'db'.
      */
-    function db() {
+    function &db() {
         if (!isset($this->db)) {
             require_once("mtdb.".$this->config('DBDriver').".php");
             $mtdbclass = 'MTDatabase'.$this->config('DBDriver');
@@ -246,7 +256,7 @@ class MT {
         $this->cfg_file = $file;
 
         $cfg = array();
-        $type_array = array('pluginpath', 'alttemplate', 'outboundtrackbackdomains', 'memcachedservers');
+        $type_array = array('pluginpath', 'alttemplate', 'outboundtrackbackdomains', 'memcachedservers', 'userpasswordvalidation');
         $type_hash  = array('commenterregistration');
         if ($fp = file($file)) {
             foreach ($fp as $line) {
@@ -323,6 +333,17 @@ class MT {
             $cfg['phpdir'] . DIRECTORY_SEPARATOR . "extlib" . DIRECTORY_SEPARATOR . "FirePHPCore" . $path_sep .
             ini_get('include_path')
         );
+
+        // assign i18n defaults:
+        $lang = strtolower($cfg['defaultlanguage']);
+        if (! @include_once("i18n_$lang.php")) {
+            include_once("i18n_en_us.php");
+        }
+        foreach ($GLOBALS['i18n_default_settings'] as $k => $v) {
+            if (! isset($cfg[$k])) {
+                $cfg[$k] = $v;
+            }
+        }
     }
 
     function configure_from_db() {
@@ -334,9 +355,7 @@ class MT {
             foreach ($data as $key => $value) {
                 $cfg[$key] = $value;
             }
-            if ($cfg['dbdriver'] == 'mysql' or $cfg['dbdriver'] == 'postgres') {
-                $mtdb->set_names($this);
-            }           
+            $mtdb->set_names($this);
         }
     }
 
@@ -349,8 +368,6 @@ class MT {
             $cfg['cgipath'] .= '/'; 
         isset($cfg['staticwebpath']) or
             $cfg['staticwebpath'] = $cfg['cgipath'] . 'mt-static/';
-        isset($cfg['publishcharset']) or
-            $cfg['publishcharset'] = 'utf-8';
         isset($cfg['trackbackscript']) or
             $cfg['trackbackscript'] = 'mt-tb.cgi';
         isset($cfg['adminscript']) or
@@ -391,8 +408,6 @@ class MT {
             $cfg['userpicthumbnailsize'] = '100';
         isset($cfg['pluginpath']) or
             $cfg['pluginpath'] = array($this->config('MTDir') . DIRECTORY_SEPARATOR . 'plugins');
-        isset($cfg['timeoffset']) or
-            $cfg['timeoffset'] = '0';
         isset($cfg['includesdir']) or
             $cfg['includesdir'] = 'includes_c';
         isset($cfg['searchmaxresults']) or
@@ -413,6 +428,8 @@ class MT {
             $cfg['commenterregistration'] = array('allow' => 1 );
         isset($cfg['userpasswordminlength']) or
             $cfg['userpasswordminlength'] = 8;
+        isset($cfg['bulkloadmetaobjectslimit']) or
+            $cfg['bulkloadmetaobjectslimit'] = 100;
     }
 
     function configure_paths($blog_site_path) {
@@ -606,9 +623,9 @@ class MT {
     
             if (isset($entry_id) && ($entry_id) && ($at == 'Individual' || $at == 'Page')) {
                 if ($at == 'Individual') {
-                    $entry =& $mtdb->fetch_entry($entry_id);
+                    $entry = $mtdb->fetch_entry($entry_id);
                 } elseif($at == 'Page') {
-                    $entry =& $mtdb->fetch_page($entry_id);
+                    $entry = $mtdb->fetch_page($entry_id);
                 }
                 $ctx->stash('entry', $entry);
                 $ctx->stash('current_timestamp', $entry->entry_authored_on);
@@ -677,7 +694,6 @@ class MT {
             } else {
                 $entry = $this->db->fetch_entry($data->fileinfo_entry_id);
             }
-            require_once('function.mtentrystatus.php');
             if (!isset($entry) || $entry->entry_status != 2)
                 return;
         }
@@ -722,7 +738,7 @@ class MT {
         if (!$blog) {
             $db =& $this->db();
             $ctx->mt->db =& $db;
-            $blog =& $db->fetch_blog($this->blog_id);
+            $blog = $db->fetch_blog($this->blog_id);
             $ctx->stash('blog', $blog);
             $ctx->stash('blog_id', $this->blog_id);
             $ctx->stash('local_blog_id', $this->blog_id);
@@ -738,7 +754,7 @@ class MT {
         if (!$blog) {
             $db =& $this->db();
             $ctx->mt->db =& $db;
-            $blog =& $db->fetch_blog($this->blog_id);
+            $blog = $db->fetch_blog($this->blog_id);
             $ctx->stash('blog', $blog);
             $ctx->stash('blog_id', $this->blog_id);
             $ctx->stash('local_blog_id', $this->blog_id);
@@ -929,9 +945,27 @@ function offset_time($ts, $blog = null, $dir = null) {
 }
 
 function translate_phrase_param($str, $params = null) {
-    if (is_array($params) && (strpos($str, '[_') !== false)) {
-        for ($i = 1; $i <= count($params); $i++) {
-            $str = preg_replace("/\\[_$i\\]/", $params[$i-1], $str);
+    if (is_array($params)) {
+        if (strpos($str, '[_') !== false) {
+            for ($i = 1; $i <= count($params); $i++) {
+                $str = preg_replace("/\\[_$i\\]/", $params[$i-1], $str);
+            }
+        }
+        $start = 0;
+        while (preg_match("/\\[quant,_(\d+),([^\\],]*)(?:,([^\\],]*))?(?:,([^\\],]*))?\\]/", $str, $matches, PREG_OFFSET_CAPTURE, $start)) {
+            $id = $matches[1][0];
+            $num = $params[$id-1];
+            if ( ($num === 0) && (count($matches) > 4) ) { 
+                $part = $matches[4][0];
+            } 
+            elseif ( $num === 1 ) {
+                $part = $num . ' ' . $matches[2][0];
+            }
+            else {
+                $part = $num . ' ' . ( count($matches) > 3 ? $matches[3][0] : ( $matches[2][0] . 's' ) );
+            }
+            $str = substr_replace($str, $part, $matches[0][1], strlen($matches[0][0]));
+            $start = $matches[0][1] + strlen($part);
         }
     }
     return $str;

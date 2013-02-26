@@ -1,7 +1,7 @@
 name: PowerSearch
 id: PowerSearch 
 key: PowerSearch
-version: 1.8
+version: 1.9
 schema_version: 0.003
 description: <__trans phrase="Enterprise Search powerd by Hyper Estraier.">
 author_name: Alfasado Inc.
@@ -72,3 +72,10 @@ tasks:
         label: Update index of Hyper Estraier
         frequency: 3
         code: $PowerSearch::PowerSearch::Tasks::_update_index
+applications:
+    powersearch:
+        handler: MT::App::CMS::SearchEstraier
+        script: sub { MT->config->EstraierScript }
+config_settings:
+    EstraierScript:
+        default: mt-estraier.cgi

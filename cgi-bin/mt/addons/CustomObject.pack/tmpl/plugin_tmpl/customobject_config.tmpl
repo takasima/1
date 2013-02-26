@@ -36,7 +36,8 @@
     id=&quot;<mt:var name="class">_label_ja&quot;
     label=&quot;&lt;__trans phrase=&quot;Label(ja)&quot;&gt;&quot;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_label_ja&quot; name=&quot;label_ja&quot; value=&quot;&lt;mt:var name=&quot;label_ja&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_label_ja&quot; name=&quot;label_ja&quot; 
+    value=&quot;&lt;mt:if name=&quot;label_ja&quot;&gt;&lt;mt:var name=&quot;label_ja&quot; escape=&quot;html&quot;&gt;&lt;mt:else&gt;&lt;__trans phrase=&quot;<mt:var name="plugin_id">&quot;&gt;&lt;/mt:if&gt;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/mtapp:setting&gt;
 &lt;mt:IfNonSystemScope&gt;

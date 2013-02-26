@@ -4,7 +4,7 @@ use File::Basename;
 use lib 'addons/PowerCMS.pack/lib';
 use PowerCMS::Util qw( save_asset set_upload_filename static_or_support site_path
                        is_power_edit is_cms current_user is_user_can uniq_filename
-                       file_basename current_blog
+                       file_basename current_blog get_array_uniq
                      );
 use MT::Util qw( encode_html );
 use TemplateSelector::Util;
@@ -74,6 +74,7 @@ sub _cb_tp_edit_entry_entry_prefs {
         if ( $entry ) {
             if ( my $prefs = $entry->prefs ) {
                 my @prefs = split( /,/, $prefs );
+                @prefs = get_array_uniq( @prefs );
                 my $field_loop = $param->{ field_loop };
                 for my $hash ( @$field_loop ) {
                     if ( grep { $hash->{ field_id } eq $_ } @prefs ) {

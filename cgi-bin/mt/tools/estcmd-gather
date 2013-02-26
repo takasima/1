@@ -42,7 +42,7 @@ my $estcmdpath    = _get_estcmdpath()    or die;
 my $estfilterpath = _get_estfilterpath() or die;
 
 my $target_files = $plugin->get_config_value('target_files');
-my @extentions = split( /,/, $target_files );
+my @extensions = split( /,/, $target_files );
 
 rmtree( ["$index_tmp"] )    if ( -d "$index_tmp" );
 rmtree( ["$index_remove"] ) if ( -d "$index_remove" );
@@ -89,7 +89,7 @@ while ( my $blog = $blogs->() ) {
     for my $f (@wantedFiles) {
         if ( -f $f ) {
             my ( $name, $path, $suffix )
-                = File::Basename::fileparse( lc($f), @extentions );
+                = File::Basename::fileparse( lc($f), @extensions );
             if ($suffix) {
                 $f =~ s/$abs//;
                 my $full_path = "$site_path$f";

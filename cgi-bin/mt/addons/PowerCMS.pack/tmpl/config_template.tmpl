@@ -20,7 +20,7 @@
     id="rebuildtrigger"
     label="<__trans phrase="Trigger">">
 <div><__trans phrase="You can write YAML format. Example:"></div>
-<pre class="text full-width">
+<textarea class="text high" style="height:260px;" readonly="readonly">
 Trigger1:
     params:
         - __mode=cfg_prefs
@@ -35,9 +35,9 @@ Trigger2:
         - is_power_edit=1
         - saved=1
     blog_id: &lt;mt:BlogId&gt;
-</pre>
+</textarea>
 <ul>
-<li><textarea rows="10" id="rebuildtrigger" class="text full-width" name="rebuildtrigger"><mt:var name="rebuildtrigger" escape="html"></textarea>
+<li><textarea rows="10" id="rebuildtrigger" class="text high" name="rebuildtrigger" style="height:260px;"><mt:var name="rebuildtrigger" escape="html"></textarea>
 </li>
 </ul>
 </mtapp:setting>
@@ -97,17 +97,87 @@ Trigger2:
     id="use_validation"
     label="<__trans phrase="Use Markup Validation">">
     <label><input type="checkbox" name="use_validation" id="use_validation" value="1" <mt:if name="use_validation">checked="checked"</mt:if> /> <__trans phrase="Use"></label>
+    <input type="hidden" name="use_validation" id="use_validation" value="0" />
 </mtapp:setting>
 <mtapp:setting
     id="posturl"
     label="<__trans phrase="Url of W3C Markup Validation Service">">
     <input type="text" value="<mt:var name="posturl" escape="HTML">" name="posturl" id="posturl" />
 </mtapp:setting>
+<h2 class="medium-header"><__trans phrase="TinyMCE Setting"></h2>
+<mtapp:setting
+    id="editor_style_css"
+    label="editor_style.css:">
+    <input type="text" id="editor_style_css" name="editor_style_css" value="<mt:var name="editor_style_css" escape="html">" class="text full" />
+</mtapp:setting>
+<mtapp:setting
+    id="editor_plugins"
+    label="plugins:">
+    <textarea id="editor_plugins" name="editor_plugins" class="text full low"><mt:var name="editor_plugins" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons1"
+    label="advanced_buttons1:">
+    <textarea id="theme_advanced_buttons1" name="theme_advanced_buttons1" class="text full low"><mt:var name="theme_advanced_buttons1" escape="html"></textarea>
+    <div class="hint"><__trans phrase="&quot;emoji&quot; is enabled when &quot;KeitaiLib plugin&quot; is used"></div>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons2"
+    label="advanced_buttons2:">
+    <textarea id="theme_advanced_buttons2" name="theme_advanced_buttons2" class="text full low"><mt:var name="theme_advanced_buttons2" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons3"
+    label="advanced_buttons3:">
+    <textarea id="theme_advanced_buttons3" name="theme_advanced_buttons3" class="text full low"><mt:var name="theme_advanced_buttons3" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons4"
+    label="advanced_buttons4:">
+    <textarea id="theme_advanced_buttons4" name="theme_advanced_buttons4" class="text full low"><mt:var name="theme_advanced_buttons4" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons5"
+    label="advanced_buttons5:">
+    <textarea id="theme_advanced_buttons5" name="theme_advanced_buttons5" class="text full low"><mt:var name="theme_advanced_buttons5" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="source_buttons1"
+    label="source_buttons1:">
+    <textarea id="source_buttons1" name="source_buttons1" class="text full low"><mt:var name="source_buttons1" escape="html"></textarea>
+    <div class="hint"><__trans phrase="&quot;emoji&quot; is enabled when &quot;KeitaiLib plugin&quot; is used"></div>
+</mtapp:setting>
+<mtapp:setting
+    id="source_buttons2"
+    label="source_buttons2:">
+    <textarea id="source_buttons2" name="source_buttons2" class="text full low"><mt:var name="source_buttons2" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="source_buttons3"
+    label="source_buttons3:">
+    <textarea id="source_buttons3" name="source_buttons3" class="text full low"><mt:var name="source_buttons3" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="source_buttons4"
+    label="source_buttons4:">
+    <textarea id="source_buttons4" name="source_buttons4" class="text full low"><mt:var name="source_buttons4" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="source_buttons5"
+    label="source_buttons5:">
+    <textarea id="source_buttons5" name="source_buttons5" class="text full low"><mt:var name="source_buttons5" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="editor_advanced_setting"
+    label="<__trans phrase="Advanced Setting">">
+    <textarea id="editor_advanced_setting" name="editor_advanced_setting" class="text full high"><mt:var name="editor_advanced_setting" escape="html"></textarea>
+    <div class="hint"><__trans phrase="e.g">) tinymce_editor.init['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4';</div>
+</mtapp:setting>
+</__trans_section>
 <h2 class="medium-header"><__trans phrase="Memo"></h2>
 <mtapp:setting
     id="memo"
     label_class="top-label">
-    <textarea rows="10" id="memo" class="text full" name="memo"><mt:var name="memo" escape="html"></textarea>
+    <textarea rows="10" id="memo" class="text full high" name="memo"><mt:var name="memo" escape="html"></textarea>
     <p class="hint"><__trans phrase="This is free space to memo. This is never used."></p>
 </mtapp:setting>
-</__trans_section>

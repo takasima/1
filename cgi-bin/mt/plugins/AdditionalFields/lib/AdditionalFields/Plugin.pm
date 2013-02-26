@@ -107,11 +107,10 @@ sub _entries_dialog {
     require MT::ObjectTag;
     my @tags = MT::Tag->load( undef,
                               { join => MT::ObjectTag->join_on( 'tag_id',
-                              { blog_id => \@blog_ids, object_datasource => 'entry', },
-                              { unique => 1, } ) } );
+                              { blog_id => \@blog_ids, object_datasource => 'entry' },
+                              { unique => 1 } ) } );
     for my $tag ( @tags ) {
-        push @tag_loop, {
-            tag_name => $tag->name, };
+        push @tag_loop, { tag_name => $tag->name };
     }
     $param{ tag_loop } = \@tag_loop;
     $param{ blog_loop } = \@blog_loop;
@@ -203,7 +202,7 @@ sub __load_contributer {
     push ( @blog_id, 0 );
     my %terms1 = ( blog_id => \@blog_id, permissions => { like => "\%'administer\%" } );
     my @user = MT::Author->load(
-        { type => MT::Author::AUTHOR(), },
+        { type => MT::Author::AUTHOR() },
         { join => [ 'MT::Permission', 'author_id',
             \%terms1,
             { unique => 1 } ],
@@ -239,7 +238,7 @@ sub __can_post {
 
 sub _cb_restore {
     my ( $cb, $objects, $deferred, $errors, $callback ) = @_;
-    
+
     my %restored_objects;
     for my $key ( keys %$objects ) {
         if ( $key =~ /^MT::(:?Entry|Page)#(\d+)$/ ) {
@@ -256,7 +255,7 @@ sub _cb_restore {
         ),
         'cf-restore-object-entrypage'
     );
-    
+
     my $r = MT::Request->instance();
     for my $restored_object ( values %restored_objects ) {
         my $iter = CustomFields::Field->load_iter( { blog_id  => [ $restored_object->blog_id, 0 ],
@@ -313,7 +312,7 @@ sub _cb_restore {
                 $r->cache( $cache_key, 1 );
             }
         }
-    }                                 
+    }
     $callback->( MT->translate( "Done." ) . "\n" );
 }
 

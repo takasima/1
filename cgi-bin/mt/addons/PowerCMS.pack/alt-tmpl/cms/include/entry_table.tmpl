@@ -89,10 +89,11 @@
       </td>
   </mt:if>
       <td class="col title" colspan="<mt:if name="is_blog">5<mt:else>6</mt:if>">
-<MTIgnore>
-        <strong><a href="<$mt:var name="script_url"$>?__mode=view&amp;_type=<mt:var name="object_type">&amp;id=<$mt:var name="id"$>&amp;blog_id=<$mt:var name="blog_id"$>"><$mt:var name="title_long"$></a></strong>
-</MTIgnore>
+<MTIfPlugin component="EntryWorkflow">
         <strong><mt:if name="has_edit_access"><a href="<$mt:var name="script_url"$>?__mode=view&amp;_type=<mt:var name="object_type">&amp;id=<$mt:var name="id"$>&amp;blog_id=<$mt:var name="blog_id"$>"></mt:if><$mt:var name="title_long"$><mt:if name="has_edit_access"></a></mt:if></strong>
+<MTElse>
+        <strong><a href="<$mt:var name="script_url"$>?__mode=view&amp;_type=<mt:var name="object_type">&amp;id=<$mt:var name="id"$>&amp;blog_id=<$mt:var name="blog_id"$>"><$mt:var name="title_long"$></a></strong>
+</MTIfPlugin>
         <span class="icon duplicate">
             <a href="<$mt:var name="script_url"$>?__mode=view&amp;duplicate=1&amp;_type=<mt:var name="object_type">&amp;id=<$mt:var name="id"$>&amp;blog_id=<$mt:var name="blog_id"$>"><img src="<$MTStaticWebPath$>addons/PowerCMS.pack/images/duplicate.gif" alt="<__trans_section component="PowerCMS"><__trans phrase="Duplicate"></__trans_section>" /></a>
         </span>

@@ -377,8 +377,8 @@ sub _check_asset {
                     my $create_asset = $plugin_sidebarimage->get_config_value( 'create_asset', $get_from );
                     if ( $create_asset ) {
                         my $not_import = $plugin_sidebarimage->get_config_value( 'not_import', $get_from );
-                        my @extention = split ( /,/, $not_import );
-                        for my $ext ( @extention ) {
+                        my @extension = split ( /,/, $not_import );
+                        for my $ext ( @extension ) {
                             if ( $path =~ /$ext$/ ) {
                                 $create_asset = 0;
                             }

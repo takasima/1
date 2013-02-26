@@ -66,11 +66,11 @@
 <MTSetVarBlock name="entries">
     <MTEntries offset="0" limit="10">
     <MTEntriesHeader>
-        <ul class="nav2">
+        <section><ul class="archivelist">
     </MTEntriesHeader>
-        <li><h2><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></h2></li>
+        <li><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a><mt:Unless name="category_archive"> <span class="category"><mt:EntryCategories glue=","><a href="<mt:CategoryArchiveLink>"><mt:CategoryLabel></a></mt:EntryCategories></span></mt:Unless><MTIfCommentsActive> | <a class="commentcount" href="<$MTEntryPermalink escape="html"$>#comment"><__trans phrase="__COMMENT_COUNT"> (<$MTEntryCommentCount$>)</a></MTIfCommentsActive><MTIfPingsActive> | <a class="trackbackcount" href="<$MTEntryPermalink escape="html"$>#trackback"><__trans phrase="Trackback"> (<$MTEntryTrackbackCount$>)</a></MTIfPingsActive></li>
     <MTEntriesFooter>
-        </ul>
+        </ul></section>
     </MTEntriesFooter>
     </MTEntries>
 </MTSetVarBlock>

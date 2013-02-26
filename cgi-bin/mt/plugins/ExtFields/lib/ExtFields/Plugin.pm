@@ -1653,9 +1653,9 @@ sub _set_ext_param {
                         $item = encode_html( $item );
                         $src .= '<label style="margin-right:15px"><input type="radio" name="' . $name . '" id="' . $name . $i;
                         if ( $text eq $item ) {
-                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" checked="checked" tabindex="4" />' . $item . '</label>';
+                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" checked="checked" />' . $item . '</label>';
                         } else {
-                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" tabindex="4" /> ' . $item . '</label>';
+                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" /> ' . $item . '</label>';
                         }
                         $i++;
                     }
@@ -1680,9 +1680,9 @@ sub _set_ext_param {
                         $item = encode_html( $item );
                         $src .= '<label style="margin-right:15px"><input type="checkbox" name="' . $name . $i . '" id="' . $name . $i;
                         if ( grep( /^$item$/, @actives ) ) {
-                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" checked="checked" tabindex="4" />' . $item . '</label>';
+                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" checked="checked" />' . $item . '</label>';
                         } else {
-                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" tabindex="4" /> ' . $item . '</label>';
+                            $src .= '" value="' . $item . '" mt:watch-change="1" style="margin-right:7px" /> ' . $item . '</label>';
                         }
                         $i++;
                     }
@@ -1877,9 +1877,9 @@ sub _set_ext_param {
                             $item = encode_html( $item );
                             $src .= '<label style="margin-right:15px"><input type="radio" name="' . $fld_name . '" id="' . $fld_name . $i;
                             if ( $text eq $item ) {
-                                $src .= '" value="' . $item . '" mt:watch-change="1" checked="checked" tabindex="4" /> ' . $item . '</label>';
+                                $src .= '" value="' . $item . '" mt:watch-change="1" checked="checked" /> ' . $item . '</label>';
                             } else {
-                                $src .= '" value="' . $item . '" mt:watch-change="1" tabindex="4" /> ' . $item . '</label>';
+                                $src .= '" value="' . $item . '" mt:watch-change="1" /> ' . $item . '</label>';
                             }
                             $i++;
                         }
@@ -1893,9 +1893,9 @@ sub _set_ext_param {
                             $item = encode_html( $item );
                             $src .= '<label style="margin-right:15px"><input type="checkbox" name="' . $fld_name . $i . '" id="' . $fld_name . $i;
                             if ( grep( /^$item$/, @actives ) ) {
-                                $src .= '" value="' . $item . '" mt:watch-change="1" checked="checked" tabindex="4" /> ' . $item . '</label>';
+                                $src .= '" value="' . $item . '" mt:watch-change="1" checked="checked" /> ' . $item . '</label>';
                             } else {
-                                $src .= '" value="' . $item . '" mt:watch-change="1" tabindex="4" /> ' . $item . '</label>';
+                                $src .= '" value="' . $item . '" mt:watch-change="1" /> ' . $item . '</label>';
                             }
                             $i++;
                         }
@@ -2232,7 +2232,7 @@ sub _input_tmpl {
     </div>
     <div class="ext-field-content">
         <div class="ext-field-content-inner">
-            <input type="text" name="$name" id="$name" class="text full" value="$text" mt:watch-change="1" autocomplete="off" tabindex="4" />
+            <input type="text" name="$name" id="$name" class="text full" value="$text" mt:watch-change="1" autocomplete="off" />
             <input name="$hidden_label" id="$hidden_label" value="$label" type="hidden" />
         </div>
     </div>
@@ -2260,8 +2260,8 @@ sub _date_tmpl {
     <div class="ext-field-content">
         <div class="ext-field-content-inner">
             <span class="date-time-field">
-            <input type="text" name="$name" id="$name" value="$text" mt:watch-change="1" autocomplete="off" tabindex="4" class="entry-date text-date" />
-            <input type="text" name="$name-time" id="$name-time" value="$time" mt:watch-change="1" autocomplete="off" tabindex="4" class="entry-time" />
+            <input type="text" name="$name" id="$name" value="$text" mt:watch-change="1" autocomplete="off" class="entry-date text-date" />
+            <input type="text" name="$name-time" id="$name-time" value="$time" mt:watch-change="1" autocomplete="off" class="entry-time" />
             <input name="$hidden_label" id="$hidden_label" value="$label" type="hidden" />
         </div>
     </div>
@@ -2292,7 +2292,7 @@ sub _tarea_tmpl {
     <div class="ext-field-content">
         <div class="ext-field-content-inner">
             $format_selector
-            <textarea style="height:90px" name="$name" id="$name" class="text full low ta" rows="" mt:watch-change="1" tabindex="4">$text</textarea>
+            <textarea style="height:90px" name="$name" id="$name" class="text full low ta" rows="" mt:watch-change="1">$text</textarea>
             <input name="$hidden_label" id="$hidden_label" value="$label" type="hidden" />
         </div>
     </div>
@@ -2382,7 +2382,7 @@ sub _select_tmpl {
     </div>
     <div class="ext-field-content">
         <div class="ext-field-content-inner">
-            <div><select name="$name" id="$name" class="full-width short" mt:watch-change="1" tabindex="4">$src</select></div>
+            <div><select name="$name" id="$name" class="full-width short" mt:watch-change="1">$src</select></div>
             <input name="$hidden_label" id="$hidden_label" value="$label" type="hidden" />
             <input name="$multiples_fld_val" id="$multiples_fld_val" value="$multiple_items" type="hidden" />
         </div>
@@ -2415,7 +2415,7 @@ sub _checkbox_tmpl {
             <div>
             <label>
                 <input type="checkbox" name="$name" id="$name" value="1" mt:watch-change="1" autocomplete="off"
-                    style="margin-right:7px" $option tabindex="4" />$select_item</label>
+                    style="margin-right:7px" $option />$select_item</label>
             <input name="$hidden_label" id="$hidden_label" value="$label" type="hidden" />
             <input name="$hidden_select_item" id="$hidden_select_item" value="$select_item" type="hidden" />
             </div>
@@ -2472,11 +2472,11 @@ sub _file_tmpl {
                 <label><mt:var name="itemname">: </label>
                 <input class="text full border"
                  type="text" name="$name-alttext" id="$name-alttext" value="$alt_text"
-                 mt:watch-change="1" autocomplete="off" tabindex="4" style="margin-top: 5px" />
+                 mt:watch-change="1" autocomplete="off" style="margin-top: 5px" />
             </div>
             <div class="ext-field-file-file" style="margin-bottom: 8px;">
                 <label><mt:var name="choosefile">:
-                <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" tabindex="4" style="font-size:11px;vertical-align:middle;" /></label>
+                <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" style="font-size:11px;vertical-align:middle;" /></label>
             </div>
 
             <div>
@@ -2504,36 +2504,36 @@ HTML
                 <label><mt:var name="itemname">: </label>
                 <input class="text full border"
                  type="text" name="$name-alttext" id="$name-alttext" value="$alt_text"
-                 mt:watch-change="1" autocomplete="off" tabindex="4" style="margin-top: 5px" />
+                 mt:watch-change="1" autocomplete="off" style="margin-top: 5px" />
             </div>
 
             <div class="ext-filed-file-description extfield-extend-field" style="display:block;margin-bottom:8px">
                 <label><mt:var name="itemdesc">: </label>
                 $format_selector
                 <textarea name="$name-desctext" id="$name-desctext"
-                 class="text full low" tabindex="4" style="margin-top: 5px">$desc_text</textarea>
+                 class="text full low" style="margin-top: 5px">$desc_text</textarea>
             </div>
 
             <div class="ext-field-file-file" style="margin-bottom: 8px;">
                 <label><mt:var name="choosefile">:
-                <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" tabindex="4" style="font-size:11px;vertical-align:middle;" /></label>
+                <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" style="font-size:11px;vertical-align:middle;" /></label>
             </div>
 
             <div class="ext-field-file-path extfield-extend-field" style="margin-bottom: 8px;">
                 <label><mt:var name="destination">: &#60;<mt:var name="siteroot">&#62; /$upload_path
                 <input type="text" name="$name-filepath" id="$name-filepath" value="$file_path"
-                 mt:watch-change="1" autocomplete="off" tabindex="4" class="border" style="width:120px;" /></label>
+                 mt:watch-change="1" autocomplete="off" class="border" style="width:120px;" /></label>
             </div>
             <div class="ext-field-file-overwrite extfield-extend-field">
                 <mt:var name="exists_msg">
                 <label>
                     <input type="radio" name="$name-overwrite" id="$name-overwrite1" value="overwrite"
-                     style="margin-right:5px; margin-left:12px" mt:watch-change="1" autocomplete="off" $overwrite tabindex="4" />
+                     style="margin-right:5px; margin-left:12px" mt:watch-change="1" autocomplete="off" $overwrite />
                     <mt:var name="overwrite">
                 </label>
                 <label>
                     <input type="radio" name="$name-overwrite" id="$name-overwrite2" value="rename"
-                     style="margin-right:5px; margin-left:9px" mt:watch-change="1" autocomplete="off" $rename tabindex="4" />
+                     style="margin-right:5px; margin-left:9px" mt:watch-change="1" autocomplete="off" $rename />
                      <mt:var name="rename">
                 </label>
             </div>
@@ -2592,7 +2592,7 @@ sub _e_file_tmpl {
         $textarea  = '<div class="ext-filed-file-description extfield-extend-field" style="display:block;margin-bottom:8px">';
         $textarea .= '<label><mt:var name="itemdesc">: </label>';
         $textarea .= $format_selector;
-        $textarea .= '<textarea name="' . $name . '-desctext" id="' . $name . '-desctext" class="text full short" tabindex="4" style="margin-top: 5px">';
+        $textarea .= '<textarea name="' . $name . '-desctext" id="' . $name . '-desctext" class="text full short" style="margin-top: 5px">';
         $textarea .= $desc_text;
         $textarea .= '</textarea></div>';
     }
@@ -2612,7 +2612,7 @@ sub _e_file_tmpl {
                 <label><mt:var name="itemname">: </label>
                 <input class="text full short border"
                  type="text" name="$name-alttext" id="$name-alttext" value="$alt_text"
-                 mt:watch-change="1" autocomplete="off" tabindex="4" style="margin-top: 5px" />
+                 mt:watch-change="1" autocomplete="off" style="margin-top: 5px" />
             </div>
 
             $textarea
@@ -2620,23 +2620,23 @@ sub _e_file_tmpl {
             <div style="margin-left:2px;margin-top:5px;margin-bottom:1px;display:block">
                 <label>
                     <input type="checkbox" onclick="remove_extfile(this,'$name','$name-overwrite1','$name-overwrite2','$name-replace' )"
-                     name="$name-delete" id="$name-delete" value="1" $delete tabindex="4" /> <mt:var name="delete">
+                     name="$name-delete" id="$name-delete" value="1" $delete /> <mt:var name="delete">
                 </label>
                 &nbsp;&nbsp;
                 <label>
                     <input type="checkbox" onclick="overwrite_extfile(this,'$name','$name-overwrite1','$name-overwrite2','$name-delete' )"
-                     name="$name-replace" id="$name-replace" value="1" tabindex="4" /> <mt:var name="replace">
+                     name="$name-replace" id="$name-replace" value="1" /> <mt:var name="replace">
                 </label>
                 &nbsp;&nbsp;
                 <label>
                     <mt:var name="choosefile">:
-                    <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" tabindex="4" disabled="disabled" style="font-size:11px;vertical-align:middle;" />
+                    <input type="file" name="$name" id="$name" mt:watch-change="1" autocomplete="off" disabled="disabled" style="font-size:11px;vertical-align:middle;" />
                 </label>
                 <label>
                     <input type="radio" disabled="disabled" name="$name-overwrite" id="$name-overwrite1" value="overwrite"
-                     style="margin-right:5px; margin-left:12px;vertical-align:middle;" mt:watch-change="1" autocomplete="off" $overwrite tabindex="4"
+                     style="margin-right:5px; margin-left:12px;vertical-align:middle;" mt:watch-change="1" autocomplete="off" $overwrite
                 /><mt:var name="overwrite"></label><label><input type="radio" disabled="disabled" name="$name-overwrite" id="$name-overwrite2" value="rename"
-                style="margin-right:5px; margin-left:9px;vertical-align:middle;" mt:watch-change="1" autocomplete="off" $rename tabindex="4" /><mt:var name="rename"></label>
+                style="margin-right:5px; margin-left:9px;vertical-align:middle;" mt:watch-change="1" autocomplete="off" $rename /><mt:var name="rename"></label>
             </div>
             <input type="hidden" name="$name-filepath" id="$name-filepath" value="$file_path" />
             <input type="hidden" name="$name-fullpath" id="$name-fullpath" value="$full_path" />

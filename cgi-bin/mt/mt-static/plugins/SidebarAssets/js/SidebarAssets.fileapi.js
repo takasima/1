@@ -1,8 +1,9 @@
 /*
- * Power CMS 2 File API plugin
+ * PowerCMS File API plugin
  * only Firefox 3.6+
  */
-(function(jQuery) {
+
+(function($) {
     var name_space = "PCMS2FileApi";
     var get   = false;
     var scrolled = 0;
@@ -27,10 +28,11 @@
             e.preventDefault();
             target.setAttribute("dragenter", true);
             if (moved == 0) {
-                scrolled = jQuery(document).scrollTop();
+                scrolled = $(document).scrollTop();
             }
             moved++;
-            jQuery('html,body').scrollTop(jQuery('html,body').scrollTop());
+            var $body = $('html,body');
+            $body.scrollTop($body.scrollTop());
         };
         var _hdlr_leave = function(e) {
             e.stopPropagation();
@@ -40,10 +42,9 @@
         };
         var _hdlr_drop = function(e) {
             get = false;
-            jQuery('.asset_list_box .list').html('');
-            jQuery('.asset_list_box').hide();
-            jQuery('#asset_all_list').show();
-            jQuery('#asset_all_list .indicate').toggle();
+            $('.asset_list_box .list').html('');
+            $('.asset_list_box').hide();
+            $('#asset_all_list').show().find('.indicate').toggle();
             var dt    = e.dataTransfer;
             var files = dt.files;
             e.stopPropagation();
@@ -55,10 +56,10 @@
             var upload_token = 'ut_' + (new Date()).getTime();
             var file_num = files.length;
             if(!window.upload_count){
-              window.upload_count = new Array();
+                window.upload_count = [];
             }
             window.upload_count[upload_token] = 0;
-            window.file_reader = new Array();
+            window.file_reader = [];
             if (files.length > 0) {
                 for (var i=0; i<files.length; i++) {
                     try {
@@ -69,15 +70,14 @@
                             var file_name = file.fileName || file.name;
                             var obj = file;
                             
-                            var now_ext;
-                            if (file_name.match(/(gif|jpe?g|png|bmp|tiff?)$/i)) {
+                            var now_ext = "other",
+                                lc_ext = file_name.split(".").pop().toLowerCase();
+                            if (lc_ext.match(/^(?:gif|jpe?g|png|bmp|tiff?)$/)) {
                                 now_ext = 'image';
-                            } else if (file_name.match(/(mov|avi|3gp|asf|mp4|qt|wmv|asx|mpg|flv|mkv|ogm)$/i)) {
+                            } else if (lc_ext.match(/^(?:m[ok]v|avi|3gp|as[fx]|mp[4g]|qt|wmv|flv|ogm)$/)) {
                                 now_ext = 'video';
-                            } else if (file_name.match(/(mp3|ogg|aiff?|wav|wma|aac|flac|m4a)$/i)) {
+                            } else if (lc_ext.match(/^(?:mp3|ogg|aiff?|wav|wma|aac|flac|m4a)$/)) {
                                 now_ext = 'audio';
-                            } else {
-                                now_ext = 'other';
                             }
                             if (ext == '') {
                                 ext = now_ext;
@@ -97,7 +97,7 @@
                                 var disposition = 'Content-Disposition: form-data; name="Filedata"; '
                                                 + 'filename="' + encodeURIComponent( file.name ) + '"; '
                                                 + 'magic_token="' + settings.magic_token + '";';
-                                var ret = new Array();
+                                var ret = [];
                                 ret.push(
                                     settings.dashdash + settings.boundary,
                                     'Content-Type: application/octet-stream',
@@ -120,7 +120,7 @@
                                     beforeSend: function(xhr) {
                                         xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + settings.boundary);
                                         xhr.setRequestHeader('Content-Length', content.length);
-                                        xhr.sendAsBinary(content);    // sendAsBinary is not a function... (jQuery1.6)
+                                        xhr.sendAsBinary(content);    // sendAsBinary is not a function... (jQuery 1.6)
                                     },
                                     success: function(txt){
                                         window.upload_count[upload_token]++;
@@ -145,10 +145,10 @@
                                     }
                                 };
                                 xhr.open('POST', (settings.url + '&upload_token=' + upload_token + '&file_num=' + file_num), true);
-                                xhr.setRequestHeader('Content-type','multipart/form-data; boundary=' + settings.boundary);
-                                xhr.setRequestHeader('Content-length',content.length);
+                                xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + settings.boundary);
+                                xhr.setRequestHeader('Content-Length', content.length);
                                 xhr.sendAsBinary(content);
-                            }
+                            };
                             
                             var binary = '';
                             if(file.fileName){
@@ -183,36 +183,36 @@
                     'method'   : 'get',
                     'dataType' : 'text',
                     success : function(data, dataType){
-                        if(data.match('<head>')){
+                        if(~data.indexOf('<head>')) {
                             asset_list.load_error();
                             return;
                         }
-                        jQuery('#asset_all_list .list').append(data);
-                        jQuery('#asset_all_list .indicate').toggle();
-                        jQuery('#asset_all_list .thumbnail a')
+                        $('#asset_all_list .list').append(data);
+                        $('#asset_all_list .indicate').toggle();
+                        $('#asset_all_list .thumbnail a')
                             .mousedown(
                                 function(e) {
-                                    var menu_offset = pcms_util.px2int(jQuery('#menu').css('top'));
-                                    jQuery(this).children('span').css({
+                                    var menu_offset = pcms_util.px2int($('#menu').css('top'));
+                                    $(this).children('span').css({
                                         'top'  : e.pageY - menu_offset + "px",
                                         'left' : e.pageX + "px"
                                     });
                                 }
                             );
-                        jQuery('#asset_all_list .thumbnail a span').css('opacity', 0);
+                        $('#asset_all_list .thumbnail a span').css('opacity', 0);
                         mode = 'all';
-                        jQuery('.asset_tab li').removeClass('current end loaded');
-                        jQuery('.asset_tab li#asset_all').addClass('current');
-                        jQuery('#asset_all_list .thumbnail a').bind('contextmenu', asset_list.context);
-                        jQuery('.asset_list_box').removeClass('end');
+                        $('.asset_tab li').removeClass('current end loaded');
+                        $('.asset_tab li#asset_all').addClass('current');
+                        $('#asset_all_list .thumbnail a').bind('contextmenu', asset_list.context);
+                        $('.asset_list_box').removeClass('end');
                         asset_list.set_loaded_css('all');
                         asset_list.set_next_loading(1, 'all');
                     }
                 });
                 get = true;
             }
-        }
-        jQuery('#drop').show();
+        };
+        $('#drop').show();
         var target = document.getElementById(settings.target_id);
         window.addEventListener("dragenter", _hdlr_over, true);
         window.addEventListener("dragleave", _hdlr_leave, true);

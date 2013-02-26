@@ -42,11 +42,14 @@
         ),
         'column_def' => 'vfloat_idx',
     );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='entry' OR field_type='entry_multi' OR field_type='page' OR field_type='page_multi'";
-    $where .=" OR field_type='checkbox_multi' OR field_type='dropdown_multi'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'additional_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='entry' OR field_type='entry_multi' OR field_type='page' OR field_type='page_multi'";
+        $where .=" OR field_type='checkbox_multi' OR field_type='dropdown_multi'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         foreach ( $customfields as $field ) {
             $tag = $field->tag;
@@ -103,8 +106,13 @@
                     $entry = $ctx->mt->db()->fetch_page( $value );
                 }
             }
-            $ctx->stash( 'entry', $entry );
-            $repeat = TRUE;
+            if ( $entry ) {
+                $ctx->stash( 'entry', $entry );
+                $repeat = TRUE;
+            } else {
+                $ctx->restore( $localvars );
+                $repeat = FALSE;
+            }
         } else {
             $field_value = $ctx->stash( 'field_value' );
             if ( $args[ 'raw' ] ) {
@@ -312,7 +320,7 @@
     function script_field_html_dd( dropdown, basename ) {
         var field_array = new Array();
         var vals;
-        for ( var i = 0 ; i < dropdown.length; i++ ) {
+        for ( var i = 0; i < dropdown.length; i++ ) {
             if ( dropdown[i].selected ) {
                 field_array.push( dropdown[i].value );
             }

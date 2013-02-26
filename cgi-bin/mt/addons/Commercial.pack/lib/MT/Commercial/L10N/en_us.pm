@@ -33,13 +33,14 @@ use vars qw( %Lexicon );
 },
     '_CF_BASENAME' => 'Basename',
     '_PTS_CONTACT' => 'Contact',
-    '_PTS_REPLACE_THIS' => '<p><strong>Replace sample text with your own information.</strong></p>',
+    '_PTS_REPLACE_THIS' =>
+        '<p><strong>Replace sample text with your own information.</strong></p>',
     '_PTS_SAMPLE_ABOUT' => q{
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In nec tellus sed turpis varius sagittis. Nullam pulvinar. Fusce dapibus neque pellentesque nulla. Maecenas condimentum quam. Vestibulum pretium fringilla quam. Nam elementum. Suspendisse odio magna, aliquam vitae, vulputate et, dignissim at, pede. Integer pellentesque orci at nibh. Morbi ante.</p>
 
 <p>Maecenas convallis mattis justo. Ut mauris sapien, consequat a, bibendum vitae, sagittis ac, nisi. Nulla et sapien. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Ut condimentum turpis ut elit. Quisque ultricies sollicitudin justo. Duis vitae magna nec risus pulvinar ultricies.</p>
 },
-    '_PTS_EDIT_LINK' => q{},
+    '_PTS_EDIT_LINK'      => q{},
     '_PTS_SAMPLE_CONTACT' => q{
 <p>We'd love to hear from you. Send email to email (at) domainname.com</p>
 },

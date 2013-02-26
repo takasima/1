@@ -10,8 +10,6 @@ use strict;
 
 use base 'MT::Community::L10N';
 use vars qw( %Lexicon );
-%Lexicon = (
-    '_NUM_FAVORITES' => 'Favorite',
-);
+%Lexicon = ( '_NUM_FAVORITES' => 'Favorite', );
 
 1;

@@ -204,7 +204,7 @@ sub bulk_update {
     if ( $app->param('checksum') ne Digest::MD5::md5_hex($text) ) {
         return $app->json_error(
             $app->translate(
-                'Failed to update [_1]: some of [_2] were changed after you opened this screen.',
+                'Failed to update [_1]: Some of [_2] were changed after you opened this page.',
                 $class->class_label_plural,
                 $class->class_label_plural,
             )
@@ -335,6 +335,15 @@ sub bulk_update {
         $deletes++;
     }
 
+    $app->touch_blogs;
+
+    my @ordered_ids = map { $_->id } @objects;
+    my $order = join ',', @ordered_ids;
+    $blog->$meta($order);
+    $blog->save;
+
+    $app->run_callbacks( 'cms_post_bulk_save.' . $model, $app, \@objects );
+
     my $rebuild_url = $app->uri(
         mode => 'rebuild_confirm',
         args => { blog_id => $blog_id, }
@@ -350,13 +359,6 @@ sub bulk_update {
             $creates, $updates, $deletes, $rebuild_open
         ),
         };
-
-    my @ordered_ids = map { $_->id } @objects;
-    my $order = join ',', @ordered_ids;
-    $blog->$meta($order);
-    $blog->save;
-
-    $app->run_callbacks( 'cms_post_bulk_save.' . $model, $app, \@objects );
 
     $app->forward( 'filtered_list', messages => \@messages );
 }
@@ -393,7 +395,7 @@ sub category_do_add {
     my $name = $q->param('label')
         or return $app->error( $app->translate("No label") );
     $name =~ s/(^\s+|\s+$)//g;
-    return $app->errtrans("Category name cannot be blank.")
+    return $app->errtrans("The category name cannot be blank.")
         if $name eq '';
     my $parent   = $q->param('parent') || '0';
     my $cat      = $pkg->new;
@@ -571,13 +573,13 @@ sub pre_save {
         next if $obj->id && ( $_->id == $obj->id );
         return $eh->error(
             $app->translate(
-                "The category name '[_1]' conflicts with another category. Top-level categories and sub-categories with the same parent must have unique names.",
+                "The category name '[_1]' conflicts with the name of another category. Top-level categories and sub-categories with the same parent must have unique names.",
                 $_->label
             )
         ) if $_->label eq $obj->label;
         return $eh->error(
             $app->translate(
-                "The category basename '[_1]' conflicts with another category. Top-level categories and sub-categories with the same parent must have unique basenames.",
+                "The category basename '[_1]' conflicts with the basename of another category. Top-level categories and sub-categories with the same parent must have unique basenames.",
                 $_->label
             )
         ) if $_->basename eq $obj->basename;

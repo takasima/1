@@ -6,47 +6,47 @@
 <$mt:Include module="<__trans phrase="Mobile-Login Header">"$>
 
 <form method="post" action="<mt:var name="script_url">" utn="utn">
-	<mt:if name="blog_id">
-		<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
-		<mt:else>
-		<mt:var name="blog_selector">
-		</mt:else>
-	</mt:if>
-	<input type="hidden" name="__mode" value="login" />
-	<input type="hidden" name="type" value="easy" />
-	<input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
-	<div align="center"><input type="submit" accesskey="0" value="<__trans phrase="Easy Login">" /></div>
+    <mt:if name="blog_id">
+        <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+        <mt:else>
+        <mt:var name="blog_selector">
+        </mt:else>
+    </mt:if>
+    <input type="hidden" name="__mode" value="login" />
+    <input type="hidden" name="type" value="easy" />
+    <input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
+    <div align="center"><input type="submit" accesskey="0" value="<__trans phrase="Easy Login">" /></div>
 </form>
 <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
 
 <form method="post" action="<mt:var name="script_url">">
-	<__trans phrase="Username">:<input type="text" name="username" id="username" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
-	<__trans phrase="Password">:<input type="text" name="password" id="password" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
-	<input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
-	<mt:setvarblock name="blog_selector">
-		<select name="blog_id">
-			<mt:blogs>
-				<mt:blogid setvar="this_id">
-				<option value="<mt:blogid>" <mt:if name="this_id" eq="$blog_id">selected="selected"</mt:if>><mt:blogname></option>
-			</mt:blogs>
-		</select>
-	</mt:setvarblock>
-	<mt:if name="blog_id">
-		<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
-		<mt:else>
-		<mt:var name="blog_selector">
-		</mt:else>
-	</mt:if>
-	<input type="hidden" name="__mode" value="login" />
-	<div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Login">" /></div>
-	<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
-	<div align="center"><a href="<mt:var name="script_url">?__mode=start_recover&blog_id=<mt:var name="blog_id">"><__trans phrase="Forgot your password?"></a></div>
+    <__trans phrase="Username">:<input type="text" name="username" id="username" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+    <__trans phrase="Password">:<input type="text" name="password" id="password" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+    <input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
+    <mt:setvarblock name="blog_selector">
+        <select name="blog_id">
+            <mt:blogs>
+                <mt:blogid setvar="this_id">
+                <option value="<mt:blogid>" <mt:if name="this_id" eq="$blog_id">selected="selected"</mt:if>><mt:blogname></option>
+            </mt:blogs>
+        </select>
+    </mt:setvarblock>
+    <mt:if name="blog_id">
+        <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+        <mt:else>
+        <mt:var name="blog_selector">
+        </mt:else>
+    </mt:if>
+    <input type="hidden" name="__mode" value="login" />
+    <div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Login">" /></div>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+    <div align="center"><a href="<mt:var name="script_url">?__mode=start_recover&blog_id=<mt:var name="blog_id">"><__trans phrase="Forgot your password?"></a></div>
 </form>
 
 
 <mt:if name="blog_id">
-	<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
-	<div align="center"><a href="<mt:var name="script_url">?__mode=signup&blog_id=<mt:var name="blog_id">"><__trans phrase="Create account"></a></div>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+    <div align="center"><a href="<mt:var name="script_url">?__mode=signup&blog_id=<mt:var name="blog_id">"><__trans phrase="Create account"></a></div>
 </mt:if>
 
 <$mt:Include module="<__trans phrase="Mobile-Login Footer">"$>

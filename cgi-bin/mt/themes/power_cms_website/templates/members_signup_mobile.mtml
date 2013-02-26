@@ -3,70 +3,396 @@
 <mt:SetVarBlock name="page_title"><__trans phrase="Create an account"></mt:SetVarBlock>
 <mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
 <$mt:Include module="<__trans phrase="Mobile-Login Header">"$>
-
-<mt:if name="error">
-	<mt:if name="exist_error">
-		<span style="color:red"><__trans phrase="That user name has already been used"></span>
-		<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
-		<mt:else>
-		<span style="color:red"><__trans phrase="Saving failed."></span>
-		<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
-		</mt:else>
-	</mt:if>
-</mt:if>
+                <$MTSetVar name="msg" value=""$>
+                <MTIf name="error">
+                    <$MTSetVar name="error_author_exist" value=""$>
+                    <$MTSetVar name="error_required" value=""$>
+                    <$MTSetVar name="error_username" value=""$>
+                    <$MTSetVar name="error_nickname" value=""$>
+                    <$MTSetVar name="error_email" value=""$>
+                    <$MTSetVar name="error_email_not_valid" value=""$>
+                    <$MTSetVar name="error_mobile_not_valid" value=""$>
+                    <$MTSetVar name="error_mobile_address" value=""$>
+                    <$MTSetVar name="error_password_not_verify" value=""$>
+                    <$MTSetVar name="error_password" value=""$>
+                    <$MTSetVar name="error_pass_verify" value=""$>
+                    <MTLoop name="errors">
+                        <MTIf name="error_name" eq="author_exist"><MTSetVarBlock name="error_author_exist"><__trans phrase="That user name has already been used"><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="required"><MTSetVarBlock name="error_required"><__trans phrase="Please enter requires."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username"><MTSetVarBlock name="error_username"><__trans phrase="Please enter your user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="nickname"><MTSetVarBlock name="error_nickname"><__trans phrase="Please enter your display name"><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="email"><MTSetVarBlock name="error_email"><__trans phrase="Please enter your E-mail."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="email_not_valid"><MTSetVarBlock name="error_email_not_valid"><__trans phrase="The value you entered was not a valid E-mail."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="mobile_not_valid"><MTSetVarBlock name="error_mobile_not_valid"><__trans phrase="The value you entered was not a valid Mobile E-mail."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="mobile_address"><MTSetVarBlock name="error_mobile_address"><__trans phrase="Please enter your mobile email address"><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_not_verify"><MTSetVarBlock name="error_password_not_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password"><MTSetVarBlock name="error_password"><__trans phrase="Select a password for your account."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="pass_verify"><MTSetVarBlock name="error_pass_verify"><__trans phrase="Both passwords must match."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_deny_multibytes"><MTSetVarBlock name="error_username_deny_multibytes"><__trans phrase="The multi-byte character is contained in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_alphabet"><MTSetVarBlock name="error_username_allow_alphabet"><__trans phrase="The alphabet is contained in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_number"><MTSetVarBlock name="error_username_allow_number"><__trans phrase="The number is included in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_allow_special_characters"><MTSetVarBlock name="error_username_allow_special_characters"><__trans phrase="The sign is included in the user name."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="username_minimum_length"><MTSetVarBlock name="error_username_minimum_length"><__trans phrase="The user name is too short."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_deny_multibytes"><MTSetVarBlock name="error_password_deny_multibytes"><__trans phrase="The multi-byte character is contained in the password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_combo_upper_lower"><MTSetVarBlock name="error_password_combo_upper_lower"><__trans phrase="You have to include both a capital letter and a small letter in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_combo_letter_number"><MTSetVarBlock name="error_password_combo_letter_number"><__trans phrase="You have to include both a character and a number in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_require_special_characters"><MTSetVarBlock name="error_password_require_special_characters"><__trans phrase="You have to include a sign in a password."><br /></MTSetVarBlock></MTIf>
+                        <MTIf name="error_name" eq="password_minimum_length"><MTSetVarBlock name="error_password_minimum_length"><__trans phrase="The password is too short."><br /></MTSetVarBlock></MTIf>
+                    </MTLoop>
+                    <$MTSetVar name="error_detail" value=""$>
+                    <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_author_exist"$></MTSetVarBlock>
+                    <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_required"$></MTSetVarBlock>
+                    <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_username"$></MTSetVarBlock>
+                    <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_nickname"$></MTSetVarBlock>
+                    <MTIf name="error_email_not_valid">
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_email_not_valid"$></MTSetVarBlock>
+                    <MTElse>
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_email"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_mobile_not_valid">
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_mobile_not_valid"$></MTSetVarBlock>
+                    <MTElse>
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_mobile_addres"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password">
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_password"$></MTSetVarBlock>
+                    <MTElse name="error_pass_verify">
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_pass_verify"$></MTSetVarBlock>
+                    <MTElse>
+                        <MTSetVarBlock name="error_detail" append="1"><$MTGetVar name="error_password_not_verify"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_message">
+                        <MTSetVarBlock name="error_detail" append="1"><$MTVar name="error_message"$><br /></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_detail">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_detail"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_deny_multibytes">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_deny_multibytes"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_alphabet">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_alphabet"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_number">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_number"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_allow_special_characters">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_allow_special_characters"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_username_minimum_length">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_username_minimum_length"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_deny_multibytes">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_deny_multibytes"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_combo_upper_lower">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_upper_lower"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_combo_letter_number">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_combo_letter_number"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_require_special_characters">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_require_special_characters"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTIf name="error_password_minimum_length">
+                        <MTSetVarBlock name="msg" append="1"><$MTVar name="error_password_minimum_length"$></MTSetVarBlock>
+                    </MTIf>
+                    <MTUnless name="msg">
+                        <MTSetVarBlock name="msg"><__trans phrase="Saving failed."></MTSetVarBlock>
+                    </MTUnless>
+                </MTIf>
+<MTIf name="confirm_ok">
+<MTSetVarBlock name="msg"><__trans phrase="Account is created by the following contents."></MTSetVarBlock>
+</MTIf>
+<MTIf name="msg">
+<span style="color:red"><$MTGetVar name="msg"$></span>
+<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</MTIf>
 <mt:if name="saved">
-	<__trans phrase="Thanks for signing up">
-	<mt:unless name="registered"><br />
-		<__trans phrase="To complete the registration process you must first confirm your account. An email has been sent to [_1]." params="<mt:var name="send_email" escape="html">">
-	</mt:unless>
-	<mt:else>
-		<mt:if name="regist">
-			<mt:if name="registration_failed">
-				<__trans phrase="You have attempted to use a feature that you do not have permission to access. If you believe you are seeing this message in error contact your system administrator.">
-				<mt:else>
-				<__trans phrase="Thanks for the confirmation. This account has been disabled. Please wait for a while until it is approved by the administrator.">
-				</mt:else>
-			</mt:if>
-			<mt:else>
-				<form method="post" action="<mt:var name="script_url">" utn="utn">
-					<__trans phrase="Username"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input type="text" name="username" id="username" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="username" escape="html">" /><br />
-					<__trans phrase="Display Name"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input type="text" name="nickname" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="nickname" escape="html">" /><br />
-					<__trans phrase="Email Address"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input type="text" name="email" id="email" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="email" escape="html">" /><br />
-					<__trans phrase="Moblie E-mail"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input type="text" name="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="mobile_address" escape="html">" /><br />
-					<__trans phrase="Secret Token"><br />
-						<input type="text" name="mail_token" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
-					<__trans phrase="Initial Password"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input name="password" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
-					<__trans phrase="Password Confirm"><span style="color:red">[<__trans phrase="Required">]</span><br />
-						<input name="pass_verify" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+    <__trans phrase="Thanks for signing up">
+    <mt:unless name="registered"><br />
+        <__trans phrase="To complete the registration process you must first confirm your account. An email has been sent to [_1]." params="<mt:var name="send_email" escape="html">">
+    </mt:unless>
+    <mt:else>
+        <mt:if name="regist">
+            <mt:if name="registration_failed">
+                <__trans phrase="You have attempted to use a feature that you do not have permission to access. If you believe you are seeing this message in error contact your system administrator.">
+                <mt:else>
+                    <mt:if name="registration_status" eq="1">
+                        <__trans phrase="Thanks for the confirmation. This account has been active. <br /><a href="[_1]">Please login from here.</a>" params="<mt:var name="login_url">">
+                    <mt:else>
+                        <__trans phrase="Thanks for the confirmation. This account has been disabled. Please wait for a while until it is approved by the administrator.">
+                    </mt:if>
+                </mt:else>
+            </mt:if>
+            <mt:else>
+                <form method="post" action="<mt:var name="script_url">" utn="utn">
+                    <__trans phrase="Username"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                    <MTIf name="confirm_ok">
+                    <$MTGetVar name="username" escape="html"$>
+                    <input type="hidden" name="username" value="<$MTGetVar name="username" escape="html"$>" /><br />
+                    <MTElse>
+                        <input type="text" name="username" id="username" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="username" escape="html">" /><br />
+                    </MTElse>
+                    </MTIf>
+                    <__trans phrase="Display Name"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                    <MTIf name="confirm_ok">
+                    <$MTGetVar name="nickname" escape="html"$>
+                    <input type="hidden" name="nickname" value="<$MTGetVar name="nickname" escape="html"$>" /><br />
+                    <MTElse>
+                        <input type="text" name="nickname" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="nickname" escape="html">" /><br />
+                    </MTElse>
+                    </MTIf>
+                    <__trans phrase="Email Address"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                    <MTIf name="confirm_ok">
+                    <$MTGetVar name="email" escape="html"$>
+                    <input type="hidden" name="email" value="<$MTGetVar name="email" escape="html"$>" /><br />
+                    <MTElse>
+                        <input type="text" name="email" id="email" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="email" escape="html">" /><br />
+                    </MTElse>
+                    </MTIf>
+                    <__trans phrase="Moblie E-mail"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                    <MTIf name="confirm_ok">
+                    <$MTGetVar name="mobile_address" escape="html"$>
+                    <input type="hidden" name="mobile_address" value="<$MTGetVar name="mobile_address" escape="html"$>" /><br />
+                    <MTElse>
+                        <input type="text" name="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="mobile_address" escape="html">" /><br />
+                    </MTElse>
+                    </MTIf>
+                    <MTIf name="confirm_ok">
+                    <MTElse>
+                    <__trans phrase="Secret Token"><br />
+                        <input type="text" name="mail_token" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+                    <__trans phrase="Initial Password"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                        <input name="password" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+                    <__trans phrase="Password Confirm"><span style="color:red">[<__trans phrase="Required">]</span><br />
+                        <input name="pass_verify" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+                    </MTElse>
+                    </MTIf>
                     <MTIfPlugin component="MailMagazine">
-					<__trans phrase="Mail Subscription"><br />
-						<input name="mail_subscription" type="checkbox" /> <__trans phrase="Subscribe"><br />
+                    <__trans phrase="Mail Subscription"><br />
+                    <MTIf name="confirm_ok">
+                        <MTIf name="mail_subscription">
+                            <__trans phrase="Subscribe"><br />
+                            <input type="hidden" name="mail_subscription" value="1" />
+                            <MTElse>
+                            <__trans phrase="Not subscribe"><br />
+                            <input type="hidden" name="mail_subscription" value="" />
+                            </MTElse>
+                        </MTIf>
+                        <MTElse>
+                        <input name="mail_subscription" type="checkbox" value="1" /> <__trans phrase="Subscribe"><br />
+                        </MTElse>
+                    </MTIf>
                     </MTIfPlugin>
-					<mt:setvarblock name="blog_selector">
-						<select name="blog_id">
-							<mt:blogs>
-								<mt:blogid setvar="this_id">
-								<option value="<mt:blogid>" <mt:if name="this_id" eq="$blog_id">selected="selected"</mt:if>><mt:blogname></option>
-							</mt:blogs>
-						</select>
-					</mt:setvarblock>
-					<mt:if name="blog_id">
-						<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
-						<mt:else>
-							<mt:var name="blog_selector">
-						</mt:else>
-					</mt:if>
-					<input type="hidden" name="__mode" value="do_signup" />
-					<hr />
-					<div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Create an account">" /></div>
-				</form>
-			</mt:else>
-		</mt:if>
-	</mt:else>
+                    
+                    <mt:Loop name="field_loop">
+                        <mt:If name="__first__">
+                            <mt:setvarblock name="customfield_hidden_param">
+                                <input type="hidden" name="_type" value="author" id="obj_type" />
+                                <input type="hidden" name="customfield_beacon" value="1" id="customfield_beacon" />
+                            </mt:setvarblock>
+                        </mt:If>
+                    
+                    <$mt:var name="name"$><mt:if name="required"><span style="color:red">[<__trans phrase="Required">]</span></mt:if><br />
+
+                    <MTAuthorCustomFields include="$name">
+                        <MTIf tag="AuthorCustomFieldValue">
+                            <$MTAuthorCustomFieldValue setvar="value"$>
+                        </MTIf>
+                        <mtif tag="CustomFieldQuery">
+                            <mt:setvarblock name="value"><$MTCustomFieldQuery$></mt:setvarblock>
+                        </mtif>
+                    </MTAuthorCustomFields>
+                    <mt:if name="type" eq="text">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" />
+                        <MTElse>
+                        <span class="post_input">
+                            <input type="text" name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" class="full-width ti" />
+                        </span>
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="textarea">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html" nl2br="xhtml"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" />
+                        <MTElse>
+                        <span class="post_input">
+                            <textarea name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>" rows="3" cols="20"><$mtvar name="value" escape="html"$></textarea>
+                        </span>
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="checkbox">
+                        <input type="hidden" name="<$mt:var name="field_id"$>_cb_beacon" value="1" />
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="1" />
+                        <MTElse>
+                            <label>
+                                <input type="checkbox" name="<$mt:var name="field_id"$>" value="1" id="<$mt:var name="field_id"$>" class="cb" <mtif name="value">checked="checked"</mtif>/>
+                                <mtif name="description">
+                                <$mt:var name="description"$>
+                                </mtif>
+                            </label>
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="url">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mt:var name="value" escape="html"$>" />
+                        <MTElse>
+                        <span class="post_input">
+                            <input type="text" name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>" value="<$mt:var name="value" escape="html"$>" class="full-width ti" />
+                        </span>
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="datetime">
+                        <MTIf name="confirm_ok">
+                            <MTSetVarBlock name="date_value">request.d_<$mt:var name="field_id"$></MTSetVarBlock>
+                            <MTSetVarBlock name="time_value">request.t_<$mt:var name="field_id"$></MTSetVarBlock>
+                            
+                            <$MTGetVar name="$date_value" escape="html"$>
+                            <$MTGetVar name="$time_value" escape="html"$>
+                            
+                            <input type="hidden" name="d_<$mt:var name="field_id"$>" value="<$MTGetVar name="$date_value" escape="html"$>" />
+                            <input type="hidden" name="t_<$mt:var name="field_id"$>" value="<$MTGetVar name="$time_value" escape="html"$>" />
+                        <MTElse>
+                        
+                        <MTAuthorCustomFields include="$name">
+                            <MTIf tag="AuthorCustomFieldValue">
+                                <$MTAuthorCustomFieldValue format="%Y-%m-%d %H:%M:%S" setvar="value"$>
+                            </MTIf>
+                            <mtif tag="CustomFieldQuery">
+                                <mt:setvarblock name="value"><$MTCustomFieldQuery$></mt:setvarblock>
+                            </mtif>
+                        </MTAuthorCustomFields>
+                        <$mtsetvar name="date_value" value=""$>
+                        <$mtsetvar name="time_value" value=""$>
+                        <mtif name="value" like="/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/">
+                            <mtsetvarblock name="date_value"><$mt:var name="value" regex_replace="/(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/","$1"$></mtsetvarblock>
+                            <mtsetvarblock name="time_value"><$mt:var name="value" regex_replace="/(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/","$2"$></mtsetvarblock>
+                        <mtelse name="value" like="/^\d{4}-\d{2}-\d{2}$/">
+                            <mtsetvarblock name="date_value"><$mt:var name="value"$></mtsetvarblock>
+                        <mtelse name="value" like="/^\d{2}:\d{2}:\d{2}$/">
+                            <mtsetvarblock name="time_value"><$mt:var name="value"$></mtsetvarblock>
+                        </mtif>
+                        <mtif name="options" eq="datetime">
+                            <$mt:setvar name="date_input_type" value="text"$>
+                            <$mt:setvar name="time_input_type" value="text"$>
+                        <mtelseif name="options" eq="date">
+                            <mtunless name="time_value"><$mtsetvar name="time_value" value="00:00:00"$></mtunless>
+                            <$mt:setvar name="date_input_type" value="text"$>
+                            <$mt:setvar name="time_input_type" value="hidden"$>
+                        <mtelseif name="options" eq="time">
+                            <mtunless name="date_value"><$mtdate format="%Y-%m-%d" setvar="date_value"$></mtunless>
+                            <$mt:setvar name="date_input_type" value="hidden"$>
+                            <$mt:setvar name="time_input_type" value="text"$>
+                        </mtif>
+                        <span class="post_datetime">
+                            <input type="<$mt:var name="date_input_type"$>" id="d_<$mt:var name="field_id"$>" name="d_<$mt:var name="field_id"$>" value="<$mtvar name="date_value"$>" class="text-date" />
+                            <input type="<$mt:var name="time_input_type"$>" id="t_<$mt:var name="field_id"$>" name="t_<$mt:var name="field_id"$>" value="<$mtvar name="time_value"$>" />
+                        </span>
+                        
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="select">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" />
+                        <MTElse>
+                        
+                        <$mt:setvar name="options_loop"$ value="">
+                        <$mt:var name="options" set_loop="options_loop"$>
+                        <mt:loop name="options_loop">
+                            <mt:if name="__first__">
+                        <span class="post_select">
+                            <select name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>">
+                            </mt:if>
+                            <mt:if name="__value__" eq="$value">
+                                <option value="<mt:var name="__value__">" selected="selected"><mt:var name="__value__"></option>
+                            <mt:else>
+                                <option value="<mt:var name="__value__">"><mt:var name="__value__"></option>
+                            </mt:if>
+                            <mt:if name="__last__">
+                            </select>
+                        </span>
+                            </mt:if>
+                        </mt:loop>
+                        
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="radio">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" />
+                        <MTElse>
+                        
+                        <$mt:setvar name="options_loop"$ value="">
+                        <$mt:var name="options" set_loop="options_loop"$>
+                        <mt:loop name="options_loop">
+                            <mt:if name="__first__">
+                        <div class="post_radio">
+                            <ul class="post_radio">
+                            </mt:if>
+                            <mt:if name="__value__" eq="$value">
+                                <li><label><input type="radio" name="<$mt:var name="field_id"$>" value="<mt:var name="__value__">" id="<$mt:var name="field_id"$>_<mt:var name="__counter__">" checked="checked" /> <mt:var name="__value__"></label></li>
+                            <mt:else>
+                                <li><label><input type="radio" name="<$mt:var name="field_id"$>" value="<mt:var name="__value__">" id="<$mt:var name="field_id"$>_<mt:var name="__counter__">" /> <mt:var name="__value__"></label></li>
+                            </mt:if>
+                            <mt:if name="__last__">
+                            </ul>
+                        </div>
+                            </mt:if>
+                        </mt:loop>
+                        
+                        </MTElse>
+                        </MTIf>
+                    <mt:elseif name="type" eq="embed">
+                        <MTIf name="confirm_ok">
+                        <$mtvar name="value" escape="html" nl2br="xhtml"$>
+                        <input type="hidden" name="<$mt:var name="field_id"$>" value="<$mtvar name="value" escape="html"$>" />
+                        <MTElse>
+                        
+                        <span class="post_input">
+                            <textarea name="<$mt:var name="field_id"$>" id="<$mt:var name="field_id"$>" rows="3" cols="20"><$mtvar name="value"$></textarea>
+                        </span>
+                        
+                        </MTElse>
+                        </MTIf>
+                    </mtif>
+                    <br />
+                    </mt:Loop>
+                    
+                    <mt:setvarblock name="blog_selector">
+                        <select name="blog_id">
+                            <mt:blogs>
+                                <mt:blogid setvar="this_id">
+                                <option value="<mt:blogid>" <mt:if name="this_id" eq="$blog_id">selected="selected"</mt:if>><mt:blogname></option>
+                            </mt:blogs>
+                        </select>
+                    </mt:setvarblock>
+                    <mt:if name="blog_id">
+                        <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+                        <mt:else>
+                            <mt:var name="blog_selector">
+                        </mt:else>
+                    </mt:if>
+                    <input type="hidden" name="__mode" value="do_signup" />
+                    <MTUnless name="confirm_ok">
+                    <input type="hidden" name="signup_confirm" value="1" />
+                    </MTUnless>
+                    <MTIf name="confirm_ok">
+                    <input type="hidden" name="password" value="<$MTGetVar name="request.password" escape="html"$>" />
+                    <input type="hidden" name="pass_verify" value="<$MTGetVar name="request.pass_verify" escape="html"$>" />
+                    <input type="hidden" name="mail_token" value="<$MTGetVar name="mail_token" escape="html"$>" />
+                    </MTIf>
+                    <hr />
+                    <div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Create an account">" /></div>
+                </form>
+            </mt:else>
+        </mt:if>
+    </mt:else>
 </mt:if>
 <$mt:Include module="<__trans phrase="Mobile-Login Footer">"$>

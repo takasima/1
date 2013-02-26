@@ -110,6 +110,9 @@ sub _default {
         if ( ( $model eq 'entry' ) || ( $model eq 'page' ) ) {
             $entry = MT->model( $model )->load( $object_id );
             return '' unless $entry;
+            if ( $entry->status != 2 ) {
+                return '';
+            }
             if ( $model eq 'entry' ) {
                 $ctx->{ current_archive_type } = 'Individual';
                 $ctx->{ archive_type } = 'Individual';
@@ -366,6 +369,7 @@ sub _default {
             }
             $ctx->stash( 'contactform', $contactform );
             $args{ ctx } = $ctx;
+            $app->run_callbacks( 'contactform.pre_build.' . $type, $app, $mtml, \%args, \%params );
             my $html = build_tmpl( $app, $mtml, \%args, \%params );
             push ( @form_loop, { field_html => $html,
                                  field_value => $field_value,
@@ -445,9 +449,10 @@ sub _default {
             if ( $mail_admin && $send_mailto ) {
                 $vars->{ template_type } = 'mail_admin';
                 $vars->{ mail_subject } = 1;
-                my $subject_tmpl = $group->notify_subject || $component->translate( 'Contact Form Notify' );
+                my $subject = $group->notify_subject || $component->translate( 'Contact Form Notify' );
                 #$args{ ctx } = $ctx;
-                my $subject = build_tmpl( $app, $subject_tmpl, \%args, $vars );
+                $send_mailto = build_tmpl( $app, $send_mailto, \%args, $vars ) if $send_mailto =~ /<\$?[Mm][Tt]/;
+                $subject     = build_tmpl( $app, $subject, \%args, $vars ) if $subject =~ /<\$?[Mm][Tt]/;
                 $vars->{ mail_subject } = 0;
                 $vars->{ mail_body } = 1;
                 #$args{ ctx } = $ctx;
@@ -464,11 +469,12 @@ sub _default {
             if ( $mail_sender && $sender_email ) {
                 $vars->{ template_type } = 'mail_sender';
                 $vars->{ mail_subject } = 1;
-                my $subject_tmpl = $group->sender_subject || $component->translate( 'Your post has been submitted' );
+                my $subject = $group->sender_subject || $component->translate( 'Your post has been submitted' );
                 #$args{ ctx } = $ctx;
-                my $subject = build_tmpl( $app, $subject_tmpl, \%args, $vars );
+                $subject = build_tmpl( $app, $subject, \%args, $vars ) if $subject =~ /<\$?[Mm][Tt]/;
                 $vars->{ mail_subject } = 0;
                 $vars->{ mail_body } = 1;
+                $sender_email = build_tmpl( $app, $sender_email, \%args, $vars ) if $sender_email =~ /<\$?[Mm][Tt]/;
                 my $body = build_tmpl( $app, $mail_sender_tmpl, \%args, $vars );
                 my %params4cb = ( component => 'ContactForm',
                                   contactform => $group,

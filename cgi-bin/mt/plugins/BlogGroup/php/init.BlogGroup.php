@@ -31,10 +31,13 @@
     $ctx->add_container_tag( 'bloggroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'websitegroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'blogwebsitegroupfooter', 'smarty_block_mtgroupobjectsfooter' );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='bloggroup' OR field_type='websitegroup' OR field_type='blogwebsitegroup'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'blogwebsitegroup_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='bloggroup' OR field_type='websitegroup' OR field_type='blogwebsitegroup'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         require_once( 'block.mtgroupblogs.php' );
         require_once( 'block.mtgroupwebsites.php' );

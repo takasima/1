@@ -11,7 +11,6 @@ website_name=<$MTWebsiteName$>
 
 <MTSetVarBlock name="preview" append="1"> id="<$mt:BlogThemeID$>" class="mt-comment-preview <$mt:Var name="page_layout"$>" onload="mtEntryOnLoad()" onunload="mtEntryOnUnload()"</MTSetVarBlock>
 <MTSetVarBlock name="html_head" append="1">
-<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(blog.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
 <script type="text/javascript">
     /* <![CDATA[ */
     var user = <$mt:UserSessionState$>;
@@ -24,9 +23,7 @@ website_name=<$MTWebsiteName$>
     <section id="blog_entries">
         <div class="panel">
             <article>
-                <div class="be_header">
-                    <h3><__trans phrase="Comments"></h3>
-                </div>
+                <h2><__trans phrase="Comments"></h2>
                 <div class="blog_entries clf" id="comments">
                     <div class="blog_entries_body clf">
                         <div class="comment" id="comment-<$MTCommentID$>">

@@ -110,7 +110,7 @@ sub handle_sign_in {
         $session = $app->make_commenter_session($cmntr);
         unless ($session) {
             $app->error( $app->errstr()
-                    || $app->translate("Couldn't save the session") );
+                    || $app->translate("Could not save the session") );
             return 0;
         }
 
@@ -195,12 +195,16 @@ sub check_openid {
             || $err_code eq 'no_identity_server'
             || $err_code eq 'url_gone' )
         {
-            $err_msg = $app->translate(
-                'The address entered does not appear to be an OpenID');
+            $err_msg
+                = $app->translate(
+                'The address entered does not appear to be an OpenID endpoint.'
+                );
         }
         elsif ( $err_code eq 'empty_url' || $err_code eq 'bogus_url' ) {
-            $err_msg = $app->translate(
-                'The text entered does not appear to be a web address');
+            $err_msg
+                = $app->translate(
+                'The text entered does not appear to be a valid web address.'
+                );
         }
         elsif ( $err_code eq 'url_fetch_error' ) {
             $err_msg =~ s{ \A Error \s fetching \s URL: \s }{}xms;

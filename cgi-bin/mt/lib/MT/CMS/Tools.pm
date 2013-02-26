@@ -10,7 +10,7 @@ use Symbol;
 
 use MT::I18N qw( wrap_text );
 use MT::Util
-    qw( encode_url encode_html decode_html encode_js trim dir_separator );
+    qw( encode_url encode_html decode_html encode_js trim dir_separator is_valid_email );
 
 sub system_check {
     my $app = shift;
@@ -46,6 +46,7 @@ sub system_check {
     $param{server_modperl} = 1 if $ENV{MOD_PERL};
     $param{server_fastcgi} = 1 if $ENV{FAST_CGI};
 
+    $param{server_psgi} = $ENV{'psgi.version'} ? 1 : 0;
     $param{syscheck_html} = get_syscheck_content($app) || '';
 
     $app->load_tmpl( 'system_check.tmpl', \%param );
@@ -79,7 +80,10 @@ sub get_syscheck_content {
         # allowed html
         my $spec
             = '* style class id,ul,li,div,span,br,h2,h3,strong,code,blockquote,p,textarea';
-        $result = Encode::decode_utf8($result) if !Encode::is_utf8($result);
+        $result = Encode::decode_utf8($result)
+            if !Encode::is_utf8($result)
+        ;    # mt-check.cgi always returns by utf-8
+
         $result = MT::Sanitize->sanitize( $result, $spec );
     }
     return $result;
@@ -125,9 +129,13 @@ sub recover_password {
     if ( !$email ) {
         return $app->start_recover(
             {   error => $app->translate(
-                    'Email Address is required for password reset.'),
+                    'Email address is required for password reset.'),
             }
         );
+    }
+    if ( !is_valid_email($email) ) {
+        return $app->start_recover(
+            { error => $app->translate('Invalid email address') } );
     }
 
     # Searching user by email (and username)
@@ -194,7 +202,7 @@ sub recover_password {
             require MT::Mail;
             MT::Mail->send( \%head, $body )
                 or die $app->translate(
-                "Error sending mail ([_1]); please fix the problem, then "
+                "Error sending e-mail ([_1]); Please fix the problem, then "
                     . "try again to recover your password.",
                 MT::Mail->errstr
                 );
@@ -365,8 +373,7 @@ sub do_list_action {
             return $app->json_error(
                 MT->translate(
                     q{Error occurred while attempting to [_1]: [_2]},
-                    $the_action->label,
-                    $app->errstr
+                    $the_action->label, $app->errstr
                 )
             );
         }
@@ -400,6 +407,61 @@ sub do_page_action {
         }
     }
     $the_action->{code}->($app);
+}
+
+sub test_system_mail {
+    my $app = shift;
+    my %param;
+    if ( $app->param('blog_id') ) {
+        return $app->return_to_dashboard( redirect => 1 );
+    }
+
+    return $app->permission_denied()
+        unless $app->user->is_superuser();
+
+    return $app->json_error(
+        $app->translate('Please enter a valid email address.') )
+        unless (
+        MT::Util::is_valid_email( $app->param('to_email_address') ) );
+
+    my $cfg = $app->config;
+    return $app->json_error(
+        $app->errtrans(
+            "You do not have a system email address configured.  Please set this first, save it, then try the test email again."
+        )
+    ) unless ( $cfg->EmailAddressMain );
+
+    my %head = (
+        To      => $app->param('to_email_address'),
+        From    => $cfg->EmailAddressMain,
+        Subject => $app->translate("Test email from Movable Type")
+    );
+
+    my $body
+        = $app->translate("This is the test email sent by Movable Type.");
+
+    require MT::Mail;
+    if ( MT::Mail->send( \%head, $body ) ) {
+        $app->log(
+            {   message => $app->translate(
+                    'Test e-mail was successfully sent to [_1]',
+                    $app->param('to_email_address')
+                ),
+                level    => MT::Log::INFO(),
+                class    => 'system',
+                category => 'email',
+            }
+        );
+        return $app->json_result( { success => 1 } );
+    }
+    else {
+        return $app->json_error(
+            $app->translate(
+                "E-mail was not properly sent. [_1]",
+                MT::Mail->errstr
+            )
+        );
+    }
 }
 
 sub cfg_system_general {
@@ -441,58 +503,29 @@ sub cfg_system_general {
         }
     }
 
-    if ( $app->param('to_email_address') ) {
-        return $app->errtrans(
-            "You don't have a system email address configured.  Please set this first, save it, then try the test email again."
-        ) unless ( $cfg->EmailAddressMain );
-        return $app->errtrans("Please enter a valid email address")
-            unless (
-            MT::Util::is_valid_email( $app->param('to_email_address') ) );
-
-        my %head = (
-            To      => $app->param('to_email_address'),
-            From    => $cfg->EmailAddressMain,
-            Subject => $app->translate("Test email from Movable Type")
-        );
-
-        my $body
-            = $app->translate("This is the test email sent by Movable Type.");
-
-        require MT::Mail;
-        MT::Mail->send( \%head, $body )
-            or return $app->error(
-            $app->translate("Mail was not properly sent") );
-
-        $app->log(
-            {   message => $app->translate(
-                    'Test e-mail was successfully sent to [_1]',
-                    $app->param('to_email_address')
-                ),
-                level    => MT::Log::INFO(),
-                class    => 'system',
-                category => 'email',
-            }
-        );
-        $param{test_mail_sent} = 1;
-    }
-
-    my @config_warnings;
-    for my $config_directive (
-        qw( EmailAddressMain DebugMode PerformanceLogging
+    my @readonly_configs = qw( EmailAddressMain DebugMode PerformanceLogging
         PerformanceLoggingPath PerformanceLoggingThreshold
         UserLockoutLimit UserLockoutInterval IPLockoutLimit
-        IPLockoutInterval LockoutIPWhitelist LockoutNotifyTo )
-        )
-    {
-        push( @config_warnings, $config_directive )
-            if $app->config->is_readonly($config_directive);
-    }
-    my $config_warning = join( ", ", @config_warnings ) if (@config_warnings);
+        IPLockoutInterval LockoutIPWhitelist LockoutNotifyTo );
+    push @readonly_configs, 'BaseSitePath' unless $cfg->HideBaseSitePath;
 
-    $param{config_warning} = $app->translate(
-        "These setting(s) are overridden by a value in the MT configuration file: [_1]. Remove the value from the configuration file in order to control the value on this page.",
-        $config_warning
-    ) if $config_warning;
+    my @config_warnings;
+    for my $config_directive (@readonly_configs) {
+        if ( $app->config->is_readonly($config_directive) ) {
+            push( @config_warnings, $config_directive );
+            my $flag = "config_warnings_" . ( lc $config_directive );
+            $param{$flag} = 1;
+        }
+    }
+
+    if (@config_warnings) {
+        my $config_warning = join( ", ", @config_warnings );
+
+        $param{config_warning} = $app->translate(
+            "These setting(s) are overridden by a value in the Movable Type configuration file: [_1]. Remove the value from the configuration file in order to control the value on this page.",
+            $config_warning
+        );
+    }
     $param{system_email_address}            = $cfg->EmailAddressMain;
     $param{system_debug_mode}               = $cfg->DebugMode;
     $param{system_performance_logging}      = $cfg->PerformanceLogging;
@@ -508,7 +541,6 @@ sub cfg_system_general {
     $param{comment_disable}      = $cfg->AllowComments            ? 0 : 1;
     $param{ping_disable}         = $cfg->AllowPings               ? 0 : 1;
     $param{disabled_notify_ping} = $cfg->DisableNotificationPings ? 1 : 0;
-    $param{system_no_email} = 1 unless $cfg->EmailAddressMain;
     my $send = $cfg->OutboundTrackbackLimit || 'any';
 
     if ( $send =~ m/^(any|off|selected|local)$/ ) {
@@ -555,6 +587,9 @@ sub cfg_system_general {
         = $cfg->FailedLoginExpirationFrequency;
     ( $param{lockout_ip_address_whitelist} = $cfg->LockoutIPWhitelist || '' )
         =~ s/,/\n/g;
+    $param{sitepath_limit}        = $cfg->BaseSitePath;
+    $param{sitepath_limit_hidden} = $cfg->HideBaseSitePath;
+    $param{preflogging_hidden}    = $cfg->HidePaformanceLoggingSettings;
 
     $param{saved}        = $app->param('saved');
     $param{screen_class} = "settings-screen system-feedback-settings";
@@ -566,7 +601,6 @@ sub save_cfg_system_general {
     $app->validate_magic or return;
     return $app->permission_denied()
         unless $app->user->is_superuser();
-    $app->validate_magic or return;
     my $cfg = $app->config;
     $app->config( 'TrackRevisions', $app->param('track_revisions') ? 1 : 0,
         1 );
@@ -579,7 +613,9 @@ sub save_cfg_system_general {
             'Email address is [_1]',
             $app->param('system_email_address')
         )
-    ) if ( $app->param('system_email_address') =~ /\w+/ );
+        )
+        unless (
+        $app->param('system_email_address') eq $cfg->EmailAddressMain );
     push(
         @meta_messages,
         $app->translate(
@@ -587,44 +623,73 @@ sub save_cfg_system_general {
             $app->param('system_debug_mode')
         )
     ) if ( $app->param('system_debug_mode') =~ /\d+/ );
-    if ( $app->param('system_performance_logging') ) {
-        push( @meta_messages, $app->translate('Performance logging is on') );
+    if ( not $cfg->HidePaformanceLoggingSettings ) {
+        if ( $app->param('system_performance_logging') ) {
+            push( @meta_messages,
+                $app->translate('Performance logging is on') );
+        }
+        else {
+            push( @meta_messages,
+                $app->translate('Performance logging is off') );
+        }
+        push(
+            @meta_messages,
+            $app->translate(
+                'Performance log path is [_1]',
+                $app->param('system_performance_logging_path')
+            )
+        ) if ( $app->param('system_performance_logging_path') =~ /\w+/ );
+        push(
+            @meta_messages,
+            $app->translate(
+                'Performance log threshold is [_1]',
+                $app->param('system_performance_logging_threshold')
+            )
+            )
+            if (
+            $app->param('system_performance_logging_threshold') =~ /\d+/ );
     }
-    else {
-        push( @meta_messages, $app->translate('Performance logging is off') );
-    }
-    push(
-        @meta_messages,
-        $app->translate(
-            'Performance log path is [_1]',
-            $app->param('system_performance_logging_path')
-        )
-    ) if ( $app->param('system_performance_logging_path') =~ /\w+/ );
-    push(
-        @meta_messages,
-        $app->translate(
-            'Performance log threshold is [_1]',
-            $app->param('system_performance_logging_threshold')
-        )
-    ) if ( $app->param('system_performance_logging_threshold') =~ /\d+/ );
 
     # actually assign the changes
     $app->config( 'EmailAddressMain',
-        $app->param('system_email_address') || undef, 1 );
+        ( $app->param('system_email_address') || undef ), 1 );
     $app->config( 'DebugMode', $app->param('system_debug_mode'), 1 )
         if ( $app->param('system_debug_mode') =~ /\d+/ );
-    if ( $app->param('system_performance_logging') ) {
-        $app->config( 'PerformanceLogging', 1, 1 );
+    if ( not $cfg->HidePaformanceLoggingSettings ) {
+        if ( $app->param('system_performance_logging') ) {
+            $app->config( 'PerformanceLogging', 1, 1 );
+        }
+        else {
+            $app->config( 'PerformanceLogging', 0, 1 );
+        }
+        $app->config( 'PerformanceLoggingPath',
+            $app->param('system_performance_logging_path'), 1 )
+            if ( $app->param('system_performance_logging_path') =~ /\w+/ );
+        $app->config( 'PerformanceLoggingThreshold',
+            $app->param('system_performance_logging_threshold'), 1 )
+            if (
+            $app->param('system_performance_logging_threshold') =~ /\d+/ );
     }
-    else {
-        $app->config( 'PerformanceLogging', 0, 1 );
+
+    if ( not $cfg->HideBaseSitePath ) {
+        if ( not $app->param('sitepath_limit') ) {
+            $app->config( 'BaseSitePath', undef, 1 );
+        }
+        elsif (
+            File::Spec->file_name_is_absolute(
+                $app->param('sitepath_limit')
+            )
+            && -d $app->param('sitepath_limit')
+            )
+        {
+            $app->config( 'BaseSitePath', $app->param('sitepath_limit'), 1 );
+        }
+        else {
+            return $app->errtrans(
+                "Invalid SitePath.  The SitePath should be valid and absolute, not relative"
+            );
+        }
     }
-    $app->config( 'PerformanceLoggingPath',
-        $app->param('system_performance_logging_path'), 1 )
-        if ( $app->param('system_performance_logging_path') =~ /\w+/ );
-    $app->config( 'PerformanceLoggingThreshold',
-        $app->param('system_performance_logging_threshold'), 1 )
-        if ( $app->param('system_performance_logging_threshold') =~ /\d+/ );
 
     # construct the message to the activity log
 
@@ -737,8 +802,6 @@ sub save_cfg_system_general {
         }
     }
     $cfg->save_config();
-    require MT::Touch;
-    MT::Touch->touch( 0, 'config' );
     $app->redirect(
         $app->uri(
             'mode' => 'cfg_system_general',
@@ -783,14 +846,15 @@ sub recover_profile_password {
     if ( !MT::Auth->can_recover_password ) {
         $app->log(
             {   message => $app->translate(
-                    "Invalid password recovery attempt; can't recover password in this configuration"
+                    "Invalid password recovery attempt; Cannot recover the password in this configuration"
                 ),
                 level    => MT::Log::SECURITY(),
                 class    => 'system',
                 category => 'recover_profile_password',
             }
         );
-        return $app->error("Can't recover password in this configuration");
+        return $app->error(
+            "Cannot recover the password in this configuration");
     }
 
     my $author_id = $q->param('author_id');
@@ -1011,6 +1075,7 @@ sub backup {
         if ( '0' eq $archive ) {
             ( $fh, my $filepath )
                 = File::Temp::tempfile( 'xml.XXXXXXXX', DIR => $temp_dir );
+            binmode $fh, ":encoding(utf8)";
             ( my $vol, my $dir, $fname ) = File::Spec->splitpath($filepath);
             $printer = sub {
                 my ($data) = @_;
@@ -1071,6 +1136,8 @@ sub backup {
         $printer = sub {
             require bytes;
             my ($data) = @_;
+            $data = Encode::encode_utf8($data)
+                if Encode::is_utf8($data);
             print $fh $data;
             return bytes::length($data);
         };
@@ -1214,9 +1281,18 @@ sub backup {
         backup_what    => join( ',', @blog_ids ),
         schema_version => $app->config('SchemaVersion'),
     };
-    MT::BackupRestore->backup( \@blog_ids, $printer, $splitter, $finisher,
-        $progress, $size * 1024,
-        $enc, $metadata );
+    eval {
+        MT::BackupRestore->backup( \@blog_ids, $printer, $splitter, $finisher,
+            $progress, $size * 1024,
+            $enc, $metadata );
+    };
+    if ($@) {
+
+        # Abnormal end
+        $param->{error} = $@;
+        close $fh;
+        _backup_finisher( $app, $fname, $param );
+    }
 }
 
 sub backup_download {
@@ -1597,13 +1673,17 @@ sub adjust_sitepath {
     my $asset_class = $app->model('asset');
     my %error_assets;
     my %blogs_meta;
-    my @p = $q->param;
+    my $path_limit = $app->config->BaseSitePath;
+    $path_limit = File::Spec->catdir( $path_limit, "PATH" );
+    $path_limit =~ s/PATH$//;
+    my $path_limit_quote = quotemeta($path_limit);
+    my @p                = $q->param;
     foreach my $p (@p) {
         next unless $p =~ /^site_path_(\d+)/;
         my $id   = $1;
         my $blog = $app->model('blog')->load($id)
             or return $app->error(
-            $app->translate( 'Can\'t load blog #[_1].', $id ) );
+            $app->translate( 'Cannot load blog #[_1].', $id ) );
         my $old_site_path      = scalar $q->param("old_site_path_$id");
         my $old_site_url       = scalar $q->param("old_site_url_$id");
         my $site_path          = scalar $q->param("site_path_$id") || q();
@@ -1620,6 +1700,15 @@ sub adjust_sitepath {
 
         if ($use_absolute) {
             $site_path = scalar $q->param("site_path_absolute_$id") || q();
+            if ( $path_limit and ( $site_path !~ m/^$path_limit_quote/i ) ) {
+                $site_path = $path_limit;
+            }
+        }
+        elsif ( $path_limit
+            and !$blog->is_blog
+            and ( $site_path !~ m/^$path_limit_quote/i ) )
+        {
+            $site_path = $path_limit;
         }
         $blog->site_path($site_path);
 
@@ -1665,6 +1754,11 @@ sub adjust_sitepath {
 
         if ($use_absolute_archive) {
             $archive_path = $archive_path_absolute;
+            if ( $path_limit
+                and ( $archive_path !~ m/^$path_limit_quote/i ) )
+            {
+                $archive_path = $path_limit;
+            }
         }
         $blog->archive_path($archive_path);
 
@@ -2122,11 +2216,20 @@ sub dialog_adjust_sitepath {
             push @blogs_loop, $params;
         }
         else {
+            my $sitepath = $blog->column('site_path');
+            if ( my $limited = $app->config->BaseSitePath ) {
+                $limited = File::Spec->catdir( $limited, "PATH" );
+                $limited =~ s/PATH$//;
+                my $limited_quote = quotemeta($limited);
+                if ( $sitepath !~ m/^$limited_quote/i ) {
+                    $sitepath = $limited;
+                }
+            }
             push @website_loop,
                 {
                 name          => $blog->name,
                 id            => $blog->id,
-                old_site_path => $blog->column('site_path'),
+                old_site_path => $sitepath,
                 old_site_url  => $blog->column('site_url'),
                 };
         }
@@ -2152,12 +2255,19 @@ sub dialog_adjust_sitepath {
     $param->{website_loop}   = \@website_loop if @website_loop;
     $param->{all_websites}   = \@all_websites if @all_websites;
     $param->{path_separator} = MT::Util->dir_separator;
-    # There is a danger that the asset_id list will ballon and make a request
-    # URL that is longer then allowed. This function have two ways to be called:
-    # 1. As open-dialog command, from the restore window, and with GET 
-    # 2. a part of dialog chain, from dialog_restore_upload, with POST
-    # if this was called using GET, then the asset list will be read from
-    # the calling page
+    if ( my $limit = $app->config->BaseSitePath ) {
+        $param->{sitepath_limited} = $limit;
+        $limit = File::Spec->catdir( $limit, "PATH" );
+        $limit =~ s/PATH$//;
+        $param->{sitepath_limited_trail} = $limit;
+    }
+
+  # There is a danger that the asset_id list will ballon and make a request
+  # URL that is longer then allowed. This function have two ways to be called:
+  # 1. As open-dialog command, from the restore window, and with GET
+  # 2. a part of dialog chain, from dialog_restore_upload, with POST
+  # if this was called using GET, then the asset list will be read from
+  # the calling page
     $param->{request_method} = $app->request_method();
     for my $key (
         qw(files assets last redirect is_dirty is_asset objects_json deferred_json)
@@ -2226,7 +2336,7 @@ sub reset_password {
     if ( !MT::Auth->can_recover_password ) {
         $app->log(
             {   message => $app->translate(
-                    "Invalid password recovery attempt; can't recover password in this configuration"
+                    "Invalid password recovery attempt; cannot recover password in this configuration"
                 ),
                 level    => MT::Log::SECURITY(),
                 class    => 'system',
@@ -2234,7 +2344,8 @@ sub reset_password {
             }
         );
         return ( 0,
-            $app->translate("Can't recover password in this configuration") );
+            $app->translate("Cannot recover password in this configuration")
+        );
     }
 
     $app->log(
@@ -2252,7 +2363,7 @@ sub reset_password {
     return (
         0,
         $app->translate(
-            "User has not set pasword hint; cannot recover password")
+            "User has not set pasword hint; Cannot recover password")
     ) if ( $hint && !$author->hint );
 
     $app->log(
@@ -2326,7 +2437,7 @@ sub reset_password {
     MT::Mail->send( \%head, $body )
         or return $app->error(
         $app->translate(
-            "Error sending mail ([_1]); please fix the problem, then "
+            "Error sending e-mail ([_1]); Please fix the problem, then "
                 . "try again to recover your password.",
             MT::Mail->errstr
         )
@@ -2556,7 +2667,8 @@ sub _backup_finisher {
         $fnames = [$fnames];
     }
     $param->{filename}       = $fnames->[0];
-    $param->{backup_success} = 1;
+    $param->{backup_success} = 1
+        unless $param->{error};
     require MT::Session;
     MT::Session->remove( { kind => 'BU' } );
     foreach my $fname (@$fnames) {
@@ -2637,7 +2749,7 @@ sub _log_dirty_restore {
                 level    => MT::Log::WARNING(),
                 class    => 'system',
                 category => 'restore',
-                metadata => join( ', ', @$ids ),
+                metadata => 'ID:' . join( ', ', @$ids ),
             }
         );
     }
@@ -2646,7 +2758,7 @@ sub _log_dirty_restore {
 
 sub login_json {
     my $app = shift;
-    return $app->json_result(1);
+    return $app->json_result( { magic_token => $app->current_magic, } );
 }
 
 1;

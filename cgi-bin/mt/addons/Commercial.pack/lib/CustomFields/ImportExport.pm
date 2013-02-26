@@ -28,15 +28,16 @@ sub import_cf {
     }
     else {
         foreach my $line ( split /\r?\n/, $piece ) {
-            if ( $line =~ /^$prefix(\w+):\s*(.+)$/ ) {
+            if ( $line =~ /^$prefix(\w+):\s+(.+)$/ ) {
                 my $field_basename = lc($1);
-                my $val = $2;
+                my $val            = $2;
                 my $field = $req->cache( $field_basename . $entry->blog_id );
                 unless ($field) {
-                    $field
-                        = MT->model('field')
-                        ->load(
-                        { basename => lc($1), blog_id => $entry->blog_id } );
+                    $field = MT->model('field')->load(
+                        {   basename => lc($1),
+                            blog_id  => [ 0, $entry->blog_id ]
+                        }
+                    );
                     $req->cache( lc($1) . $entry->blog_id, $field )
                         if $field;
                 }
@@ -68,7 +69,7 @@ sub export_cf {
             unless ($field) {
                 $field = MT->model('field')->load(
                     {   basename => $field_basename,
-                        blog_id  => $entry->blog_id
+                        blog_id  => [ 0, $entry->blog_id ],
                     }
                 );
                 $req->cache( $field_basename . $entry->blog_id, $field )

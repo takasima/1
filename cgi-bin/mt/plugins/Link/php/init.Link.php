@@ -11,10 +11,13 @@
     $customfield_types[ 'link_group' ] = array(
         'column_def' => 'vinteger_idx',
     );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='link' OR field_type='link_multi' OR field_type='link_group'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'link_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='link' OR field_type='link_multi' OR field_type='link_group'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         foreach ( $customfields as $field ) {
             $tag = $field->tag;

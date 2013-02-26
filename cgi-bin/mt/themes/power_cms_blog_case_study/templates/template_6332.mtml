@@ -1,30 +1,28 @@
-<$MTBlogURL setvar="blog_url"$>
 <header id="top" class="clearfix">
-    <p id="site_title">
-        <a href="<$MTVar name="blog_url" escape="html"$>"><$MTBlogName escape="html"$></a>
-    </p>
-    <MTBlogParentWebsite>
-    <nav>
-        <ul id="util_nav">
-        <li><a href="<$MTWebsiteURL escape="html"$>"><img src="<$MTGetVar name="blog_url" escape="html"$>common/images/smartphone/util_nav_home.png" width="24" height="22" alt="<$MTWebsiteName escape="html"$>" /></a></li>
-        <MTPages tag="@sitemap" lastn="1">
-        <li><a href="<$MTPagePermalink escape="html"$>"><img src="<$MTBlogURL escape="html"$>common/images/smartphone/util_nav_sitemap.png" width="24" height="22" alt="<$MTPageTitle escape="html"$>" /></a></li>
-        </MTPages>
-        <MTPages tag="@contact" lastn="1">
-        <li><a href="<$MTPagePermalink escape="html"$>"><img src="<$MTBlogURL escape="html"$>common/images/smartphone/util_nav_contact.png" width="24" height="22" alt="<$MTPageTitle escape="html"$>" /></a></li>
-        </MTPages>
-        </ul>
-    </nav>
-    </MTBlogParentWebsite>
+                    <MTIfDynamic>
+                        <MTIfLogin>
+                            <span id="hu_welcome">
+                                <__trans phrase="Hello, [_1]" params='<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>"><$MTAuthorDisplayName escape="html"$></a>'>
+                                (<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>"><__trans phrase="Sign out"></a>)
+                            </span>
+                        </MTIfLogin>
+                        <MTElse>
+                        <mtml tag="MTIfLogin">
+                            <span id="hu_welcome">
+                                <__trans phrase="Hello, [_1]" params='<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=edit_profile&amp;blog_id=<$MTBlogID$>"><mtml tag="MTAuthorDisplayName" params=' escape="html"'></a>'>
+                                (<a href="<$MTCGIPath$><$MTMembersScript$>?__mode=logout&amp;blog_id=<$MTBlogID$>"><__trans phrase="Sign out"></a>)
+                            </span>
+                        <mtml tag="/MTIfLogin">
+                        </MTElse>
+                    </MTIfDynamic>
+    <p id="site_title"><a href="<mt:BlogURL>"><$MTGetVar name="website_name" escape="html"$></a></p>
 </header>
-
 <h1 id="page_title"><a href="#global_nav">
-<MTIf tag="MTBlogName" eq="$page_title">
+<MTIf tag="BlogName" eq="$page_title">
 &nbsp;
 <MTElse>
 <$MTGetVar name="page_title" escape="html"$>
 </MTElse>
 </MTIf>
 </a></h1>
-
 <div id="contents">

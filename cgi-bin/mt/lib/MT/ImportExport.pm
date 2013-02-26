@@ -26,8 +26,10 @@ sub do_import {
 sub import_contents {
     my $class = shift;
     my %param = @_;
-    my $iter  = $param{Iter};
-    my $blog  = $param{Blog}
+    ## Init error buffer.
+    __PACKAGE__->error();
+    my $iter = $param{Iter};
+    my $blog = $param{Blog}
         or return __PACKAGE__->error( MT->translate("No Blog") );
     my $cb = $param{Callback} || sub { };
     my $encoding = $param{Encoding};
@@ -273,16 +275,16 @@ sub import_contents {
                     ## import comments, for example), we need to load the relevant
                     ## entry using the timestamp.
                     if ($no_save) {
-                        my $ts = $entry->created_on;
+                        my $ts = $entry->authored_on;
                         $entry = MT::Entry->load(
-                            {   created_on => $ts,
-                                blog_id    => $blog_id
+                            {   authored_on => $ts,
+                                blog_id     => $blog_id
                             }
                         );
                         if ( !$entry ) {
                             $cb->(
                                 MT->translate(
-                                    "Can't find existing entry with timestamp '[_1]'... skipping comments, and moving on to next entry.",
+                                    "Cannot find existing entry with timestamp '[_1]'... skipping comments, and moving on to next entry.",
                                     $ts
                                     )
                                     . "\n"

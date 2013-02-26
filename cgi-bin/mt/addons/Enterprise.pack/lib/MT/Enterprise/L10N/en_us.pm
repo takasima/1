@@ -10,8 +10,6 @@ use strict;
 
 use base 'MT::Enterprise::L10N';
 use vars qw( %Lexicon );
-%Lexicon = (
-    '__GROUP_MEMBER_COUNT' => 'Members',
-);
+%Lexicon = ( '__GROUP_MEMBER_COUNT' => 'Members', );
 
 1;

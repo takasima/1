@@ -111,15 +111,15 @@ function upload_csv() {
             class="error">
                 <mt:setvar name="message" value="">
                 <mt:if name="request.broken_links">
-                    <mt:setvarblock name="message" append="1"><mt:var name="request.broken_links"><__trans phrase=" Links"></mt:setvarblock>
+                    <mt:setvarblock name="message" append="1"><mt:var name="request.broken_links" escape="html"><__trans phrase=" Links"></mt:setvarblock>
                 </mt:if>
                 <mt:if name="request.broken_rsses">
-                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_rsses"><__trans phrase=" RSS"></mt:setvarblock>
+                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_rsses" escape="html"><__trans phrase=" RSS"></mt:setvarblock>
                 </mt:if>
                 <mt:if name="request.broken_images">
-                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_images"><__trans phrase=" Images"></mt:setvarblock>
+                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_images" escape="html"><__trans phrase=" Images"></mt:setvarblock>
                 </mt:if>
-                <__trans phrase="The broken Link was found."> (<mt:var name="message" escape="html">)
+                <__trans phrase="The broken Link was found."> (<mt:var name="message">)
         </mtapp:statusmsg>
     </mt:if>
     <mt:if name="request.add_tags_to_link">

@@ -52,6 +52,11 @@ sub _cb_tp_edit_category {
     $param->{ screen_group } = $app->param( '_type' );
 }
 
+sub _cb_tp_edit_role {
+    my ( $cb, $app, $param, $tmpl ) = @_;
+    $param->{ screen_group } = 'user';
+}
+
 sub _cb_ts_header_style_for_duplicate {
     my ( $cb, $app, $tmpl ) = @_;
     if ( $app->mode eq 'list' ) {
@@ -198,6 +203,14 @@ MTML
     my $plugin_tmpl = File::Spec->catdir( $plugin->path, 'tmpl', 'Compact.tmpl' );
     my $new = qq{<mt:include name="$plugin_tmpl" component="PowerCMS">};
     $$tmpl =~ s/(<mt:var name="html_head">)/$new$1/;
+    if ( MT->can( 'release_number' ) &&
+         ( MT->version_number > 5.2 ||
+           ( MT->version_number == 5.2 && MT->release_number >= 2 ) ) ) {
+        my $insert = <<"HTML";
+<link rel="stylesheet" href="<mt:var name="static_uri">plugins/Compact/css/5.2.2.css?v=<mt:var name="mt_version_id" escape="url">" type="text/css" />
+HTML
+        $$tmpl =~ s/(<mt:var name="html_head">)/$1$insert/;
+    }
     return 1;
 }
 
@@ -553,7 +566,9 @@ sub _pre_run {
     }
     my $plugin = MT->component( 'PowerCMS' );
     require File::Spec;
-    MT->config( 'AltTemplatePath', File::Spec->catdir( $plugin->path, 'alt-tmpl' ) );
+    MT->version_number ge '5.2'
+        ? MT->config( 'AltTemplatePath', [ File::Spec->catdir( $plugin->path, 'alt-tmpl' ), ( MT->config( 'AltTemplatePath' ) ) ] )
+        : MT->config( 'AltTemplatePath', File::Spec->catdir( $plugin->path, 'alt-tmpl' ) );
     if ( $app->mode ne 'dashboard' ) {
         return;
     }

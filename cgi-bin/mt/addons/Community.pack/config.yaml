@@ -1,7 +1,8 @@
 name: Community Pack
 author_name: Six Apart, Ltd.
 author_link: http://www.sixapart.com/
-version: 1.83
+pack_link: <__trans phrase="http://www.sixapart.com/movabletype/">pack/community/
+version: 1.92
 schema_version: 1.62
 l10n_class: MT::Community::L10N
 
@@ -51,6 +52,7 @@ applications:
                 display: 0
     community:
         handler: MT::App::Community
+        script: $Community::MT::App::Community::script_name
         methods:
             score: $Community::MT::App::Community::score
             vote: $Community::MT::App::Community::vote
@@ -411,7 +413,7 @@ themes:
                                 description_label: Displays preview of comment.
                             dynamic_error:
                                 label: Dynamic Error
-                                description_label: Displays errors for dynamically published templates.
+                                description_label: Displays errors for dynamically-published templates.
                             popup_image:
                                 label: Popup Image
                                 description_label: Displays image when user clicks a popup-linked image.
@@ -589,7 +591,7 @@ themes:
                                 description_label: Displays preview of comment.
                             dynamic_error:
                                 label: Dynamic Error
-                                description_label: Displays errors for dynamically published templates.
+                                description_label: Displays errors for dynamically-published templates.
                             popup_image:
                                 label: Popup Image
                                 description_label: Displays image when user clicks a popup-linked image.

@@ -31,10 +31,13 @@
     $ctx->add_container_tag( 'categorygroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'foldergroupfooter', 'smarty_block_mtgroupobjectsfooter' );
     $ctx->add_container_tag( 'categoryfoldergroupfooter', 'smarty_block_mtgroupobjectsfooter' );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='categorygroup' OR field_type='foldergroup' OR field_type='categoryfoldergroup'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'categoryfoldergroup_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='categorygroup' OR field_type='foldergroup' OR field_type='categoryfoldergroup'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         require_once( 'block.mtgroupcategories.php' );
         require_once( 'block.mtgroupfolders.php' );

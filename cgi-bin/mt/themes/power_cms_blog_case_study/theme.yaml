@@ -1,24 +1,25 @@
 id: power_cms_blog_case_study
 label: 'PowerCMS Blog Case Study'
 name: <__trans phrase="PowerCMS Blog Case Study">
-version: 1.8
+version: 1.9
 author_link: http://alfasado.net/
-author_name: Alfasado Inc.
+author_name: 'Alfasado Inc.'
 l10n_class: power_cms_blog_case_study::L10N
 thumbnail_file: blog-thumbnail.gif
 thumbnail_file_medium: blog-thumbnail-medium.gif
 thumbnail_file_small: blog-thumbnail-small.gif
 class: blog
-description: <__trans phrase="PowerCMS Template Set">
+description: <__trans phrase="PowerCMS Theme">
 elements:
   blog_static_files:
-    component: ~
+    component: core
+    importer: blog_static_files
     data:
       - common
       - images
-    importer: blog_static_files
   custom_fields:
     component: commercial
+    importer: custom_fields
     data:
       entryfunction:
         default: ',,'
@@ -48,9 +49,9 @@ elements:
         required: 0
         tag: entrysitecaptcha
         type: file
-    importer: custom_fields
   template_set:
-    component: ~
+    component: core
+    importer: template_set
     data:
       base_path: templates
       label: 'exported_template set'
@@ -69,44 +70,43 @@ elements:
                 file_template: '%y/%m/%i'
                 preferred: 1
         index:
+          dynamic_mtml_bootstrapper:
+            label: 'DynamicMTML Bootstrapper'
+            outfile: '.mtview.php'
+            rebuild_me: 1
           feed_recent:
             label: Feed - Recent Entries
             outfile: atom.xml
+            rebuild_me: 1
+          htaccess:
+            label: 'DynamicMTML .htaccess'
+            outfile: '.htaccess'
             rebuild_me: 1
           javascript:
             label: JavaScript
             outfile: mt.js
             rebuild_me: 1
+          jquery:
+            label: JavaScript(jquery.js)
+            outfile: common/js/jquery.js
+            rebuild_me: 1
           main_index:
             label: Main Index
             outfile: index.html
+            rebuild_me: 1
             pager: 1
+          members_login_css_pc:
+            label: PC-Stylesheet(login.css)
+            outfile: common/css/login.css
+            rebuild_me: 1
+          members_login_css_smartphone:
+            label: SP-Stylesheet(login.css)
+            outfile: common/css/smartphone/login.css
             rebuild_me: 1
           styles:
             label: Stylesheet
             outfile: styles.css
             rebuild_me: 1
-          template_6361:
-            label: SP-Stylesheet(case_study.css)
-            outfile: css/smartphone/case_study.css
-            rebuild_me: 1
-          template_6366:
-            label: Categories list
-            outfile: category_list.html
-            rebuild_me: 1
-          template_6369:
-            label: SP-Stylesheet(blog.css)
-            outfile: css/blog.css
-            rebuild_me: 1
-          template_6372:
-            label: Monthly list
-            outfile: monthly_list.html
-            rebuild_me: 1
-          template_6388:
-            label: Redirector
-            outfile: mobile/redirect.php
-            rebuild_me: 1
-####
           template_323:
             label: PC-Stylesheet(import.css)
             outfile: common/css/import.css
@@ -114,6 +114,7 @@ elements:
           template_324:
             label: PC-Stylesheet(base.css)
             outfile: common/css/base.css
+            rebuild_me: 1
           template_325:
             label: PC-Stylesheet(component.css)
             outfile: common/css/component.css
@@ -121,10 +122,6 @@ elements:
           template_326:
             label: PC-JavaScript(main.js)
             outfile: common/js/main.js
-            rebuild_me: 1
-          template_6335:
-            label: PC-Stylesheet(search.css)
-            outfile: search/css/search.css
             rebuild_me: 1
           template_5406:
             label: SP-Stylesheet(base.css)
@@ -147,27 +144,30 @@ elements:
             label: Search Results
             outfile: dynamic/search.html
             rebuild_me: 1
-          dynamic_mtml_bootstrapper:
-            label: 'DynamicMTML Bootstrapper'
-            outfile: '.mtview.php'
+          template_6335:
+            label: PC-Stylesheet(search.css)
+            outfile: search/css/search.css
             rebuild_me: 1
-          htaccess:
-            label: 'DynamicMTML .htaccess'
-            outfile: '.htaccess'
+          template_6361:
+            label: SP-Stylesheet(case_study.css)
+            outfile: css/smartphone/case_study.css
             rebuild_me: 1
-          members_login_css_pc:
-            label: PC-Stylesheet(login.css)
-            outfile: common/css/login.css
+          template_6366:
+            label: Categories list
+            outfile: category_list.html
             rebuild_me: 1
-          members_login_css_smartphone:
-            label: SP-Stylesheet(login.css)
-            outfile: common/css/smartphone/login.css
+          template_6369:
+            label: SP-Stylesheet(blog.css)
+            outfile: css/blog.css
             rebuild_me: 1
-          jquery:
-            label: JavaScript(jquery.js)
-            outfile: common/js/jquery.js
+          template_6372:
+            label: Monthly list
+            outfile: monthly_list.html
             rebuild_me: 1
-####
+          template_6388:
+            label: Redirector
+            outfile: mobile/redirect.php
+            rebuild_me: 1
         individual:
           entry:
             label: Entry
@@ -281,7 +281,6 @@ elements:
             label: Mobile-Comment Response
           template_8150:
             label: Mobile-Comment Preview
-####
           template_6320:
             label: PC-Search Results
           template_6321:
@@ -328,9 +327,6 @@ elements:
             label: Mobile-Login Header
           members_login_footer_mobile:
             label: Mobile-Login Footer
-#          contactform_confirm:
-#            label: Form check
-####
         system:
           comment_listing:
             label: Comment Listing
@@ -346,25 +342,12 @@ elements:
             label: Search Results
           estraier_result:
             label: Estraier Results
-#          extraform_author_mail:
-#            label: フォームエントリ作成者宛メール
-#          extraform_post_confirm:
-#            label: フォーム投稿確認画面
-#          extraform_user_mail:
-#            label: フォーム投稿者宛メール
-#          notification_published:
-#            label: 公開通知
-#          notification_sendback:
-#            label: 差し戻し通知
-#          notification_workflow:
-#            label: 承認依頼通知
           wf_published_message:
             label: Published notification
             subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Published Page '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Published Entry '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
           wf_message:
             label: Workflow notification
             subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Approval request Page '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Approval request Entry '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
-####
           members_login:
             label: Member's Log in
           members_login_mobile:
@@ -406,5 +389,3 @@ elements:
           members_notify_recover:
             label: Member's Notify Password Recovery
             subject: <__trans_section component="Members"><__trans phrase="Member's Password Recovery"></__trans_section>
-####
-    importer: template_set

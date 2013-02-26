@@ -94,7 +94,7 @@ function check_item () {
             <form id="filter-select-form" method="get" onsubmit="return false;">
                 <input type="hidden" name="__mode" value="view" />
                 <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
-                <input type="hidden" name="id" value="<mt:var name="id">" />
+                <input type="hidden" name="id" value="<mt:var name="id" escape="html">" />
                 <input type="hidden" name="_type" value="campaigngroup" />
                 <input type="hidden" name="filter_tag" id="filter_tag" value="<mt:var name="filter_tag" escape="html">" />
                 <div class="filter">
@@ -138,7 +138,7 @@ function check_item () {
                             <mt:if name="status" eq="4"><img style="vertical-align:baseline" src="<mt:var name="static_uri">images/status_icons/close.gif" width="9" height="9" alt="<__trans phrase="Closed">" /></mt:if>
                             </mt:if>
                             <mt:var name="item_title" remove_html="1"><mt:if name="can_edit"> -
-                            <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="weblog_id">&amp;id=<mt:var name="id">&amp;_type=campaign"><__trans phrase="Edit"></a></mt:if>
+                            <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="weblog_id">&amp;id=<mt:var name="id" escape="html">&amp;_type=campaign"><__trans phrase="Edit"></a></mt:if>
                             <mt:if name="campaign_url">
                             <a target="_blank" href="<mt:var name="campaign_url">"><img src="<mt:var name="static_uri">images/status_icons/view.gif" height="9" width="13" alt="<__trans phrase="View">" /></a>
                             </mt:if>
@@ -189,7 +189,7 @@ function check_item () {
     <input type="hidden" name="__mode" value="save" />
     <input type="hidden" name="_type" value="campaigngroup" />
     <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
-    <input type="hidden" name="id" value="<mt:var name="id">" />
+    <input type="hidden" name="id" value="<mt:var name="id" escape="html">" />
     <input type="hidden" name="filter" value="<mt:var name="filter" escape="html">" />
     <input type="hidden" name="filter_tag" value="<mt:var name="filter_tag" escape="html">" />
     <input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
@@ -240,7 +240,7 @@ function check_item () {
             accesskey="m"
             title="<__trans phrase="Module"> (m)"
             class="action button"
-            onclick="window.location.href='<mt:var name="mt_url">?__mode=view&amp;_type=template<mt:if name="template_id">&amp;id=<mt:var name="template_id"><mt:else>&amp;type=module</mt:else></mt:if>&amp;blog_id=<mt:var name="blog_id">&amp;campaigngroup_id=<mt:var name="id">';return false"><mt:if name="template_id"><__trans phrase="Edit Module"><mt:else><__trans phrase="Create Module"></mt:if></button>
+            onclick="window.location.href='<mt:var name="mt_url">?__mode=view&amp;_type=template<mt:if name="template_id">&amp;id=<mt:var name="template_id"><mt:else>&amp;type=module</mt:else></mt:if>&amp;blog_id=<mt:var name="blog_id">&amp;campaigngroup_id=<mt:var name="id" escape="html">';return false"><mt:if name="template_id"><__trans phrase="Edit Module"><mt:else><__trans phrase="Create Module"></mt:if></button>
         </mt:if>
     </div>
 </form>

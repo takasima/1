@@ -29,24 +29,28 @@ title=<$MTEntryTitle$>
 </div>
 
 <div style="font-size:small;padding:0 5px">
-<div style="font-weight:bold">
-
-<$MTEntryDate language="ja" format="%x"$><br />
 <$MTEntryTitle encode_html="1"$>
-</div>
 <div style="background:url(<$MTVar name="common_path" encode_html="1"$>images/dot.gif) repeat-x">
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
 </div>
+<div>
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
 <div>
 <MTML tag="MTEmoticon2emoji" params='base="$emoji_img_base" size="12" emoticon="1" alt="1"'>
 <$MTGetVar name="entry_body"$>
 <MTML tag="/MTEmoticon2emoji">
-</div>
-<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
 <div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
 </div>
+<div style="font-size:x-small">
+<MTIf tag="EntryAuthorDisplayName"><__trans phrase="Posted by">: <$MTEntryAuthorDisplayName encode_html="1"$><br /></MTIf>
 
+<__trans phrase="Date">: <$MTEntryDate language="ja" format="%x %X"$>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+</div>
 <div style="background-color:#E7E7E7">
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
 </div>
@@ -79,25 +83,82 @@ title=<$MTEntryTitle$>
 <div style="background-color:#E7E7E7">
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
 </div>
-<div>
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
-</div>
 <div style="text-align:center">
+<MTIf tag="EntryPrevious">
 <MTEntryPrevious>
 <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_on.gif" alt="prev_on" width="8" height="12" /> <a href="<$MTEntryPermalink encode_html="1"$>"><__trans phrase="Previous"></a>
+</MTEntryPrevious>
 <MTElse>
 <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_off.gif" alt="prev_off" width="8" height="12" /> <__trans phrase="Previous">
-</MTEntryPrevious>
+</MTIf>
 <a style="margin:0 4px" href="<$MTBlogRelativeURL encode_html="1"$>"><$MTBlogName encode_html="1"$></a>
+<MTIf tag="EntryNext">
 <MTEntryNext>
 <a href="<$MTEntryPermalink encode_html="1"$>"><__trans phrase="Next"></a> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_on.gif" alt="next_on" width="8" height="12" />
+</MTEntryNext>
 <MTElse>
 <__trans phrase="Next"> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_off.gif" alt="next_off" width="8" height="12" />
-</MTEntryNext>
+</MTIf>
 </div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+</div>
+<$MTSetVar name="category_jump" function="undef"$>
+<MTSetVarBlock name="category_jump">
+<MTIfArchiveTypeEnabled archive_type="Category">
+<MTTopLevelCategories setvar="_tlc">
+<MTIf tag="CategoryCount">
+<option<MTIf> selected="selected"</MTIf> value="<$MTCategoryArchiveLink encode_html="1"$>"><$MTCategoryLabel encode_html="1"$></option>
+<$MTTemplateNote SubCatsRecurse$>
+</MTIf>
+</MTTopLevelCategories>
+<MTIf name="_tlc" like="/\S/">
+<div>
+Categories<br />
+<form action="<MTBlogURL>mobile/redirect.php" method="post">
+<select name="url" style="width:150px">
+<$MTVar name="_tlc"$>
+</select>
+<input type="submit" value="<__trans phrase="Go">" />
+</form>
 <div>
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
 </div>
+</div>
+</MTIf>
+</MTIfArchiveTypeEnabled>
+<MTIfArchiveTypeEnabled archive_type="Monthly">
+<MTArchiveList archive_type="Monthly">
+<MTArchiveListHeader>
+<div>
+Archive<br />
+<form action="<MTBlogURL>mobile/redirect.php" method="post">
+<select name="url" style="width:150px">
+</MTArchiveListHeader>
+<option<MTIf> selected="selected"</MTIf> value="<$MTArchiveLink encode_html="1"$>"><__trans phrase="[_1] ([_2])" params="<$MTArchiveTitle escape="html"$>%%<$mt:ArchiveCount$>"></option>
+<MTArchiveListFooter>
+</select>
+<input type="submit" value="<__trans phrase="Go">" />
+</form>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+</div>
+</MTArchiveListFooter>
+</MTArchiveList>
+</MTIfArchiveTypeEnabled>
+</MTSetVarBlock>
+<MTIf name="category_jump" like="/\S/">
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<div style="margin-left:15px">
+<$MTVar name="category_jump"$>
+</div>
+</MTIf>
 <div style="background-color:#E7E7E7">
 <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
 </div>

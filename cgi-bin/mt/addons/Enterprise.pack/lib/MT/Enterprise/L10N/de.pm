@@ -17,7 +17,7 @@ use vars qw( %Lexicon );
 	'Groups ([_1])' => 'Gruppen ([_1])',
 	'Are you sure you want to delete the selected group(s)?' => 'Gewählte Gruppe(n) wirklich löschen?',
 	'Are you sure you want to remove the selected member(s) from the group?' => 'Gewählte(n) Benutzer wirklich aus Gruppe entfernen?',
-	'[_1]\'s Group' => 'Gruppen von [_1]', # Translate - New # OK
+	'[_1]\'s Group' => 'Gruppen von [_1]',
 	'Groups' => 'Gruppen',
 	'Manage Member' => 'Mitglieder verwalten',
 	'Bulk Author Export' => 'Stapelexport von Autoren',
@@ -28,10 +28,9 @@ use vars qw( %Lexicon );
 
 ## addons/Enterprise.pack/app-wizard.yaml
 	'This module is required in order to use the LDAP Authentication.' => 'Dieses Modul ist zur Nutzung der LDAP-Authentifizierung erforderlich.',
-	'This module is required in order to use SSL/TLS connection with the LDAP Authentication.' => 'Dieses Modul ist zur Nutzung von SSL/TLS-Verbindungen bei der LDAP-Authentifizierung erforderlich.',
-	'This module and its dependencies are required in order to use CRAM-MD5, DIGEST-MD5 or LOGIN as a SASL mechanism.' => 'Dieses Modul und seine Abhängigkeiten sind zur Verwendung von CRAM-MD5, DIGEST-MD5 oder LOGIN als SASL-Mechanismus erforderlich.',
 
 ## addons/Enterprise.pack/config.yaml
+	'http://www.sixapart.com/movabletype/' => 'http://www.sixapart.com/movabletype/',
 	'Permissions of group: [_1]' => 'Gruppen-Berechtigungen: [_1]',
 	'Group' => 'Gruppe',
 	'Groups associated with author: [_1]' => 'Mit Autor verknüpfte Gruppen: [_1]',
@@ -108,6 +107,7 @@ use vars qw( %Lexicon );
 	'Invalid site root: [_1]' => 'Ungültiges Wurzelverzeichnis: [_1]',
 	'Invalid timezone: [_1]' => 'Ungültige Zeitzone: [_1]',
 	'Invalid theme ID: [_1]' => 'Ungültige Themen-ID: [_1]',
+	'A theme \'[_1]\' was not found.' => 'Thema \'[_1]\' nicht gefunden.', # Translate - New # OK
 	'A user with the same name was found.  The registration was not processed: [_1]' => 'Benutzer mit gleichem Namen gefunden und Konto daher nicht angelegt: [_1]',
 	'Blog for user \'[_1]\' can not be created.' => 'Blog für Benutzer \'[_1]\' kann nicht angelegt werden.',
 	'Blog \'[_1]\' for user \'[_2]\' has been created.' => 'Blog \'[_1]\' für Benutzer \'[_2]\' angelegt.',
@@ -145,7 +145,7 @@ use vars qw( %Lexicon );
 	'No records were found in the file.  Make sure the file uses CRLF as the line-ending characters.' => 'Keine Einträge in Datei gefunden. Bitte stellen Sie sicher, daß für die Zeilenenden CRLF verwendet wird.',
 	'Registered [quant,_1,user,users], updated [quant,_2,user,users], deleted [quant,_3,user,users].' => '[quant,_1,Benutzer] registiert, [quant,_2,Benutzerkonto,Benutzerkonten] aktualisiert, [quant,_3,Benutzerkonto,Benutzerkonten] gelöscht.',
 	'Bulk author export cannot be used under external user management.' => 'Stapelexport von Benutzerkonten bei externer Benutzerverwaltung nicht möglich.',
-	'A user can\'t change his/her own username in this environment.' => 'Benutzer können ihre eigenen Benutzernamen in diesem Kontext nicht ändern.',
+	'A user cannot change his/her own username in this environment.' => 'Benutzer können ihre eigenen Benutzernamen in diesem Kontext nicht ändern.',
 	'An error occurred when enabling this user.' => 'Bei der Aktivierung dieses Benutzerkontos ist ein Fehler aufgetreten',
 
 ## addons/Enterprise.pack/lib/MT/Enterprise/Upgrade.pm
@@ -207,7 +207,7 @@ use vars qw( %Lexicon );
 	q{Click 'Continue' below to configure your LDAP attribute mappings.} => q{Klicken Sie auf 'Weiter', um die LDAP-Attribute zuzuweisen.},
 	'Your LDAP configuration is complete.' => 'Ihre LDAP-Konfigurierung ist abgeschlossen.',
 	q{To finish with the configuration wizard, press 'Continue' below.} => q{Mit einem Klick auf 'Weiter' schließen Sie die Konfigurierung ab.},
-	q{Can't locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.} => q{Kann Net::LDAP nicht finden. Net::LDAP ist zur Authentifizierung über LDAP erforderlich.},
+	'Cannot locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.' => 'Kann Net::LDAP nicht finden. Net::LDAP ist zur Authentifizierung über LDAP erforderlich.',
 	'Use LDAP' => 'LDAP verwenden',
 	'Authentication URL' => 'Authentifizierungs-URL',
 	'The URL to access for LDAP authentication.' => 'Adresse (URL) zur LDAP-Authentifizierung',

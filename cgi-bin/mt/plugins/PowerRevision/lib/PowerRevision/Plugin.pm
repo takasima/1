@@ -1,6 +1,7 @@
 package PowerRevision::Plugin;
 use strict;
 use XML::Simple;
+use MT::Log;
 use MT::Util qw( encode_html format_ts encode_xml offset_time_list );
 use MT::I18N qw( substr_text length_text );
 use lib qw( addons/PowerCMS.pack/lib );
@@ -83,7 +84,7 @@ sub _cb_entryworkflow_post_change_author {
 sub _set_approver_ids_to_obj {
     my ( $app, $obj, @approver_ids ) = @_;
     return unless $obj;
-    eval{
+    eval {
         require EntryWorkflow::Util;
     };
     unless ( $@ ) {
@@ -149,7 +150,7 @@ sub _backup_entry {
                                                       );
     }
     my @tl = offset_time_list( time, $blog );
-    my $ts = sprintf "%04d%02d%02d%02d%02d%02d", $tl[ 5 ] + 1900, $tl[ 4 ] + 1, @tl[ 3, 2, 1, 0 ];
+    my $ts = sprintf '%04d%02d%02d%02d%02d%02d', $tl[ 5 ] + 1900, $tl[ 4 ] + 1, @tl[ 3, 2, 1, 0 ];
     unless ( defined $revision ) {
         $revision = MT->model( 'powerrevision' )->new;
         $revision->blog_id( $obj->blog_id );
@@ -192,6 +193,9 @@ sub _backup_entry {
     if ( $orig_id ) {
         if (! $revision_id ) {
             $revision->class( 'workflow' );
+        }
+        if ( $obj->status == MT::Entry::RELEASE() ) {
+            $revision->class( 'backup' );
         }
     }
     unless ( $revision->class ) {
@@ -267,7 +271,7 @@ sub _backup_entry {
     $fmgr->put_data( $xml, "$new_xml.new" );
     $fmgr->rename( "$new_xml.new", $new_xml );
     unless ( $fmgr->exists( $new_xml ) ) {
-        $app->log( $plugin->translate( 'Can\'t create backup file.' ) );
+        $app->log( $plugin->translate( "Can't create backup file." ) );
         $revision->remove or die $revision->errstr;
         return 1;
     }
@@ -339,7 +343,6 @@ sub _backup_entry {
             $obj->remove or die $obj->errstr;
             my $match = '%(ID:' . $obj->id . ')%';
             MT->run_callbacks( "cms_post_delete.$obj_type", $app, $obj, $obj );
-            use MT::Log;
             my @logs = MT::Log->load( { blog_id => $obj->blog_id,
                                         category => [ 'new', 'edit', 'delete' ],
                                         class => [ 'entry', 'system' ],
@@ -362,7 +365,7 @@ sub _backup_entry {
                                                 }
                                       );
             MT->run_callbacks( "cms_pre_redirect.$obj_type", $app, \$return_url, $revision, $obj, $original );
-            return $app->print( "Location: " . $return_url . "\n\n" );
+            return $app->print( "Location: $return_url\n\n" );
         }
     }
 1;
@@ -434,7 +437,7 @@ sub _author_check_on_release {
         $obj->owner_id( $entry_author_id ) unless $entry_owner_id;
         return 1;
     }
-    $app->log( $plugin->translate( 'Can\'t get author_id from entry object :[_1]', $entry->id ) );
+    $app->log( $plugin->translate( "Can't get author_id from entry object :[_1]", $entry->id ) );
     # no author_id
     $obj->author_id( $user_id );
     return 1 if $entry_owner_id;
@@ -448,6 +451,7 @@ sub _author_check_on_release {
 sub _save_future {
     my ( $cb, $app, $obj, $original ) = @_;
     if ( my $orig_id = $app->param( 'orig_id' ) ) {
+        my $entry = MT::Entry->load( { id => abs $orig_id } ); # before callback 'cms_post_recover'
         if ( $app->param( 'ex_status' ) != MT::Entry::RELEASE() ) {
             $obj->id( $orig_id * -1 );
             unless ( $obj->author_id ) {
@@ -466,7 +470,6 @@ sub _save_future {
             }
             MT->run_callbacks( 'cms_post_recover.' . $obj->class, $app, $obj, $revision );
         }
-        my $entry = MT::Entry->load( { id => abs $orig_id } );
         if ( $entry ) {
             $obj->basename( $entry->basename );
         }
@@ -532,13 +535,13 @@ sub _search_powerrevision {
         for my $column ( @$columns ) {
             my $val = $obj->$column;
             if ( $column eq 'comment' ) {
-                $val = substr_text( $val, 0, 40 ) . ( length_text( $val ) > 40 ? "..." : "" );
+                $val = substr_text( $val, 0, 40 ) . ( length_text( $val ) > 40 ? '...' : '' );
             }
             if ( $column eq 'object_name' ) {
-                $val = substr_text( $val, 0, 30 ) . ( length_text( $val ) > 30 ? "..." : "" );
+                $val = substr_text( $val, 0, 30 ) . ( length_text( $val ) > 30 ? '...' : '' );
             }
             if ( $column =~ /_on$/ ) {
-                $val = format_ts( "%Y&#24180;%m&#26376;%d&#26085; %H:%M:%S", $val, undef, $app->user ? $app->user->preferred_language : undef );
+                $val = format_ts( '%Y&#24180;%m&#26376;%d&#26085; %H:%M:%S', $val, undef, $app->user ? $app->user->preferred_language : undef );
             }
             $row->{ $column } = $val;
             if ( ( $edit_all_posts ) || ( $admin ) ) {
@@ -582,7 +585,7 @@ sub _search_powerrevision {
             $row->{ can_edit_revision } = PowerRevision::Util::if_user_can_revision( $obj, $user, 'edit_revision' );
             unless ( defined $app->blog ) {
                 my $blog_name = $blogs{ $obj->blog_id }->name;
-                $blog_name = substr_text( $blog_name, 0, 20 ) . ( length_text( $blog_name ) > 20 ? "..." : "" );
+                $blog_name = substr_text( $blog_name, 0, 20 ) . ( length_text( $blog_name ) > 20 ? '...' : '' );
                 $row->{ 'blog_name' } = $blog_name;
             }
         }
@@ -712,7 +715,7 @@ sub _edit_entry_param {
                                           );
         my $innerHTML = '<div class="textarea-wrapper">';
         if ( $revision_comment ) {
-            $innerHTML .= '<input class="full-width" name="revision_comment" id="revision_comment" type="text" value="' . $revision_comment . '" style="margin-top : 0px" />';
+            $innerHTML .= '<input class="full-width" name="revision_comment" id="revision_comment" type="text" value="' . encode_html( $revision_comment ) . '" style="margin-top : 0px" />';
         } else {
             $innerHTML .= '<input class="full-width" name="revision_comment" id="revision_comment" type="text" value="<$mt:var name="revision_comment" escape="html"$>" style="margin-top : 0px" />';
         }
@@ -769,16 +772,16 @@ sub _edit_entry_param {
                                               );
             my $innerHTML = '<span style="white-space:nowrap"><select name="entry_history" id="entry_history" style="margin-bottom:0px;width:190px">';
             for my $revision ( @revisions ) {
-                my $ts = format_ts( "%Y/%m/%d %H:%M:%S", $revision->modified_on, $app->blog, $app->user ? $app->user->preferred_language : undef );
+                my $ts = format_ts( '%Y/%m/%d %H:%M:%S', $revision->modified_on, $app->blog, $app->user ? $app->user->preferred_language : undef );
                 $innerHTML .= '<option value="' . $revision->id . '">';
-                my $comment = substr_text( $revision->comment, 0, 12 )
-                  . ( length_text( $revision->comment ) > 12 ? "..." : "" );
+                my $comment = substr_text( encode_html( $revision->comment ), 0, 12 )
+                  . ( length_text( encode_html( $revision->comment ) ) > 12 ? '...' : '' );
                 $innerHTML .= $ts . '&nbsp; ' . $comment . '</option>';
             }
             $innerHTML .= '</select>';
-            $innerHTML .= ' <a title="' . $plugin->translate( 'Recover from history' ) . '" href="javascript:recover_from_history();" onclick="return confirm(\'';
+            $innerHTML .= ' <a title="' . $plugin->translate( 'Recover from history' ) . q{" href="javascript:recover_from_history();" onclick="return confirm('};
             $innerHTML .= $plugin->translate( 'Are you sure you want to recover this [_1]?', $plugin->translate( $class ) );
-            $innerHTML .= '\' )"><img width="8" width="9" src="' . $app->static_path . 'addons/PowerCMS.pack/images/revision.gif" alt="' . $plugin->translate( 'Recover from history' ) . '" /></a>';
+            $innerHTML .= q{' )"><img width="8" width="9" src="} . $app->static_path . 'addons/PowerCMS.pack/images/revision.gif" alt="' . $plugin->translate( 'Recover from history' ) . '" /></a>';
             $innerHTML .= ' &nbsp;<a title="' . $plugin->translate( 'View history' ) . '" href="javascript:void(0);" onclick="view_history();">';
             $innerHTML .= '<img width="13" width="9" src="' . $app->static_path . '/images/status_icons/view.gif" alt="' . $plugin->translate( 'View history' ) . '" /></a></span>';
             my $url = $app->base . $app->uri( mode => 'recover_entry',
@@ -861,7 +864,7 @@ sub _recovered_msg {
                                              },
                                    );
                 my $msg = $plugin->translate( 'Are you sure you want to recover to last update this [_1]?', encode_html( $plugin->translate( $class ) ) );
-                $label .= '<a href="' . $url . '" onclick="return confirm(\'' . $msg . '\' )">';
+                $label .= '<a href="' . $url . q{" onclick="return confirm('} . $msg . q{' )">};
                 $label .= $plugin->translate( '(Recover [_1] to last update.)', encode_html( $plugin->translate( $class ) ) );
                 $label .= '</a>';
             }
@@ -871,10 +874,8 @@ sub _recovered_msg {
         $label = $plugin->translate( '[_1] is not recovered from backup. [_1] data is equal to revison data.', encode_html( $plugin->translate( $class ) ) );
     }
     if ( $no_xml ) {
-        $class =~ s/(^.)/uc($1)/e;
-        $label = $plugin->translate( '[_1] is not recovered from backup (XML file was not found).', encode_html( $plugin->translate( $class ) ) );
+        $label = $plugin->translate( '[_1] is not recovered from backup (XML file was not found).', encode_html( $plugin->translate( ucfirst($class) ) ) );
     }
-    my $search = quotemeta( '<mt:if name="saved_added">' );
     my $insert =<<MTML;
     <mt:unless name="saved_changes">
     <mtapp:statusmsg
@@ -885,7 +886,7 @@ sub _recovered_msg {
     </mtapp:statusmsg>
     </mt:unless>
 MTML
-    $$tmpl =~ s/($search)/$insert$1/g;
+    $$tmpl =~ s/(<mt:if name="saved_added">)/$insert$1/g;
 }
 
 sub _delete_entry_flag {
@@ -1069,13 +1070,13 @@ sub _list_powerrevision {
         for my $column ( @$columns ) {
             my $val = $obj->$column;
             if ( $column eq 'comment' ) {
-                $val = substr_text( $val, 0, 40 ) . ( length_text( $val ) > 40 ? "..." : "" );
+                $val = substr_text( $val, 0, 40 ) . ( length_text( $val ) > 40 ? '...' : '' );
             }
             if ( $column eq 'object_name' ) {
-                $val = substr_text( $val, 0, 30 ) . ( length_text( $val ) > 30 ? "..." : "" );
+                $val = substr_text( $val, 0, 30 ) . ( length_text( $val ) > 30 ? '...' : '' );
             }
             if ( $column =~ /_on$/ ) {
-                $val = format_ts( "%Y&#24180;%m&#26376;%d&#26085; %H:%M:%S", $val, undef, $app->user ? $app->user->preferred_language : undef );
+                $val = format_ts( '%Y&#24180;%m&#26376;%d&#26085; %H:%M:%S', $val, undef, $app->user ? $app->user->preferred_language : undef );
             }
             $row->{ $column } = $val;
         }
@@ -1127,7 +1128,7 @@ sub _list_powerrevision {
         if ( (! defined $app->blog ) || ( $website ) ) {
             if ( defined $blogs{ $obj->blog_id } ) {
                 my $blog_name = $blogs{ $obj->blog_id }->name;
-                $blog_name = substr_text( $blog_name, 0, 20 ) . ( length_text( $blog_name ) > 20 ? "..." : "" );
+                $blog_name = substr_text( $blog_name, 0, 20 ) . ( length_text( $blog_name ) > 20 ? '...' : '' );
                 $row->{ 'blog_name' } = $blog_name;
             }
         }
@@ -1210,15 +1211,13 @@ sub _cb_ts_header {
             my $insert =<<'MTML';
 <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/PowerRevision/css/list_entry.css" type="text/css" />
 MTML
-            my $search = quotemeta( '</head>' );
-            $$tmpl =~ s/($search)/$insert$1/;
+            $$tmpl =~ s{(</head>)}{$insert$1};
         }
         if ( $class && $class eq 'powerrevision' ) {
             my $insert =<<'MTML';
 <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/PowerRevision/css/list_powerrevision.css" type="text/css" />
 MTML
-            my $search = quotemeta( '</head>' );
-            $$tmpl =~ s/($search)/$insert$1/;
+            $$tmpl =~ s{(</head>)}{$insert$1};
         }
     }
     if ( $app->mode eq 'view' ) {
@@ -1227,8 +1226,7 @@ MTML
             my $insert =<<'MTML';
 <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/PowerRevision/css/edit_entry.css" type="text/css" />
 MTML
-            my $search = quotemeta( '</head>' );
-            $$tmpl =~ s/($search)/$insert$1/;
+            $$tmpl =~ s{(</head>)}{$insert$1};
         }
     }
 }
@@ -1241,7 +1239,7 @@ sub _cb_pre_run {
         return $app->redirect( $app->base . $app->uri( mode => 'list',
                                                        args => { _type => 'powerrevision',
                                                                  blog_id => $app->param( 'blog_id' ),
-                                                                 filter_val => $app->param( 'id' ), 
+                                                                 filter_val => $app->param( 'id' ),
                                                                  filter => 'id',
                                                                },
                                                      )

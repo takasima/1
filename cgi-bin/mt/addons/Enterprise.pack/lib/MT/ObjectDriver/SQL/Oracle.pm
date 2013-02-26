@@ -57,25 +57,27 @@ sub as_sql {
         # reconstruct statement to be oracle-friendly
         my $middle_stmt = __PACKAGE__->new;
         my $main_stmt   = __PACKAGE__->new;
-        for my $dbcol ( @{ $stmt->select } ) {
-            my $col = $dbcol;
+        for my $c ( @{ $stmt->select } ) {
+            my ($dbcol, $col) = ($c, $c);
             $col =~ s{ \A [^_]+_ }{}xms;    # appropriate for all?
 
-            if ($group_by) {
-
-                # group_by call - aggregated column must be
-                # in the select list of inner statment
-                # while outer statement should not have
-                # aggregate function.
-                if ( $dbcol =~ /^([\w_\-\.]+)\(.+\)\s+AS\s+(.+)$/ ) {
-                    my ( $func, $as_col ) = ( $1, $2 );
-                    if ( 'dbms_lob.substr' ne $func ) {
-                        $main_stmt->add_select($as_col);
-                        $middle_stmt->add_select($as_col);
-                        next;
-                    }
-                }
+            if (   $dbcol !~ /\ADBMS_LOB\.SUBSTR\(.+\)\s+AS\s+(.+)\z/i
+                && $dbcol =~ s/.*\s+AS\s+// )
+            {
+                $main_stmt->add_select($dbcol);
+                $middle_stmt->add_select($dbcol);
+                next;
             }
+
+            my @aliases = map { $_ =~ m/\s+(.+)/ } @{ $stmt->from };
+            for my $alias (@aliases) {
+
+                # alias.column_name         => column_name
+                # func(alias.column_name)   => func(column_name)
+                # func(a,alias.column_name) => func(a,column_name)
+                $dbcol =~ s/(\A|\(|,)\s*$alias\./$1/;
+            }
+
             $main_stmt->add_select( $dbcol => $col );
             $middle_stmt->add_select( $dbcol => $col );
         }
@@ -144,7 +146,10 @@ sub as_sql {
                 }
                 foreach (@$order) {
                     my $col = $_->{column};
-                    next if exists( $work_stmt->select_map->{$col} );
+                    next
+                        if exists( $work_stmt->select_map->{$col} )
+                            || grep( { $_ =~ /\s+AS\s+$col/i }
+                                @{ $work_stmt->select } );
                     $col =~ s{ \A [^_]+_ }{}xms;    # appropriate for all?
                     next if exists( $work_stmt->select_map_reverse->{$col} );
                     $work_stmt->add_select( $_->{column} );
@@ -201,7 +206,7 @@ sub as_sql {
                 || !@{ $work_stmt->where }
                 || $sql !~ m{ where }xmsi )
             {
-                MT->log->debug(
+                MT->log(
                     Carp::longmess(
                         "Generated unbounded query on mt_session [$sql]")
                 );

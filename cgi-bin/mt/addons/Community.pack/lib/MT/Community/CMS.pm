@@ -121,7 +121,7 @@ sub save_community_prefs {
             $fmgr->mkpath($path)
                 or return $app->error(
                 $app->translate(
-                    "Can't make path '[_1]': [_2]",
+                    "Cannot make path '[_1]': [_2]",
                     $path, $fmgr->errstr
                 )
                 );

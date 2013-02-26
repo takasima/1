@@ -57,7 +57,7 @@
   <mt:var name="comment_long" escape="html">
   <mt:if name="has_edit_access">
         <span class="actions-link">
-          <a href="<mt:var name="script_url">?__mode=view&amp;_type=comment&amp;id=<mt:var name="id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">" title="<__trans phrase="Edit this comment">"><__trans phrase="Edit"></a><mt:if name="visible"><mt:if name="can_reply"> | <a href="<mt:var name="script_url">?__mode=dialog_post_comment&amp;reply_to=<mt:var name="id" escape="url">&amp;magic_token=<mt:var name="magic_token" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url"><mt:if name="return_args">&amp;return_args=<mt:var name="return_args" escape="url"></mt:if>" class="mt-open-dialog"><__trans phrase="Reply"></a></mt:if></mt:if>
+          <a href="<mt:var name="script_url">?__mode=view&amp;_type=comment&amp;id=<mt:var name="id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">" title="<__trans phrase="Edit this comment">"><__trans phrase="Edit"></a><mt:if name="visible"><mt:if name="can_reply"> | <a href="<mt:var name="script_url">?__mode=dialog_post_comment&amp;reply_to=<mt:var name="id" escape="url">&amp;magic_token=<mt:var name="magic_token" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url"><mt:if name="return_args">&amp;return_args=<mt:var name="return_args" escape="url"><mt:if name="search">%26do_search%3D1%26search%3D<mt:var name="search" escape="url"></mt:if></mt:if>" class="mt-open-dialog"><__trans phrase="Reply"></a></mt:if></mt:if>
         </span>
   </mt:if>
   <mt:if name="reply_count">
@@ -89,11 +89,9 @@
     </mt:if>
   <mt:else>
     <mt:if name="author">
-      <mt:if name="auth_icon_url">
-        <img src="<mt:var name="auth_icon_url">" height="9" width="9" alt="" border="0" /></mt:if><a href="<mt:var name="script_url">?__mode=search_replace&amp;_type=comment&amp;search_cols=author&amp;is_limited=1&amp;do_search=1&amp;search=<mt:var name="author" escape="url">&amp;blog_id=<mt:var name="blog_id">" title="<__trans phrase="Search for comments by this commenter">"><mt:var name="author_display" escape="html"></a>
-      <mt:else>
-        [<__trans phrase="Anonymous">]
-      </mt:if>
+      <a href="<mt:var name="script_url">?__mode=search_replace&amp;_type=comment&amp;search_cols=author&amp;is_limited=1&amp;do_search=1&amp;search=<mt:var name="author" escape="url">&amp;blog_id=<mt:var name="blog_id">" title="<__trans phrase="Search for comments by this commenter">"><mt:var name="author_display" escape="html"></a>
+    <mt:else>
+      [<__trans phrase="Anonymous">]
     </mt:if>
   </mt:if>
       </td>
@@ -143,7 +141,7 @@
         singular: '<mt:var name="object_label" lower_case="1" escape="js">',
         plural: '<mt:var name="object_label_plural" lower_case="1" escape="js">',
         mode: 'approve_item',
-        args: {<mt:if name="blog_id">'blog_id': '<mt:var name="blog_id">'<mt:if name="search">, 'search': '<mt:var name="search" escape="js">'</mt:if></mt:if>},
+        args: {<mt:if name="blog_id">'blog_id': '<mt:var name="blog_id">'</mt:if><mt:if name="search"><mt:if name="blog_id">, </mt:if>'search': '<mt:var name="search" escape="js">'</mt:if>},
         phrase: '<__trans phrase="to republish" escape="js">'
     });
     jQuery('button.mt-delete-items').mtDeleteItems({

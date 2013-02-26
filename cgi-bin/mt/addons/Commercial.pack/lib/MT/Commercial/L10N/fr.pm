@@ -14,8 +14,10 @@ use vars qw( %Lexicon );
 
 %Lexicon = (
 ## addons/Commercial.pack/config.yaml
-	'Professional designed, well structured and easily adaptable web site. You can customize default pages, footer and top navigation easily.' => 'Conçu pour les professionnels, bien structué et facilement adaptable, vous pouvez personnaliser les pages par défaut, le pied de page et la navigation facilement.',
-	'_PWT_ABOUT_BODY' => q{
+    'http://www.sixapart.com/movabletype/' => 'http://www.movabletype.com/',
+    'Professional designed, well structured and easily adaptable web site. You can customize default pages, footer and top navigation easily.'
+        => 'Conçu pour les professionnels, bien structué et facilement adaptable, vous pouvez personnaliser les pages par défaut, le pied de page et la navigation facilement.',
+    q{_PWT_ABOUT_BODY} => q{
 <p><strong>Remplacez par vos propres informations. </strong></p>
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In nec tellus sed turpis varius sagittis. Nullam pulvinar. Fusce dapibus neque pellentesque nulla. Maecenas condimentum quam. Vestibulum pretium fringilla quam. Nam elementum. Suspendisse odio magna, aliquam vitae, vulputate et, dignissim at, pede. Integer pellentesque orci at nibh. Morbi ante.</p>
 
@@ -25,8 +27,7 @@ use vars qw( %Lexicon );
 <a href="#" onclick="location.href=adminurl + '?__mode=view&_type=page&id=' + page_id + '&blog_id=' + blog_id; return false">Modifier ce contenu</a>
 </p>
 	},
-
-	'_PWT_CONTACT_BODY' => q{
+    q{_PWT_CONTACT_BODY} => q{
 <p><strong>Remplacez par vos propres informations. </strong></p>
 
 <p>Contactez-nous. Envoyez un email a email (at) domainname.com</p>
@@ -36,7 +37,8 @@ use vars qw( %Lexicon );
 <a href="#" onclick="location.href=adminurl + '?__mode=view&_type=page&id=' + page_id + '&blog_id=' + blog_id; return false">Modifier ce contenu</a>
 </p>
 	},
-    	'_PWT_HOME_BODY' => q{
+    'Welcome to our new website!' => 'Bienvenue sur notre nouveau site !',
+    q{_PWT_HOME_BODY}             => q{
 <p><strong>Remplacez par vos propres informations.</strong></p>
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In nec tellus sed turpis varius sagittis. Nullam pulvinar. Fusce dapibus neque pellentesque nulla. Maecenas condimentum quam. Aliquam erat volutpat. Ut placerat porta nibh. Donec vitae nulla. Pellentesque nisi leo, pretium a, gravida quis, sollicitudin non, eros. Vestibulum pretium fringilla quam. Nam elementum. Suspendisse odio magna, aliquam vitae, vulputate et, dignissim at, pede. Integer pellentesque orci at nibh. Morbi ante.</p>
 
@@ -48,103 +50,134 @@ use vars qw( %Lexicon );
 <a href="#" onclick="location.href=adminurl + '?__mode=view&_type=page&id=' + page_id + '&blog_id=' + blog_id; return false">Modifier ce contenu</a>
 </p>
 	},
-	'Welcome to our new website!' => 'Bienvenue sur notre nouveau site !',
-	q{Create a blog as a part of structured website. This works best with Professional Website theme.} => q{Créer un blog en tant que partie d'un site web. Cela fonctionne mieux avec un thème de sites web profeesionnels.},
-	'Not Required' => 'Non requis',
-	'Are you sure you want to delete the selected CustomFields?' => 'Êtes-vous sûr de vouloir supprimer les champs personnalisés séléctionnés ?',
-	'Photo' => 'Photo',
-	'Embed' => 'Embarqué',
-	'Custom Fields' => 'Champs personnalisés',
-	'Field' => 'Champ',
-	'Template tag' => 'Tag du gabarit',
-	'Updating Universal Template Set to Professional Website set...' => 'Mise à jour du jeu de gabarits universel vers sites web professionnels...',
-	'Migrating CustomFields type...' => 'Migration du type de Champ Personnalisé en cours',
-	'Professional Styles' => 'Styles professionnels',
-	'A collection of styles compatible with Professional themes.' => 'Une collection de styles compatible avec des thèmes professionnels',
-	'Professional Website' => 'Sites web professionnels',
-	'Blog Index' => 'Index du Blog',
-	'Header' => 'Entête',
-	'Footer' => 'Pied',
-	'Entry Metadata' => 'Metadonnées de la note',
-	'Page Detail' => 'Détails de la page',
-	'Footer Links' => 'Liens de Pied de Page',
-	'Powered By (Footer)' => 'Powered By (Pied de Page)',
-	'Recent Entries Expanded' => 'Entrées étendues récentes',
-	'Main Sidebar' => 'Colonne latérale principale',
-	'Blog Activity' => 'Activité du blog',
-	'Professional Blog' => 'Blog professionel',
-	'Entry Detail' => 'Détails de la note',
-	'Blog Archives' => 'Archives du blog',
-	'Unknown Object' => 'Objet inconnu',
-	'Unknown Type' => 'Type inconnu',
+    q{Create a blog as a part of structured website. This works best with Professional Website theme.}
+        => q{Créer un blog en tant que partie d'un site web. Cela fonctionne mieux avec un thème de sites web profeesionnels.},
+    'Unknown Type'   => 'Type inconnu',
+    'Unknown Object' => 'Objet inconnu',
+    'Not Required'   => 'Non requis',
+    'Are you sure you want to delete the selected CustomFields?' =>
+        'Êtes-vous sûr de vouloir supprimer les champs personnalisés séléctionnés ?',
+    'Photo'         => 'Photo',
+    'Embed'         => 'Embarqué',
+    'Custom Fields' => 'Champs personnalisés',
+    'Field'         => 'Champ',
+    'Template tag'  => 'Tag du gabarit',
+    'Updating Universal Template Set to Professional Website set...' =>
+        'Mise à jour du jeu de gabarits universel vers sites web professionnels...',
+    'Migrating CustomFields type...' =>
+        'Migration du type de Champ Personnalisé en cours',
+    'Converting CustomField type...' => 'Conversion du type CustomField...',
+    'Professional Styles'            => 'Styles professionnels',
+    'A collection of styles compatible with Professional themes.' =>
+        'Une collection de styles compatible avec des thèmes professionnels',
+    'Professional Website'    => 'Sites web professionnels',
+    'Blog Index'              => 'Index du Blog',
+    'Header'                  => 'Entête',
+    'Footer'                  => 'Pied',
+    'Entry Metadata'          => 'Metadonnées de la note',
+    'Page Detail'             => 'Détails de la page',
+    'Footer Links'            => 'Liens de Pied de Page',
+    'Powered By (Footer)'     => 'Powered By (Pied de Page)',
+    'Recent Entries Expanded' => 'Entrées étendues récentes',
+    'Main Sidebar'            => 'Colonne latérale principale',
+    'Blog Activity'           => 'Activité du blog',
+    'Professional Blog'       => 'Blog professionel',
+    'Entry Detail'            => 'Détails de la note',
+    'Blog Archives'           => 'Archives du blog',
 
 ## addons/Commercial.pack/lib/CustomFields/App/CMS.pm
-	'Date & Time' => 'Date & heure',
-	'Date Only' => 'Date seulement',
-	'Time Only' => 'Heure seulement',
-	'Please enter all allowable options for this field as a comma delimited list' => 'Merci de saisir toutes les options autorisées pour ce champ dans une liste délimitée par des virgules',
-	'Exclude Custom Fields' => 'Exclure les champs personnalisés',
-	'[_1] Fields' => '[_1] champs',
-	'Edit Field' => 'Modifier le champ',
-	'Invalid date \'[_1]\'; dates must be in the format YYYY-MM-DD HH:MM:SS.' => 'Date invalide \'[_1]\'; les dates doivent être dans le format YYYY-MM-DD HH:MM:SS.',
-	'Invalid date \'[_1]\'; dates should be real dates.' => 'Date invalide \'[_1]\'; les dates doivent être de vraies dates.',
-	'Please enter valid URL for the URL field: [_1]' => 'Merci de saisir une URL correcte pour le champ URL : [_1]',
-	'Please enter some value for required \'[_1]\' field.' => 'Merci de saisir une valeur pour le champ obligatoire \'[_1]\'.',
-	'Please ensure all required fields have been filled in.' => 'Merci de vérifier que tous les champs obligatoires ont été remplis.',
-	'The template tag \'[_1]\' is an invalid tag name.' => 'Le tag de gabarit \'[_1]\' est un nom de tag invalide',
-	'The template tag \'[_1]\' is already in use.' => 'Le tag de gabarit \'[_1]\' est déjà utilisé.',
-	'blog and the system' => 'blog et le système', # Translate - New
-	'website and the system' => 'site web et le système', # Translate - New
-	'The basename \'[_1]\' is already in use. It must be unique within this [_2].' => 'Le nom de base \'[_1]\' est déjà utilisé. Il doit être unique dans ce [_2]',
-	'You must select other type if object is the comment.' => 'Vous devez sélectionner d\'autre types si l\'objet est dans les commentaires.',
-	'type' => 'Type',
-	'Customize the forms and fields for entries, pages, folders, categories, and users, storing exactly the information you need.' => 'Personnalisez les champs des notes, pages, répertoires, catégories et auteurs pour stocker toutes les informations dont vous avez besoin.',
-	' ' => ' ',
-	'Single-Line Text' => 'Texte sur une ligne',
-	'Multi-Line Text' => 'Texte multi-lignes',
-	'Checkbox' => 'Case à cocher',
-	'Date and Time' => 'Date et heure',
-	'Drop Down Menu' => 'Menu déroulant',
-	'Radio Buttons' => 'Boutons radio',
-	'Embed Object' => 'Élément externe',
-	'Post Type' => 'Type de note',
+    'Show'        => 'Afficher',
+    'Date & Time' => 'Date & heure',
+    'Date Only'   => 'Date seulement',
+    'Time Only'   => 'Heure seulement',
+    'Please enter all allowable options for this field as a comma delimited list'
+        => 'Merci de saisir toutes les options autorisées pour ce champ dans une liste délimitée par des virgules',
+    'Exclude Custom Fields' => 'Exclure les champs personnalisés',
+    '[_1] Fields'           => '[_1] champs',
+    'Edit Field'            => 'Modifier le champ',
+    'Invalid date \'[_1]\'; dates must be in the format YYYY-MM-DD HH:MM:SS.'
+        => 'Date invalide \'[_1]\'. Les dates doivent être dans le format YYYY-MM-DD HH:MM:SS.',
+    'Invalid date \'[_1]\'; dates should be real dates.' =>
+        'Date invalide \'[_1]\'. Les dates doivent être de vraies dates.',
+    'Please enter valid URL for the URL field: [_1]' =>
+        'Merci de saisir une URL correcte pour le champ URL : [_1]',
+    'Please enter some value for required \'[_1]\' field.' =>
+        'Merci de saisir une valeur pour le champ obligatoire \'[_1]\'.',
+    'Please ensure all required fields have been filled in.' =>
+        'Merci de vérifier que tous les champs obligatoires ont été remplis.',
+    'The template tag \'[_1]\' is an invalid tag name.' =>
+        'Le tag de gabarit \'[_1]\' est un nom de tag invalide',
+    'The template tag \'[_1]\' is already in use.' =>
+        'Le tag de gabarit \'[_1]\' est déjà utilisé.',
+    'blog and the system'    => 'blog et le système',
+    'website and the system' => 'site web et le système',
+    'The basename \'[_1]\' is already in use. It must be unique within this [_2].'
+        => 'Le nom de base \'[_1]\' est déjà utilisé. Il doit être unique dans ce [_2]',
+    'You must select other type if object is the comment.' =>
+        'Vous devez sélectionner d\'autre types si l\'objet est dans les commentaires.',
+    'type' => 'Type',
+    'Customize the forms and fields for entries, pages, folders, categories, and users, storing exactly the information you need.'
+        => 'Personnalisez les champs des notes, pages, répertoires, catégories et auteurs pour stocker toutes les informations dont vous avez besoin.',
+    ' '                => ' ',
+    'Single-Line Text' => 'Texte sur une ligne',
+    'Multi-Line Text'  => 'Texte multi-lignes',
+    'Checkbox'         => 'Case à cocher',
+    'Date and Time'    => 'Date et heure',
+    'Drop Down Menu'   => 'Menu déroulant',
+    'Radio Buttons'    => 'Boutons radio',
+    'Embed Object'     => 'Élément externe',
+    'Post Type'        => 'Type de note',
 
 ## addons/Commercial.pack/lib/CustomFields/BackupRestore.pm
-	'Restoring custom fields data stored in MT::PluginData...' => 'Restauration des données des champs personnalisés stockées dans MT:PluginData...',
-	'Restoring asset associations found in custom fields ( [_1] ) ...' => 'Restauration des associations d\'éléments trouvés dans les champs personnalisés ([_1]) ...',
-	'Restoring url of the assets associated in custom fields ( [_1] )...' => 'Restauration des URLs des éléments associés dans les champs personnalisés ([_1]) ...',
+    'Restoring custom fields data stored in MT::PluginData...' =>
+        'Restauration des données des champs personnalisés stockées dans MT:PluginData...',
+    'Restoring asset associations found in custom fields ( [_1] ) ...' =>
+        'Restauration des associations d\'éléments trouvés dans les champs personnalisés ([_1]) ...',
+    'Restoring url of the assets associated in custom fields ( [_1] )...' =>
+        'Restauration des URLs des éléments associés dans les champs personnalisés ([_1]) ...',
 
 ## addons/Commercial.pack/lib/CustomFields/Field.pm
-	'The template tag \'[_1]\' is already in use in the system level' => 'Le tag de gabarit \'[_1]\' est déjà utilisé au niveau du système',
-	'The template tag \'[_1]\' is already in use in [_2]' => 'Le tag de gabarit \'[_1]\' est déjà dans [_2]',
-	'The template tag \'[_1]\' is already in use in this blog' => 'Le tag de gabarit \'[_1]\' est déjà dans ce blog',
-	'The \'[_1]\' of the template tag \'[_2]\' that is already in use in [_3] is [_4].' => 'Le [_1] du tag de gabarit \'[_2]\' est déjà utilisé dans [_3] est [_3]',
-	'_CF_BASENAME' => 'Nom de base',
+    'The template tag \'[_1]\' is already in use in the system level' =>
+        'Le tag de gabarit \'[_1]\' est déjà utilisé au niveau du système',
+    'The template tag \'[_1]\' is already in use in [_2]' =>
+        'Le tag de gabarit \'[_1]\' est déjà dans [_2]',
+    'The template tag \'[_1]\' is already in use in this blog' =>
+        'Le tag de gabarit \'[_1]\' est déjà dans ce blog',
+    'The \'[_1]\' of the template tag \'[_2]\' that is already in use in [_3] is [_4].'
+        => 'Le [_1] du tag de gabarit \'[_2]\' est déjà utilisé dans [_3] est [_3]',
+    '_CF_BASENAME' => 'Nom de base',
 
 ## addons/Commercial.pack/lib/CustomFields/Template/ContextHandlers.pm
-	'Are you sure you have used a \'[_1]\' tag in the correct context? We could not find the [_2]' => 'Etes-vous sûr d\'avoir utilisé un tag \'[_1]\' dans le contexte approprié ? Impossible de trouver le [_2]',
-	'You used an \'[_1]\' tag outside of the context of the correct content; ' => 'Vous avez utilisé un tag \'[_1]\' en dehors du contexte du contenu correct; ',
+    'Are you sure you have used a \'[_1]\' tag in the correct context? We could not find the [_2]'
+        => 'Etes-vous sûr d\'avoir utilisé un tag \'[_1]\' dans le contexte approprié ? Impossible de trouver le [_2]',
+    'You used an \'[_1]\' tag outside of the context of the correct content; '
+        => 'Vous avez utilisé un tag \'[_1]\' en dehors du contexte du contenu correct ; ',
 
 ## addons/Commercial.pack/lib/CustomFields/Theme.pm
-	'[_1] custom fields' => 'Champs personnalisés [_1]',
-	'a field on this blog' => 'un champ sur ce blog',
-	'a field on system wide' => 'un champ sur tout le système',
-	'Conflict of [_1] "[_2]" with [_3]' => 'Conflit de [_1] "[_2]" avec [_3]',
-	'Template Tag' => 'Tag du gabarit',
+    '[_1] custom fields'                => 'Champs personnalisés [_1]',
+    'a field on this blog'              => 'un champ sur ce blog',
+    'a field on system wide'            => 'un champ sur tout le système',
+    'Conflict of [_1] "[_2]" with [_3]' => 'Conflit de [_1] "[_2]" avec [_3]',
+    'Template Tag'                      => 'Tag du gabarit',
 
 ## addons/Commercial.pack/lib/CustomFields/Upgrade.pm
-	'Moving metadata storage for pages...' => 'Déplacement de l\'emplacement des métadonnées des pages en cours ...',
-	'Removing CustomFields display-order from plugin data...' => 'Retrait de l\'ordre d\'affichage des champs personnalisés des données du plugin en cours ...',
-	'Removing unlinked CustomFields...' => 'Retrait des champs personnalisés sans lien en cours ...',
+    'Moving metadata storage for pages...' =>
+        'Déplacement de l\'emplacement des métadonnées des pages en cours ...',
+    'Removing CustomFields display-order from plugin data...' =>
+        'Retrait de l\'ordre d\'affichage des champs personnalisés des données du plugin en cours ...',
+    'Removing unlinked CustomFields...' =>
+        'Retrait des champs personnalisés sans lien en cours ...',
 
 ## addons/Commercial.pack/lib/CustomFields/Util.pm
-	'Cloning fields for blog:' => 'Clonage des champs du blog :',
+    'Cloning fields for blog:' => 'Clonage des champs du blog :',
 
 ## addons/Commercial.pack/templates/professional/blog/about_this_page.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/archive_index.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/archive_widgets_group.mtml
+    q{This is a custom set of widgets that are conditioned to serve different content based upon what type of archive it is included. More info: [_1]}
+        => q{Ceci est un groupe de widgets personnalisé qui est conditionné pour afficher un contenu différent en fonction du type d'archive dans lequel il est inclus. Plus d'infos : [_1]},
 
 ## addons/Commercial.pack/templates/professional/blog/author_archive_list.mtml
 
@@ -178,21 +211,21 @@ use vars qw( %Lexicon );
 
 ## addons/Commercial.pack/templates/professional/blog/dynamic_error.mtml
 
+## addons/Commercial.pack/templates/professional/blog/entry.mtml
+
 ## addons/Commercial.pack/templates/professional/blog/entry_detail.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/entry_listing.mtml
-	'Recently by <em>[_1]</em>' => 'Récemment par <em>[_1]</em>',
+    'Recently by <em>[_1]</em>' => 'Récemment par <em>[_1]</em>',
 
 ## addons/Commercial.pack/templates/professional/blog/entry_metadata.mtml
 
-## addons/Commercial.pack/templates/professional/blog/entry.mtml
-
 ## addons/Commercial.pack/templates/professional/blog/entry_summary.mtml
 
-## addons/Commercial.pack/templates/professional/blog/footer_links.mtml
-	'Links' => 'Liens',
-
 ## addons/Commercial.pack/templates/professional/blog/footer.mtml
+
+## addons/Commercial.pack/templates/professional/blog/footer_links.mtml
+    'Links' => 'Liens',
 
 ## addons/Commercial.pack/templates/professional/blog/header.mtml
 
@@ -201,6 +234,8 @@ use vars qw( %Lexicon );
 ## addons/Commercial.pack/templates/professional/blog/main_index.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/main_index_widgets_group.mtml
+    q{This is a custom set of widgets that are conditioned to only appear on the homepage (or "main_index"). More info: [_1]}
+        => q{Ceci est un groupe de wigets personnalisé qui est conditionné pour n'apparaître que sur la page d'accueil (ou "main_index"). Plus d'infos : [_1]},
 
 ## addons/Commercial.pack/templates/professional/blog/monthly_archive_dropdown.mtml
 
@@ -219,13 +254,16 @@ use vars qw( %Lexicon );
 ## addons/Commercial.pack/templates/professional/blog/recent_assets.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/recent_comments.mtml
-	'<a href="[_1]">[_2] commented on [_3]</a>: [_4]' => '<a href="[_1]">[_2] a commenté sur [_3]</a> : [_4]',
+    '<a href="[_1]">[_2] commented on [_3]</a>: [_4]' =>
+        '<a href="[_1]">[_2] a commenté sur [_3]</a> : [_4]',
 
 ## addons/Commercial.pack/templates/professional/blog/recent_entries.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/search.mtml
 
 ## addons/Commercial.pack/templates/professional/blog/search_results.mtml
+    'By default, this search engine looks for all words in any order. To search for an exact phrase, enclose the phrase in quotes:'
+        => 'Par défaut, ce moteur va rechercher tous les mots dans le désordre. Pour chercher une expression exacte, placez-la entre apostrophes :',
 
 ## addons/Commercial.pack/templates/professional/blog/sidebar.mtml
 
@@ -242,7 +280,7 @@ use vars qw( %Lexicon );
 ## addons/Commercial.pack/templates/professional/website/blog_index.mtml
 
 ## addons/Commercial.pack/templates/professional/website/blogs.mtml
-	'Entries ([_1]) Comments ([_2])' => 'Notes ([_1]) Commentaires ([_2])',
+    'Entries ([_1]) Comments ([_2])' => 'Notes ([_1]) Commentaires ([_2])',
 
 ## addons/Commercial.pack/templates/professional/website/comment_detail.mtml
 
@@ -262,9 +300,9 @@ use vars qw( %Lexicon );
 
 ## addons/Commercial.pack/templates/professional/website/entry_summary.mtml
 
-## addons/Commercial.pack/templates/professional/website/footer_links.mtml
-
 ## addons/Commercial.pack/templates/professional/website/footer.mtml
+
+## addons/Commercial.pack/templates/professional/website/footer_links.mtml
 
 ## addons/Commercial.pack/templates/professional/website/header.mtml
 
@@ -283,8 +321,8 @@ use vars qw( %Lexicon );
 ## addons/Commercial.pack/templates/professional/website/powered_by_footer.mtml
 
 ## addons/Commercial.pack/templates/professional/website/recent_entries_expanded.mtml
-	'on [_1]' => 'sur [_1]',
-	'By [_1] | Comments ([_2])' => 'Par [_1] | Commentaires ([_1])',
+    'on [_1]'                   => 'sur [_1]',
+    'By [_1] | Comments ([_2])' => 'Par [_1] | Commentaires ([_1])',
 
 ## addons/Commercial.pack/templates/professional/website/search.mtml
 
@@ -303,46 +341,62 @@ use vars qw( %Lexicon );
 ## addons/Commercial.pack/templates/professional/website/trackbacks.mtml
 
 ## addons/Commercial.pack/tmpl/asset-chooser.tmpl
-	q{View image} => q{Voir l'image},
-	'Choose [_1]' => 'Choisir [_1]',
+    q{View image} => q{Voir l'image},
+    'Choose [_1]' => 'Choisir [_1]',
 
 ## addons/Commercial.pack/tmpl/category_fields.tmpl
-	'Show These Fields' => 'Afficher ces champs',
+    'Show These Fields' => 'Afficher ces champs',
 
 ## addons/Commercial.pack/tmpl/cfg_customfields.tmpl
-	'Data have been saved to custom fields.' => 'Les données ont été enregistrées pour les champs personnalisés.',
-	'Save changes to blog (s)' => 'Sauvegarder les modifications du blog (s)',
-	'No custom fileds could be found. <a href="[_1]">Create a field</a> now.' => 'Aucun champs personnalisé ne peut être trouvé. <a href="[_1]">Créer un champs</a> maintenant.',
+    'Data have been saved to custom fields.' =>
+        'Les données ont été enregistrées pour les champs personnalisés.',
+    'Save changes to blog (s)' => 'Sauvegarder les modifications du blog (s)',
+    'No custom fileds could be found. <a href="[_1]">Create a field</a> now.'
+        => 'Aucun champs personnalisé ne peut être trouvé. <a href="[_1]">Créer un champs</a> maintenant.',
 
 ## addons/Commercial.pack/tmpl/edit_field.tmpl
-	'Edit Custom Field' => 'Éditer le champs personnalisé',
-	'Create Custom Field' => 'Créer une champ personnalisé',
-	'The selected field(s) has been deleted from the database.' => 'Les champs sélectionnés ont été effacés de la base de données.',
-	'You must enter information into the required fields highlighted below before the custom field can be created.' => 'Vous devez entrer des informations dans le champs requis indiqué avant que le champs personnalisé soit créé.', # Translate - Case
-	'You must save this custom field before setting a default value.' => 'Vous devez sauvegarder ce champs personnalisé avant d\'indiquer une valeur par défaut.', # Translate - Case
-	'Choose the system object where this custom field should appear.' => 'Sélectionnez l\'objet système dans lequel le champs devra apparaître.', # Translate - Case
-	'Required?' => 'Obligatoire?',
-	'Is data entry required in this custom field?' => 'Est-ce qu\'une donnée est requise dans ce champs personnalisé ?', # Translate - Case
-	'Must the user enter data into this custom field before the object may be saved?' => 'L\'utilisateur doit-il entrer quelque chose dans ce champs avant que l\'objet puisse être enregistré ?', # Translate - Case
-	'Default' => 'Défaut',
-	'The basename must be unique within this [_1].' => 'Le nom de base doit être unique dans ce [_1]',
-	q{Warning: Changing this field's basename may require changes to existing templates.} => q{Attention : le changement de ce nom de base peut nécessiter des changements additionnels dans vos gabarits existants.},
-	'Example Template Code' => 'Code de gabarit exemple',
-	'Show In These [_1]' => 'Afficher dans ces [_1]',
-	'Save this field (s)' => 'Enregistrer ce champs (s)',
-	'field' => 'champ',
-	'fields' => 'Champs',
-	'Delete this field (x)' => 'Supprimer ce champs (x)',
+    'Edit Custom Field'   => 'Éditer le champs personnalisé',
+    'Create Custom Field' => 'Créer une champ personnalisé',
+    'The selected field(s) has been deleted from the database.' =>
+        'Les champs sélectionnés ont été effacés de la base de données.',
+    'You must enter information into the required fields highlighted below before the custom field can be created.'
+        => 'Vous devez entrer des informations dans le champs requis indiqué avant que le champs personnalisé soit créé.',
+    q{You must save this custom field before setting a default value.} =>
+        q{Vous devez sauvegarder ce champs personnalisé avant d'indiquer une valeur par défaut.},
+    q{Choose the system object where this custom field should appear.} =>
+        q{Sélectionnez l'objet système dans lequel le champs devra apparaître.},
+    'Required?' => 'Obligatoire ?',
+    q{Is data entry required in this custom field?} =>
+        q{Est-ce qu'une donnée est requise dans ce champs personnalisé ?},
+    q{Must the user enter data into this custom field before the object may be saved?}
+        => q{L'utilisateur doit-il entrer quelque chose dans ce champs avant que l'objet puisse être enregistré ?},
+    'Default' => 'Défaut',
+    'The basename must be unique within this [_1].' =>
+        'Le nom de base doit être unique dans ce [_1]',
+    q{Warning: Changing this field's basename may require changes to existing templates.}
+        => q{Attention : le changement de ce nom de base peut nécessiter des changements additionnels dans vos gabarits existants.},
+    'Example Template Code' => 'Code de gabarit exemple',
+    'Show In These [_1]'    => 'Afficher dans ces [_1]',
+    'Save this field (s)'   => 'Enregistrer ce champs (s)',
+    'field'                 => 'champ',
+    'fields'                => 'Champs',
+    'Delete this field (x)' => 'Supprimer ce champs (x)',
 
 ## addons/Commercial.pack/tmpl/export_field.tmpl
-	'Object' => 'Objet',
+    'Object' => 'Objet',
+
+## addons/Commercial.pack/tmpl/listing/field_list_header.tmpl
 
 ## addons/Commercial.pack/tmpl/reorder_fields.tmpl
-	'open' => 'ouvrir',
-	'click-down and drag to move this field' => 'gardez le clic maintenu et glissez le curseur pour déplacer ce champs',
-	'click to %toggle% this box' => 'cliquez pour %toggle% cette boîte',
-	'use the arrow keys to move this box' => 'utilisez les touches flêchées de votre clavier pour déplacer cette boîte',
-	', or press the enter key to %toggle% it' => ', ou pressez la touche entrée pour la %toggle%',
+    'open' => 'ouvrir',
+    'click-down and drag to move this field' =>
+        'gardez le clic maintenu et glissez le curseur pour déplacer ce champs',
+    'click to %toggle% this box' => 'cliquez pour %toggle% cette boîte',
+    'use the arrow keys to move this box' =>
+        'utilisez les touches flêchées de votre clavier pour déplacer cette boîte',
+    ', or press the enter key to %toggle% it' =>
+        ', ou pressez la touche entrée pour la %toggle%',
+
 );
 
 1;

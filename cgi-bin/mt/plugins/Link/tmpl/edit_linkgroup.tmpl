@@ -128,8 +128,11 @@ function check_item () {
                     <li id="li1_<mt:var name="item_num">">
                         <span id="objectID<mt:var name="id">">
                             <span><input type="checkbox" /></span>
-                            <mt:var name="item_name" remove_html="1"> -
+                            <mt:var name="item_name" remove_html="1">
+                            <mt:if name="can_manage_link">
+                             -
                             <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="weblog_id">&amp;id=<mt:var name="id">&amp;_type=link"><__trans phrase="Edit"></a>
+                            </mt:if>
                         </span>
                     </li>
                 </mt:loop>
@@ -151,8 +154,11 @@ function check_item () {
                     <li id="li2_<mt:var name="item_num">">
                         <span id="objectID<mt:var name="id">">
                             <span><input type="checkbox" /></span>
-                            <mt:var name="item_name" remove_html="1"> -
+                            <mt:var name="item_name" remove_html="1">
+                            <mt:if name="can_manage_link">
+                             -
                             <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="weblog_id">&amp;id=<mt:var name="id">&amp;_type=link"><__trans phrase="Edit"></a>
+                            </mt:if>
                         </span>
                     </li>
                 </mt:loop>
@@ -210,6 +216,7 @@ function check_item () {
             title="<__trans phrase="Save"> (s)"
             class="save action primary-button primary button"
             onclick="return check_item();"><__trans phrase="Save"></button>
+        <mt:if name="can_edit_templates">
         <mt:if name="id">
         <button
             type="submit"
@@ -217,6 +224,7 @@ function check_item () {
             title="<__trans phrase="Module"> (m)"
             class="action button"
             onclick="window.location.href='<mt:var name="mt_url">?__mode=view&amp;_type=template<mt:if name="template_id">&amp;id=<mt:var name="template_id"><mt:else>&amp;type=module</mt:else></mt:if>&amp;blog_id=<mt:var name="blog_id">&amp;linkgroup_id=<mt:var name="id">';return false"><mt:if name="template_id"><__trans phrase="Edit Module"><mt:else><__trans phrase="Create Module"></mt:if></button>
+        </mt:if>
         </mt:if>
     </div>
 </form>

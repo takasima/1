@@ -2,7 +2,7 @@ package PowerCMS::Util;
 use strict;
 use base qw/Exporter/;
 
-our $powercms_util_version = '3.14';
+our $powercms_util_version = '3.15';
 our @EXPORT_OK = qw(
     build_tmpl save_asset upload convert_gif_png association_link create_entry
     make_entry write2file read_from_file move_file copy_item remove_item
@@ -31,7 +31,7 @@ our @EXPORT_OK = qw(
     referral_site referral_search_keyword referral_serch_keyword make_seo_basename
     encode_utf8_string_to_cp932_octets set_powercms_config get_powercms_config
     set_powercms_config_values reset_powercms_config_values charset_is_utf8
-    can_edit_entry allow_upload error_log is_valid_extention get_ole_extension
+    can_edit_entry allow_upload error_log is_valid_extension is_valid_extention get_ole_extension
 );
 
 use File::Spec;
@@ -1301,7 +1301,7 @@ sub get_mail {
 }
 
 sub make_zip_archive {
-    my ( $directory, $out, $files ) = @_;
+    my ( $directory, $out, $files, $encoding ) = @_;
     eval { require Archive::Zip } || return undef;
     my $archiver = Archive::Zip->new();
     my $fmgr = MT::FileMgr->new( 'Local' ) or die MT::FileMgr->errstr;
@@ -1319,13 +1319,14 @@ sub make_zip_archive {
     unless ( $files ) {
         @$files = get_children_filenames( $directory );
     }
-    $directory = quotemeta( $directory );
+    $encoding ||= 'utf-8'; # TODO
+    my $re = qr{^(?:\Q$directory\E)?[/\\]*};
     for my $file ( @$files ) {
+        $file = Encode::encode($encoding, $file)
+            if Encode::is_utf8($file);
         my $new = $file;
-        $new =~ s/^$directory//;
-        $new =~ s!^/!!;
-        $new =~ s!^\\!!;
-        $archiver->addFile( $file, MT::I18N::utf8_off( $new ) );
+        $new =~ s/$re//;
+        $archiver->addFile( $file, $new );
     }
     return $archiver->writeToFileNamed( $out );
 }
@@ -2446,7 +2447,8 @@ sub load_registered_template_for {
 
 sub force_background_task {
     my $app = MT->instance();
-    my $force = $app->config->FourceBackgroundTasks;
+    my $force = $app->config->FourceBackgroundTasks ||
+                $app->config->ForceBackgroundTasks;
     if ( $force ) {
         my $default = $app->config->LaunchBackgroundTasks;
         $app->config( 'LaunchBackgroundTasks', 1 );
@@ -3296,8 +3298,8 @@ sub get_powercms_config {
     if (! $settings ) {
         return get_default( $plugin_key, $key );
     }
-    my $value = $settings->{ $key };
-    if (! $value ) {
+    my $value = defined( $settings->{ $key } ) ? $settings->{ $key } : '';
+    if ( $value eq '' ) {
         return get_default( $plugin_key, $key );
     }
     return $value;
@@ -3407,7 +3409,8 @@ sub encode_mime_header {
     }
 }
 
-sub is_valid_extention {
+sub is_valid_extention { goto &is_valid_extension }
+sub is_valid_extension {
     my ( $path ) = @_;
     return 0 unless $path;
     return 0 unless -f $path;

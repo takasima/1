@@ -107,6 +107,7 @@ sub _hdlr_formelement_html {
         $i++;
     }
     $params{ field_loop } = \@field_loop;
+    $app->run_callbacks( 'contactform.pre_build.' . $type, $app, $mtml, \%args, \%params );
     my $html = build_tmpl( $app, $mtml, \%args, \%params );
     return $html;
 }

@@ -134,7 +134,7 @@ sub fetch_id {
 sub map_error_code {
     my $dbd = shift;
     my ( $code, $msg ) = @_;
-    return ERROR_MAP->{$code};
+    return defined $code ? ERROR_MAP->{$code} : '';
 }
 
 my $orig_search;
@@ -183,7 +183,8 @@ sub count {
                 $col = $class->properties->{primary_key};
             }
             my $dbcol
-                = $driver->dbd->db_column_name( $class->datasource, $col );
+                = $driver->dbd->db_column_name( $class->datasource, $col,
+                $args->{alias} );
             ## the lines below is the only difference from the DBI::count method.
             $select = "COUNT(DISTINCT $dbcol)";
             $args->{count_distinct} = { $col => 1 };

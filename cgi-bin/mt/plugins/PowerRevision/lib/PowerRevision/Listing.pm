@@ -175,7 +175,7 @@ sub html_revision_status { # TODO: filter(only entry/page etc...)
                                       args => {
                                         _type => 'powerrevision',
                                         blog_id => $obj->blog_id,
-                                        filter => 'revision_status',
+                                        filter => 'status',
                                         filter_val => $obj->status,
                                       },
                                     );

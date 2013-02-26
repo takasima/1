@@ -107,6 +107,7 @@ SQL
         my $colname = lc $row->{column_name};
         next if $colname !~ m/^\Q$field_prefix\E_/i;
         $colname =~ s/^\Q$field_prefix\E_//i;
+        next if exists $defs->{$colname};
         my $coltype = $row->{type_name};
         my $size    = $row->{'length'};
         $coltype = $ddl->db2type($coltype);
@@ -306,10 +307,66 @@ sub insert_from_sql {
 }
 
 sub create_table_as_sql {
-    my $ddl        = shift;
-    my ($class)    = @_;
+    my $ddl = shift;
+    my ($class) = @_;
+    my @sql;
+
     my $table_name = $class->table_name;
-    return " SELECT * INTO ${table_name}_upgrade FROM $table_name";
+    my $defs       = $ddl->column_defs($class);
+
+    my $table_ddl = "CREATE TABLE ${table_name}_upgrade ( \n";
+    my @cols;
+
+    my $field_prefix = $class->datasource;
+    my @real_col_names;
+    my @primary_keys;
+    foreach my $name ( keys %$defs ) {
+        my $def = $defs->{$name};
+        next unless defined $def;
+        my $sql = $ddl->_def2sql( $class, $name, $def );
+        push @cols,           $sql;
+        push @real_col_names, $field_prefix . '_' . $name;
+        push @primary_keys,   $field_prefix . '_' . $name
+            if $def->{key};
+    }
+    $table_ddl .= "\t" . ( join ",\n\t", @cols ) . "\n";
+    $table_ddl .= "\t PRIMARY KEY (" . join( q{, }, @primary_keys ) . ") \n"
+        if @primary_keys;
+    $table_ddl .= ')';
+    push @sql, $table_ddl;
+
+    push @sql,
+        "BEGIN TRY SET IDENTITY_INSERT ${table_name}_upgrade ON END TRY BEGIN CATCH END CATCH";
+
+    my $insert = "INSERT INTO ${table_name}_upgrade ( \n";
+    $insert .= ( join ",\n\t", @real_col_names ) . " ) \n";
+    $insert .= "SELECT ";
+    $insert .= ( join ",\n\t", @real_col_names ) . " \n";
+    $insert .= "FROM $table_name \n";
+    push @sql, $insert;
+
+    push @sql,
+        "BEGIN TRY SET IDENTITY_INSERT ${table_name}_upgrade OFF END TRY BEGIN CATCH END CATCH";
+
+    return @sql;
+}
+
+sub _def2sql {
+    my $ddl = shift;
+    my ( $class, $name, $def ) = @_;
+
+    my $driver       = $class->driver;
+    my $dbd          = $driver->dbd;
+    my $field_prefix = $class->datasource;
+    my $type         = $ddl->type2db($def);
+    my $nullable     = '';
+    if ( $def->{not_null} ) {
+        $nullable = ' NOT NULL';
+    }
+
+    my $sql = $field_prefix . '_' . $name . ' ' . $type . $nullable;
+    $sql .= ' IDENTITY' if $def->{auto};
+    return $sql;
 }
 
 1;

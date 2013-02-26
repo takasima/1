@@ -16,7 +16,7 @@ sub help {
     return q {
         Minify CSS and JavaScript files in MTStaticDirectory.
 
-        --backup <File extention of backup files (or 'none').>
+        --backup <File extension of backup files (or 'none').>
                       Optional: default => .original
     };
 }

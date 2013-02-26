@@ -8,10 +8,18 @@ package MT::Enterprise::Wizard;
 
 use strict;
 
+use Encode;
+use URI;
+
 sub template_hdlr {
     return sub {
         my ( $ctx, $args, $cond ) = @_;
         $ctx->var( 'auth_ldap', 1 ) if $ctx->var('authtype');
+
+        if ( my $authurl = $ctx->var('authurl') ) {
+            $ctx->var( 'authurl', encode_authurl($authurl) );
+        }
+
         return $ctx->build(<<EOT);
 <mt:if name="auth_ldap">#======== LDAP authentication ========
 
@@ -91,7 +99,7 @@ sub cfg_ldap_auth {
         my $authpassword  = $param{authpassword};
         my $saslmechanism = $param{saslmechanism} || 'PLAIN';
 
-        $app->config->LDAPAuthURL($authurl);
+        $app->config->LDAPAuthURL( encode_authurl($authurl) );
         $app->config->LDAPAuthBindDN($binddn);
         $app->config->LDAPAuthPassword($authpassword);
         $app->config->LDAPAuthSASLMechanism($saslmechanism)
@@ -154,7 +162,7 @@ sub cfg_ldap_eum {
         my $group_filter  = $param{eum_group_filter} || '';
         my $search_base   = $param{eum_group_searchbase} || '';
 
-        $app->config->LDAPAuthURL($authurl);
+        $app->config->LDAPAuthURL( encode_authurl($authurl) );
         $app->config->LDAPAuthBindDN($binddn);
         $app->config->LDAPAuthPassword($authpassword);
         $app->config->LDAPAuthSASLMechanism($saslmechanism)
@@ -216,7 +224,7 @@ sub cfg_ldap_mapping {
         my $group_filter  = $param{eum_group_filter} || '';
         my $search_base   = $param{eum_group_searchbase} || '';
 
-        $app->config->LDAPAuthURL($authurl);
+        $app->config->LDAPAuthURL( encode_authurl($authurl) );
         $app->config->LDAPAuthBindDN($binddn);
         $app->config->LDAPAuthPassword($authpassword);
         $app->config->LDAPAuthSASLMechanism($saslmechanism)
@@ -339,6 +347,12 @@ sub cfg_ldap_mapping {
     }
 
     $app->build_page( "cfg_ldap.tmpl", \%param );
+}
+
+sub encode_authurl {
+    my ($url) = @_;
+    $url = Encode::decode( 'utf8', $url ) unless Encode::is_utf8($url);
+    Encode::encode( 'utf8', URI->new($url)->as_string );
 }
 
 1;

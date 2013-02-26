@@ -32,10 +32,16 @@ function smarty_block_mtaltsearchmetadata( $args, $content, &$ctx, &$repeat ) {
             $get = explode( "&", $param );
             foreach ( $get as $value ) {
                 list( $key, $val ) = explode( "=", $value );
+                if ( $key == 'include_blogs' ) {
+                    continue;
+                }
                 $$key = mb_convert_encoding( $val, $charset, "SJIS" );
             }
         }
         $query = mb_convert_encoding( $query, $charset, $from_enc );
+        if ( preg_match( "/KDDI/", $ua ) ) { # FIXME
+            $query = urldecode( $query );
+        }
         if ( $and_or == 'or' ) {} else {
             $and_or = 'and';
         }

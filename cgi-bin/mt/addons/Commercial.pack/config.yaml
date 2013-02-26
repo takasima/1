@@ -1,8 +1,9 @@
 name: Professional Pack
 author_name: Six Apart, Ltd.
 author_link: http://www.sixapart.com/
-version: 1.63
-schema_version: 1.54
+pack_link: <__trans phrase="http://www.sixapart.com/movabletype/">pack/commercial/
+version: 1.72
+schema_version: 1.55
 l10n_class: MT::Commercial::L10N
 
 object_types:
@@ -21,6 +22,8 @@ config_settings:
             slideshare.net macromedia.com veoh.com
             12seconds.tv vodpod.com joost.com podtech.net
             odeo.com splashcast.net spike.com
+    UpdateDisplayOptionByFollowingField:
+        default: 1
 
 customfield_objects:
     entry:
@@ -86,7 +89,7 @@ entry_types:
         order: 40
 
 callbacks:
-    init_app: $Commercial::CustomFields::Util::install_field_tags
+    init_app: $Commercial::CustomFields::App::init_app
 #    *::init_request:
 #        handler: $Commercial::CustomFields::Util::install_field_tags
     api_post_save_xmlrpc:
@@ -499,13 +502,13 @@ upgrade_functions:
                     $_[0]->template_set &&
                       ( $_[0]->template_set eq 'universal_website' );
                 }
-            code: > 
+            code: >
                 sub {
                     $_[0]->template_set('professional_website');
                 }
     v5_migrate_cf_type:
         version_limit: 1.51
-        priority: 5.0
+        priority: 3.1
         updater:
             type: field
             label: Migrating CustomFields type...
@@ -528,6 +531,24 @@ upgrade_functions:
         version_limit: 1.54
         priority: 5.1
         handler: $Commercial::CustomFields::Upgrade::remove_unlinked_field
+    v5_migrate_show_category:
+        version_limit: 1.55
+        priority: 5.2
+        updater:
+            type: category:meta
+            label: Converting CustomField type...
+            condition: >
+                sub {
+                    $_[0]->meta_type eq 'show_fields';
+                }
+            code: >
+                sub {
+                    $_[0]->meta_vclob( $_[0]->meta_vchar );
+                    $_[0]->meta_vchar( undef );
+                }
+            sql:
+                - "update mt_category_meta set category_meta_vclob=category_meta_vchar where category_meta_type ='show_fields'"
+                - "update mt_category_meta set category_meta_vchar = null where category_meta_type ='show_fields'"
 
 stylecatcher_libraries:
     professional_themes:
@@ -560,19 +581,19 @@ themes:
                         basename: index
                         title: About
                         text: <__trans phrase="_PWT_ABOUT_BODY">
-                        tags: @about
+                        tags: "@about"
                         folder: about
                     contact:
                         basename: contact
                         title: <__trans phrase="Contact">
                         text: <__trans phrase="_PWT_CONTACT_BODY">
-                        tags: @contact
+                        tags: "@contact"
                         folder: contact
                     home:
                         basename: home
                         title: <__trans phrase="Welcome to our new website!">
                         text: <__trans phrase="_PWT_HOME_BODY">
-                        tags: @home
+                        tags: "@home"
             template_set:
                 component: core
                 importer: template_set

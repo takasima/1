@@ -52,23 +52,25 @@ sub _init_tags {
     my $cache = $r->cache( 'plugin-snippetfield-init' );
     return 1 if $cache;
     $r->cache( 'plugin-snippetfield-init', 1 );
-    if ( ref $app eq 'MT::App::CMS' ) {
-        if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
-            # pass
-        } else {
-            my $load_at = [ 'view', 'rebuild', 'preview', 'save', 'delete', 'cfg', 'default', 'recover', 'itemset' ];
-            require CGI;
-            $CGI::POST_MAX = $app->config->CGIMaxUpload;
-            my $q = new CGI;
-            my $mode = $q->param( '__mode' );
-            return unless $mode;
-            $mode =~ s/_.*$//;
-            if (! grep { $mode =~ /^\Q$_\E/ } @$load_at ) {
-                return;
-            }
-            my $type = $q->param( '_type' );
-            if ( $type && ( $type eq 'field' ) ) {
-                return;
+    unless ( $ENV{FAST_CGI} || MT->config->PIDFilePath ) {
+        if ( ref $app eq 'MT::App::CMS' ) {
+            if ( $^O eq 'MSWin32' && lc $ENV{ 'REQUEST_METHOD' } eq 'post' ) {
+                # pass
+            } else {
+                require CGI;
+                $CGI::POST_MAX = $app->config->CGIMaxUpload;
+                my $q = new CGI;
+                my $mode = $q->param( '__mode' )
+                    or return;
+                $mode =~ s/_.*$//;
+                my @load_at = qw/view rebuild preview save delete cfg default recover itemset publish/;
+                unless ( grep { $mode =~ /^\Q$_\E/ } @load_at ) {
+                    return;
+                }
+                my $type = $q->param( '_type' );
+                if ( $type && ( $type eq 'field' ) ) {
+                    return;
+                }
             }
         }
     }
@@ -142,6 +144,8 @@ sub _init_tags {
                 } else {
                     return '';
                 }
+            } else {
+                return '';
             }
             my $out = $builder->build( $ctx, $tokens, $cond );
             $vars = $ctx->{ __stash }{ vars } = $old_vars;
@@ -418,7 +422,7 @@ sub _field_html {
 <__trans_section component="SnippetField">
 <mt:if name="edit_field">
 <div>
-    <textarea rows="17" name="<mt:var name="field_name" escape="html">" id="<mt:var name="field_id">" class="full-width ta text" rows="3" cols="72"><mt:var name="field_value" escape="html"></textarea>
+    <textarea rows="17" name="<mt:var name="field_name" escape="html">" id="<mt:var name="field_id">" class="full-width ta text low" rows="3" cols="72"><mt:var name="field_value" escape="html"></textarea>
 </div>
 <mt:else>
 <mt:var name="default" mteval="1">
@@ -539,6 +543,7 @@ sub _field_html_params {
                             }
                         } else {
                             $param->{ $key } = undef;
+                            $param->{ $key . '_original' } = undef;
                         }
                     } else {
                         if ( $value ) {

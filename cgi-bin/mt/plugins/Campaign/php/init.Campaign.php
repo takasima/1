@@ -11,10 +11,13 @@
     $customfield_types[ 'campaign_group' ] = array(
         'column_def' => 'vinteger_idx',
     );
-    require_once( 'class.mt_field.php' );
-    $_field = new Field();
-    $where = "field_type='campaign' OR field_type='campaign_multi' OR field_type='campaign_group'";
-    $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    $customfields = $ctx->stash( 'campaign_fields' );
+    if (! isset( $customfields ) ) {
+        require_once( 'class.mt_field.php' );
+        $_field = new Field();
+        $where = "field_type='campaign' OR field_type='campaign_multi' OR field_type='campaign_group'";
+        $customfields = $_field->Find( $where, FALSE, FALSE, array() );
+    }
     if ( is_array( $customfields ) ) {
         foreach ( $customfields as $field ) {
             $tag = $field->tag;

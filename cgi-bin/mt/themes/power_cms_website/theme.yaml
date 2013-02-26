@@ -1,7 +1,7 @@
 id: power_cms_website
 label: 'PowerCMS Website'
 name: <__trans phrase="PowerCMS Website">
-version: 1.8
+version: 1.9
 author_link: http://alfasado.net/
 author_name: 'Alfasado Inc.'
 l10n_class: power_cms_website::L10N
@@ -9,16 +9,17 @@ thumbnail_file: blog-thumbnail.gif
 thumbnail_file_medium: blog-thumbnail-medium.gif
 thumbnail_file_small: blog-thumbnail-small.gif
 class: website
-description: <__trans phrase="PowerCMS Template Set">
+description: <__trans phrase="PowerCMS Theme">
 elements:
   blog_static_files:
-    component: ~
-    data:
-      - common
-      - banner
+    component: core
     importer: blog_static_files
+    data:
+      - banner
+      - common
   custom_fields:
     component: commercial
+    importer: custom_fields
     data:
       campaignexternallink:
         default: 0
@@ -38,9 +39,9 @@ elements:
         required: 0
         tag: contactformselector
         type: contactform
-    importer: custom_fields
   default_folders:
-    component: ~
+    component: core
+    importer: default_folders
     data:
       contact:
         label: contact
@@ -53,9 +54,9 @@ elements:
         label: product
       sitemap:
         label: sitemap
-    importer: default_folders
   template_set:
-    component: ~
+    component: core
+    importer: template_set
     data:
       base_path: templates
       label: 'exported_template set'
@@ -77,9 +78,21 @@ elements:
             label: JavaScript
             outfile: mt.js
             rebuild_me: 1
+          jquery:
+            label: JavaScript(jquery.js)
+            outfile: common/js/jquery.js
+            rebuild_me: 1
           main_index:
             label: Main Index
             outfile: index.html
+            rebuild_me: 1
+          members_login_css_pc:
+            label: PC-Stylesheet(login.css)
+            outfile: common/css/login.css
+            rebuild_me: 1
+          members_login_css_smartphone:
+            label: SP-Stylesheet(login.css)
+            outfile: common/css/smartphone/login.css
             rebuild_me: 1
           rsd:
             label: RSD
@@ -121,10 +134,10 @@ elements:
             label: SP-Stylesheet(reset.css)
             outfile: common/css/smartphone/reset.css
             rebuild_me: 1
-          template_5410:
-            label: SP-Stylesheet(top.css)
-            outfile: css/smartphone/top.css
-            rebuild_me: 1
+          #template_5410:
+          #  label: SP-Stylesheet(top.css)
+          #  outfile: css/smartphone/top.css
+          #  rebuild_me: 1
           template_5753:
             build_type: 3
             label: Search Results
@@ -138,59 +151,25 @@ elements:
             label: Redirector
             outfile: mobile/redirect.php
             rebuild_me: 1
-####
-          members_login_css_pc:
-            label: PC-Stylesheet(login.css)
-            outfile: common/css/login.css
-            rebuild_me: 1
-          members_login_css_smartphone:
-            label: SP-Stylesheet(login.css)
-            outfile: common/css/smartphone/login.css
-            rebuild_me: 1
-          jquery:
-            label: JavaScript(jquery.js)
-            outfile: common/js/jquery.js
-            rebuild_me: 1
-####
-        page:
-          page:
-            label: Page
-            mappings:
-              page:
-                archive_type: Page
-                file_template: '%-c/%-f'
-                preferred: 1
-          template_8156:
-            label: Page(Mobile-Comment form)
-            mappings:
-              page:
-                archive_type: Page
-                file_template: '%-c/%-F_form%x'
-                preferred: 0
-          template_8157:
-            label: Page(Mobile-Comments)
-            mappings:
-              page:
-                archive_type: Page
-                file_template: '%-c/%-F_comments%x'
-                preferred: 0
-          webpage_trackback_mobile:
-            label: Page(Mobile-Trackbacks)
-            mappings:
-              page:
-                archive_type: Page
-                file_template: '%-c/%-F_trackbacks%x'
-                preferred: 0
-          estraier_page_draft:
-            label: Page Draft
-            mappings:
-              page:
-                archive_type: Page
-                file_template: 'draft/page_%E.est'
-                preferred: 0
         module:
+          estraier_result_pc:
+            label: PC-Estraier Results
+          estraier_result_smartphone:
+            label: SP-Estraier Results
+          estraier_result_keitai:
+            label: Mobile-Estraier Results
           html_head:
             label: PC-Header
+          members_login_pc:
+            label: PC-Login
+          members_login_smartphone:
+            label: SP-Login
+          members_login_mobile_m:
+            label: Mobile-Login
+          members_login_header_mobile:
+            label: Mobile-Login Header
+          members_login_footer_mobile:
+            label: Mobile-Login Footer
           template_220:
             label: PC-Footer
           template_334:
@@ -251,25 +230,42 @@ elements:
             label: Mobile-Comment Response
           template_6565:
             label: Mobile-Comment Preview
-          estraier_result_pc:
-            label: PC-Estraier Results
-          estraier_result_smartphone:
-            label: SP-Estraier Results
-          estraier_result_keitai:
-            label: Mobile-Estraier Results
-####
-          members_login_pc:
-            label: PC-Login
-          members_login_smartphone:
-            label: SP-Login
-          members_login_mobile_m:
-            label: Mobile-Login
-          members_login_header_mobile:
-            label: Mobile-Login Header
-          members_login_footer_mobile:
-            label: Mobile-Login Footer
-#          contactform_confirm:
-#            label: Form check
+        page:
+          estraier_page_draft:
+            label: Page Draft
+            mappings:
+              page:
+                archive_type: Page
+                file_template: 'draft/page_%E.est'
+                preferred: 0
+          page:
+            label: Page
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-f'
+                preferred: 1
+          template_8156:
+            label: Page(Mobile-Comment form)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_form%x'
+                preferred: 0
+          template_8157:
+            label: Page(Mobile-Comments)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_comments%x'
+                preferred: 0
+          webpage_trackback_mobile:
+            label: Page(Mobile-Trackbacks)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_trackbacks%x'
+                preferred: 0
         system:
           comment_listing:
             label: Comment Listing
@@ -279,63 +275,20 @@ elements:
             label: Comment Response
           dynamic_error:
             label: Dynamic Error
-          popup_image:
-            label: Popup Image
-          search_results:
-            label: Search Results
           estraier_result:
             label: Estraier Results
-#          extraform_author_mail:
-#            label: フォームエントリ作成者宛メール
-#          extraform_post_confirm:
-#            label: フォーム投稿確認画面
-#          extraform_user_mail:
-#            label: フォーム投稿者宛メール
-#          notification_published:
-#            label: 公開通知
-#          notification_sendback:
-#            label: 差し戻し通知
-#          notification_workflow:
-#            label: 承認依頼通知
-          wf_published_message:
-            label: Published notification
-            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Published Page '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Published Entry '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
-          wf_message:
-            label: Workflow notification
-            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Approval request Page '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Approval request Entry '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
-####
-          members_login:
-            label: Member's Log in
-          members_login_mobile:
-            label: Member's Log in (Mobile)
-          members_s_c:
-            label: Member's Secedes
-          members_s_c_mobile:
-            label: Member's Secedes (Mobile)
-          members_signup:
-            label: Member's Sign Up
-          members_signup_mobile:
-            label: Member's Sign Up (Mobile)
-          members_redirector_mobile:
-            label: Member's Redirector (Mobile)
           members_e_p:
             label: Member's Edit Profile
           members_e_p_mobile:
             label: Member's Edit Profile (Mobile)
-          members_recover:
-            label: Member's Password Recovery
-          members_recover_mobile:
-            label: Member's Password Recovery (Mobile)
+          members_login:
+            label: Member's Log in
+          members_login_mobile:
+            label: Member's Log in (Mobile)
           members_n_p:
             label: Member's Change Password
           members_n_p_mobile:
             label: Member's Change Password (Mobile)
-          members_notify_u_c:
-            label: Member's Notify Confirm for User
-            subject: <__trans_section component="Members"><__trans phrase="Member's account confirmation on '[_1]'" params="<$mt:BlogName$>"></__trans_section>
-          members_notify_u_t:
-            label: Member's Notify Registered for User
-            subject: <__trans_section component="Members"><__trans phrase="Your account has been trusted for '[_1]'" params="<$mt:BlogName$>"></__trans_section>
           members_notify_a_p:
             label: Member's Notify Untrusted User for Admin
             subject: <__trans_section component="Members"><__trans phrase="A new untrust user '[_1]' registered on '[_2]'" params="<$mt:AuthorName$>%%<$mt:BlogName$>"></__trans_section>
@@ -345,6 +298,36 @@ elements:
           members_notify_recover:
             label: Member's Notify Password Recovery
             subject: <__trans_section component="Members"><__trans phrase="Member's Password Recovery"></__trans_section>
+          members_notify_u_c:
+            label: Member's Notify Confirm for User
+            subject: <__trans_section component="Members"><__trans phrase="Member's account confirmation on '[_1]'" params="<$mt:BlogName$>"></__trans_section>
+          members_notify_u_t:
+            label: Member's Notify Registered for User
+            subject: <__trans_section component="Members"><__trans phrase="Your account has been trusted for '[_1]'" params="<$mt:BlogName$>"></__trans_section>
+          members_recover:
+            label: Member's Password Recovery
+          members_recover_mobile:
+            label: Member's Password Recovery (Mobile)
+          members_redirector_mobile:
+            label: Member's Redirector (Mobile)
+          members_s_c:
+            label: Member's Secedes
+          members_s_c_mobile:
+            label: Member's Secedes (Mobile)
+          members_signup:
+            label: Member's Sign Up
+          members_signup_mobile:
+            label: Member's Sign Up (Mobile)
+          popup_image:
+            label: Popup Image
+          search_results:
+            label: Search Results
+          wf_published_message:
+            label: Published notification
+            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Published Page '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Published Entry '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
+          wf_message:
+            label: Workflow notification
+            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Approval request Page '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Approval request Entry '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
         widget:
           template_332:
             label: Support
@@ -357,4 +340,3 @@ elements:
             widgets:
               - Support
               - Related Links
-    importer: template_set

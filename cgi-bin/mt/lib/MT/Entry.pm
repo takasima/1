@@ -433,8 +433,8 @@ sub list_props {
                 my ( $objs, $app, $opts ) = @_;
                 my ( $cats, $placs ) = $prop->bulk_cats(@_);
                 return map {
-                    MT::Util::encode_html(
-                        $cats->{ $placs->{ $_->id } || 0 } )
+                    MT::Util::encode_html( $cats->{ $placs->{ $_->id } || 0 },
+                        1 )
                         || $prop->zero_state_label
                 } @$objs;
             },
@@ -521,6 +521,17 @@ sub list_props {
             label      => 'Publish Date',
             use_future => 1,
             order      => 600,
+            sort       => sub {
+                my $prop = shift;
+                my ( $terms, $args ) = @_;
+                my $dir = delete $args->{direction};
+                $dir = ( 'descend' eq $dir ) ? "DESC" : "ASC";
+                $args->{sort} = [
+                    { column => $prop->col, desc => $dir },
+                    { column => "id",       desc => $dir },
+                ];
+                return;
+            },
         },
         modified_on => {
             base  => '__virtual.modified_on',
@@ -752,7 +763,7 @@ sub system_filters {
             order => 1000,
         },
         commented_in_last_7_days => {
-            label => 'Entries Commented on in the Last 7 Days',
+            label => 'Entries with Comments Within the Last 7 Days',
             items => [
                 {   type => 'commented_on',
                     args => { option => 'days', days => 7 }
@@ -1462,7 +1473,7 @@ sub blog {
             MT::Blog->load($blog_id)
                 or $entry->error(
                 MT->translate(
-                    "Load of blog '[_1]' failed: [_2]",
+                    "Loading blog '[_1]' failed: [_2]",
                     $blog_id,
                     MT::Blog->errstr
                         || MT->translate("record does not exist.")

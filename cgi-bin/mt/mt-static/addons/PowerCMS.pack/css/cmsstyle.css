@@ -155,3 +155,7 @@
     position: static;
     white-space: nowrap;
 }
+
+.field-left-label .field-content span.field-content {
+    margin-left: 0px;
+}

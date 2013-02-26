@@ -10,36 +10,39 @@ sub _append_scripts {
     my ( $cb, $app, $ref_str ) = @_;
 
     return unless $app->blog;
-    my $blog_id = $app->blog->id;
-    return unless $app->param('_type') eq 'entry';
 
+    my $blog_id = $app->blog->id;
     my $preview_check = $plugin_requiredfields->get_config_value(
         'preview_check',
         'blog:' . $blog_id );
 
-    my $t = time;
+    #my $t = time;
 
     # $('#entry_form').submit(fn) は2度目以降呼ばれなかったので
-    my $html = << 'HTML';
+    my $html = <<'HTML';
 <script type="text/javascript" charset="utf-8" src="<$MTStaticWebPath$>plugins/RequiredFields/js/validator.js?<$MTDate format="%Y%m%d%H%M%S"$>"></script>
 <script type="text/javascript" charset="utf-8" src="<$MTStaticWebPath$>plugins/RequiredFields/js/check-fields.js?<$MTDate format="%Y%m%d%H%M%S"$>"></script>
 <mt:setVarBlock name="jq_js_include" append="1">
-jQuery(function($){
-    function fieldValidation() {
-        app.saveHTML(false);
-        var ret = $('#entry_form').checkFields({
-            standard_fields: <$MTVar name="standard_fields" to_json="1"$>,
-            ext_fields: <$MTVar name="ext_fields" to_json="1"$>,
-            category_equired: <$MTVar name="category_equired" to_json="1"$>
-        });
-        return ret;
-    }
-    $(":submit").filter(".publish").filter(".action").click(fieldValidation);
+jQuery(function($) {
+    $('input[type="submit"].action, button[type="submit"].action')
 HTML
-
-    $html .= '$(":submit").filter(".preview").filter(".action").click(fieldValidation);' if ( $preview_check );
-
-    $html .= << 'HTML';
+    my $jq_selector = '.publish';
+    if ($preview_check) {
+        $jq_selector .= ', .preview';
+    }
+    $html .= <<HTML;
+        .filter("$jq_selector")
+HTML
+    $html .= <<'HTML';
+            .bind("click", function fieldValidation() {
+                app.saveHTML(false);
+                var ret = $('#entry_form').checkFields({
+                    standard_fields: <$MTVar name="standard_fields" to_json="1"$>,
+                    ext_fields: <$MTVar name="ext_fields" to_json="1"$>,
+                    category_equired: <$MTVar name="category_equired" to_json="1"$>
+                });
+                return ret;
+            });
 });
 </mt:setVarBlock>
 HTML

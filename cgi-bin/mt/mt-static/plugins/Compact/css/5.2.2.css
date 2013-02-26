@@ -1,0 +1,30 @@
+#header {
+    height: 60px;
+}
+
+#menu-bar {
+    height: 28px;
+}
+
+.scope {
+    height: 28px;
+}
+
+.scope-label {
+    height: 28px;
+    line-height: 28px;
+}
+
+.scope-selector {
+    top: 28px;
+}
+
+#menu-bar-nav {
+    top: 0px;
+    position: absolute;
+    height: 28px;
+}
+
+#menu-bar-nav .toggle-link-wrapper {
+    top: 3px;
+}

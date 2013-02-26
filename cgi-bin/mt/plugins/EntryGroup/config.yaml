@@ -1,7 +1,7 @@
 id  : EntryGroup
 key : entrygroup
 name: Entry Group
-version: 1.2
+version: 1.3
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
 description: '<__trans phrase="Entries Grouping and Sorting Interface.">'

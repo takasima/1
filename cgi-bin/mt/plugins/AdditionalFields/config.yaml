@@ -1,7 +1,7 @@
 id  : AdditionalFields
 key : additionalfields
 name: Additional Fields
-version: 0.7
+version: 1.0
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
 l10n_class: AdditionalFields::L10N

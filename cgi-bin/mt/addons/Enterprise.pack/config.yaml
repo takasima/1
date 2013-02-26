@@ -1,7 +1,8 @@
 label: Advanced Pack
 author_name: Six Apart, Ltd.
 author_link: http://www.sixapart.com/
-version: 2.12
+pack_link: <__trans phrase="http://www.sixapart.com/movabletype/">pack/enterprise/
+version: 2.2
 schema_version: 1.1
 l10n_class: MT::Enterprise::L10N
 
@@ -701,8 +702,8 @@ db_form_data:
         type: text
         label: ODBC Driver
         order: 5
-        default: SQL Server Native Client 10.0
-        hint: Specify 'SQL Native Client 10.0' for SQL Server 2008 or 'SQL Native Client' for SQL Server 2005.
+        default: SQL Server Native Client 11.0
+        hint: Specify 'SQL Native Client 11.0' for SQL Server 2012 or 'SQL Native Client 10.0' for SQL Server 2008.
         show_hint: 1
 
 config_settings:

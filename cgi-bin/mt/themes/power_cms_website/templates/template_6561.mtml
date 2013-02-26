@@ -27,7 +27,7 @@ page_title=<__trans phrase="Comment Response">
                         <MTElse name="comment_pending">
                             <MTIgnore><!-- Pending message when comment is being held for review --></MTIgnore>
                             <$MTVar name="page_title" value="<__trans phrase="Thank you for commenting.">"$>
-                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been received and held for approval by the blog owner."></p>"$>
+                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been received and held for review by a blog administrator."></p>"$>
                         <MTElse name="comment_error">
                             <MTIgnore><!-- Error message when comment submission fails --></MTIgnore>
                             <$MTVar name="page_title" value="<__trans phrase="Comment Submission Error">"$>

@@ -894,7 +894,8 @@ sub send_mail {
 
 sub force_background_task {
     my $app = MT->instance();
-    my $force = $app->config->FourceBackgroundTasks;
+    my $force = $app->config->FourceBackgroundTasks ||
+                $app->config->ForceBackgroundTasks;
     if ( $force ) {
         my $default = $app->config->LaunchBackgroundTasks;
         $app->config( 'LaunchBackgroundTasks', 1 );

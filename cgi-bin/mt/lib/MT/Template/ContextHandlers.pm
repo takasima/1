@@ -1105,11 +1105,11 @@ sub build_date {
         if ($blog_id) {
             $blog = MT->model('blog')->load($blog_id);
             return $ctx->error(
-                MT->translate( 'Can\'t load blog #[_1].', $blog_id ) )
+                MT->translate( 'Cannot load blog #[_1].', $blog_id ) )
                 unless $blog;
         }
     }
-    my $lang
+    my $lang 
         = $args->{language}
         || $ctx->var('local_lang_id')
         || ( $blog && $blog->language );
@@ -1208,7 +1208,9 @@ sub cgi_path {
         # relative path, prepend blog domain
         if ( my $blog = $ctx->stash('blog') ) {
             my ($blog_domain) = $blog->archive_url =~ m|(.+://[^/]+)|;
-            $path = $blog_domain . $path;
+            if ($blog_domain) {
+                $path = $blog_domain . $path;
+            }
         }
     }
     $path .= '/' unless $path =~ m{/$};
@@ -1543,7 +1545,7 @@ sub _hdlr_if {
         }
     }
 
-    my $numeric = qr/^[-]?\d+(\.\d+)?$/;
+    my $numeric = qr/^[-]?[0-9]+(\.[0-9]+)?$/;
     no warnings;
     if ( exists $args->{eq} ) {
         return 0 unless defined($value);
@@ -2731,28 +2733,7 @@ sub _hdlr_get_var {
             $value = $value->(@_);
         }
         if ( ref($value) ) {
-            if ( UNIVERSAL::isa( $value, 'MT::Template' ) ) {
-                local $args->{name}     = undef;
-                local $args->{var}      = undef;
-                local $value->{context} = $ctx;
-                $value = $value->output($args);
-            }
-            elsif ( UNIVERSAL::isa( $value, 'MT::Template::Tokens' ) ) {
-                local $ctx->{__stash}{tokens} = $value;
-                local $args->{name}           = undef;
-                local $args->{var}            = undef;
-
-                # Pass through SetVarTemplate arguments as variables
-                # so that they do not affect the global stash
-                my $vars = $ctx->{__stash}{vars} ||= {};
-                my @names = keys %$args;
-                my @var_names;
-                push @var_names, lc $_ for @names;
-                local @{$vars}{@var_names};
-                $vars->{ lc($_) } = $args->{$_} for @names;
-                $value = $ctx->slurp($args) or return;
-            }
-            elsif ( ref($value) eq 'ARRAY' ) {
+            if ( ref($value) eq 'ARRAY' ) {
                 if ( defined $index ) {
                     if ( $index =~ /^-?\d+$/ ) {
                         $value = $value->[$index];
@@ -2825,6 +2806,29 @@ sub _hdlr_get_var {
                         );
                     }
                 }
+            }
+        }
+        if ( ref($value) ) {
+            if ( UNIVERSAL::isa( $value, 'MT::Template' ) ) {
+                local $args->{name}     = undef;
+                local $args->{var}      = undef;
+                local $value->{context} = $ctx;
+                $value = $value->output($args);
+            }
+            elsif ( UNIVERSAL::isa( $value, 'MT::Template::Tokens' ) ) {
+                local $ctx->{__stash}{tokens} = $value;
+                local $args->{name}           = undef;
+                local $args->{var}            = undef;
+
+                # Pass through SetVarTemplate arguments as variables
+                # so that they do not affect the global stash
+                my $vars = $ctx->{__stash}{vars} ||= {};
+                my @names = keys %$args;
+                my @var_names;
+                push @var_names, lc $_ for @names;
+                local @{$vars}{@var_names};
+                $vars->{ lc($_) } = $args->{$_} for @names;
+                $value = $ctx->slurp($args) or return;
             }
         }
         if ( my $op = $args->{op} ) {
@@ -3252,12 +3256,34 @@ sub _hdlr_app_statusmsg {
     my $class   = $args->{class} || 'info';
     my $msg     = $ctx->slurp;
     my $rebuild = $args->{rebuild} || '';
+    my $no_link = $args->{no_link} || '';
     my $blog_id = $ctx->var('blog_id');
     my $blog    = $ctx->stash('blog');
     if ( !$blog && $blog_id ) {
         $blog = MT->model('blog')->load($blog_id);
     }
-    if ( $app->user and $app->user->can_do('rebuild') ) {
+    if ( $id eq 'replace-count' && $rebuild =~ /^(website|blog)$/ ) {
+        my $link_l
+            = $no_link
+            ? ''
+            : '<a href="<mt:var name="mt_url">?__mode=rebuild_confirm&blog_id=<mt:var name="blog_id">&prompt=index" class="mt-rebuild">';
+        my $link_r = $no_link ? '' : '</a>';
+        my $obj_type
+            = $rebuild eq 'blog'
+            ? MT->translate('blog(s)')
+            : MT->translate('website(s)');
+        $rebuild
+            = qq{<__trans phrase="[_1]Publish[_2] your [_3] to see these changes take effect." params="$link_l%%$link_r%%$obj_type">};
+    }
+    elsif (
+        $blog && $app->user
+        and $app->user->can_do(
+            'rebuild',
+            at_least_one => 1,
+            blog_id      => $blog->id,
+        )
+        )
+    {
         $rebuild = '' if $blog && $blog->custom_dynamic_templates eq 'all';
         $rebuild
             = qq{<__trans phrase="[_1]Publish[_2] your site to see these changes take effect." params="<a href="<mt:var name="mt_url">?__mode=rebuild_confirm&blog_id=<mt:var name="blog_id">" class="mt-rebuild">%%</a>">}
@@ -3960,7 +3986,7 @@ L<IncludeBlock> tag. If unassigned, the "contents" variable is used.
             return $ctx->error( $builder->errstr ) unless defined $html;
             return $html;
         };
-        return $ctx->tag( 'include', $args, $cond );
+        return _hdlr_include( $ctx, $args, $cond );
     }
 
 ###########################################################################
@@ -4190,7 +4216,7 @@ B<Example:> Passing Parameters to a Template Module
                 )
                 or return $ctx->error(
                 MT->translate(
-                    "Can't find included template [_1] '[_2]'",
+                    "Cannot find included template [_1] '[_2]'",
                     MT->translate($name), $tmpl_name
                 )
                 );
@@ -4212,7 +4238,7 @@ B<Example:> Passing Parameters to a Template Module
         my $blog = $ctx->stash('blog') || MT->model('blog')->load($blog_id);
 
         my %include_recipe;
-        my $use_ssi
+        my $use_ssi 
             = $blog
             && $blog->include_system
             && ( $arg->{ssi} || $tmpl->include_with_ssi ) ? 1 : 0;
@@ -4231,9 +4257,9 @@ B<Example:> Passing Parameters to a Template Module
                     : $tmpl->cache_path ? $tmpl->cache_path
                     :                     '';
                 %include_recipe = (
-                    name    => $tmpl_name,
-                    id      => $tmpl->id,
-                    path    => $extra_path,
+                    name => $tmpl_name,
+                    id   => $tmpl->id,
+                    path => $extra_path,
                 );
             }
         }
@@ -4241,7 +4267,7 @@ B<Example:> Passing Parameters to a Template Module
         # Try to read from cache
         my $enc               = MT->config->PublishCharset;
         my $cache_expire_type = 0;
-        my $cache_enabled
+        my $cache_enabled 
             = $blog
             && $blog->include_cache
             && (
@@ -4252,24 +4278,19 @@ B<Example:> Passing Parameters to a Template Module
             || ( ( $cache_expire_type = ( $tmpl->cache_expire_type || 0 ) )
                 != 0 )
             ) ? 1 : 0;
-        my $cache_key = $arg->{cache_key} || $arg->{key};
-        if ( !$cache_key ) {
-            require Digest::MD5;
-            $cache_key = Digest::MD5::md5_hex(
-                Encode::encode_utf8(
-                          'blog::'
-                        . $blog_id
-                        . '::template_'
-                        . $type . '::'
-                        . $tmpl_name
-                )
-            );
-        }
-        my $ttl
+        my $cache_key 
+            = $arg->{cache_key}
+            || $arg->{key}
+            || $tmpl->get_cache_key();
+
+      # Delete a cached data if $ttl_for_get seconds have passed since saving.
+        my $ttl_for_get
             = exists $arg->{ttl}          ? $arg->{ttl}
             : ( $cache_expire_type == 1 ) ? $tmpl->cache_expire_interval
             : ( $cache_expire_type == 2 ) ? 0
             :                               60 * 60;    # default 60 min.
+            # Allow the cache driver to expire data after $ttl_for_set passed.
+        my $ttl_for_set = $ttl_for_get;
 
         if ( $cache_expire_type == 2 ) {
             my @types = split /,/, ( $tmpl->cache_expire_event || '' );
@@ -4285,16 +4306,19 @@ B<Example:> Passing Parameters to a Template Module
                             = $blog->include_path( \%include_recipe );
                         my $fmgr  = $blog->file_mgr;
                         my $mtime = $fmgr->file_mod_time($include_file);
-                        if ( $mtime
-                            && ( MT::Util::ts2epoch( undef, $latest )
-                                > $mtime ) )
+                        if ($mtime
+                            && ( MT::Util::ts2epoch( undef, $latest, 1 )
+                                > $mtime )
+                            )
                         {
-                            $ttl = 1;    # bound to force an update
+                            $ttl_for_get = 1;    # bound to force an update
                         }
                     }
                     else {
-                        $ttl = time - MT::Util::ts2epoch( undef, $latest, 1 );
-                        $ttl = 1 if $ttl == 0;    # edited just now.
+                        $ttl_for_get
+                            = time - MT::Util::ts2epoch( undef, $latest, 1 );
+                        $ttl_for_get = 1
+                            if $ttl_for_get == 0;    # edited just now.
                     }
                 }
             }
@@ -4306,11 +4330,15 @@ B<Example:> Passing Parameters to a Template Module
             my $tmpl_ts
                 = MT::Util::ts2epoch( $tmpl->blog_id ? $tmpl->blog : undef,
                 $tmpl_mod );
-            if ( ( $ttl == 0 ) || ( time - $tmpl_ts < $ttl ) ) {
-                $ttl = time - $tmpl_ts;
+            if ( ( $ttl_for_get == 0 ) || ( time - $tmpl_ts < $ttl_for_get ) )
+            {
+                $ttl_for_get = time - $tmpl_ts;
             }
             require MT::Cache::Negotiate;
-            $cache_driver = MT::Cache::Negotiate->new( ttl => $ttl );
+            $cache_driver = MT::Cache::Negotiate->new(
+                ttl       => $ttl_for_get,
+                expirable => 1
+            );
             my $cache_value = $cache_driver->get($cache_key);
             $cache_value = Encode::decode( $enc, $cache_value );
             if ($cache_value) {
@@ -4354,7 +4382,7 @@ B<Example:> Passing Parameters to a Template Module
 
         if ($cache_enabled) {
             $cache_driver->set( $cache_key, Encode::encode( $enc, $ret ),
-                $ttl );
+                $ttl_for_set );
         }
 
         if ($use_ssi) {
@@ -4396,7 +4424,9 @@ B<Example:> Passing Parameters to a Template Module
         my ( $ctx, $arg, $cond ) = @_;
         if ( !MT->config->AllowFileInclude ) {
             return $ctx->error(
-                'File include is disabled by "AllowFileInclude" config directive.'
+                MT->translate(
+                    'File inclusion is disabled by "AllowFileInclude" config directive.'
+                )
             );
         }
         my $file = $arg->{file} or return;
@@ -4425,7 +4455,9 @@ B<Example:> Passing Parameters to a Template Module
             if ( $blog && $blog->id != $blog_id ) {
                 $blog = MT::Blog->load($blog_id)
                     or return $ctx->error(
-                    MT->translate( "Can't find blog for id '[_1]", $blog_id )
+                    MT->translate(
+                        "Cannot find blog for id '[_1]", $blog_id
+                    )
                     );
             }
             my @paths = ($file);
@@ -4438,7 +4470,7 @@ B<Example:> Passing Parameters to a Template Module
                 $path = $p, last if -e $p && -r _;
             }
             return $ctx->error(
-                MT->translate( "Can't find included file '[_1]'", $file ) )
+                MT->translate( "Cannot find included file '[_1]'", $file ) )
                 unless $path;
             local *FH;
             open FH, $path
@@ -4609,7 +4641,7 @@ sub _hdlr_section {
             if ( $args->{by_user} ) {
                 my $author = $app->user
                     or
-                    return $ctx->error( MT->translate("Can't load user.") );
+                    return $ctx->error( MT->translate("Cannot load user.") );
                 $cache_id .= ':user_id=' . $author->id;
             }
 
@@ -4742,7 +4774,7 @@ sub _hdlr_link {
             }
             )
             or return $ctx->error(
-            MT->translate( "Can't find template '[_1]'", $tmpl_name ) );
+            MT->translate( "Cannot find template '[_1]'", $tmpl_name ) );
         my $site_url = $blog->site_url;
         $site_url .= '/' unless $site_url =~ m!/$!;
         my $link = $site_url . $tmpl->outfile;
@@ -4753,7 +4785,7 @@ sub _hdlr_link {
     elsif ( my $entry_id = $arg->{entry_id} ) {
         my $entry = MT::Entry->load($entry_id)
             or return $ctx->error(
-            MT->translate( "Can't find entry '[_1]'", $entry_id ) );
+            MT->translate( "Cannot find entry '[_1]'", $entry_id ) );
         my $link = $entry->permalink;
         $link = MT::Util::strip_index( $link, $curr_blog )
             unless $arg->{with_index};
@@ -5685,7 +5717,7 @@ B<Example:>
 sub _hdlr_template_created_on {
     my ( $ctx, $args, $cond ) = @_;
     my $template = $ctx->stash('template')
-        or return $ctx->error( MT->translate("Can't load template") );
+        or return $ctx->error( MT->translate("Cannot load template") );
     $args->{ts} = $template->created_on;
     $ctx->build_date($args);
 }
