@@ -1,0 +1,20 @@
+<form method="post" action="<mt:var name="script_url">">
+    <input type="hidden" name="__mode" value="save_powercms_config" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="plugin_key" value="<mt:var name="plugin_key">" />
+    <input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+    <input type="hidden" name="action" id="<mt:var name="plugin_key">action" value="" />
+    <script type="text/javascript">
+        function do_save() {
+            getByID( 'action' ).value = '';
+            return true;
+        }
+        function do_reset() {
+            getByID( '<mt:var name="plugin_key">action' ).value = 'reset';
+            return confirm( '<__trans phrase="Are you sure you want to reset configration?">' );
+        }
+    </script>
+<fieldset>
+
+<mt:var name="plugin_tmpl" mteval="1">

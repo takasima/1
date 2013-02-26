@@ -1,0 +1,70 @@
+<MTSetVarBlock name="global_nav">
+<$MTSetVar name="count" value="1"$>
+<ul id="header_global_navi">
+<MTObjectGroupItems blog_id="$website_id" group="<__trans phrase="Global menu">">
+    <MTIfObjectGroupItemIsEntry>
+        <$MTEntryPermalink setvar="item_link"$>
+        <$MTEntryTitle setvar="item_label"$>
+    </MTIfObjectGroupItemIsEntry>
+    <MTIfObjectGroupItemIsBlog>
+        <$MTBlogURL setvar="item_link"$>
+        <$MTBlogName setvar="item_label"$>
+        <MTIf tag="MTBlogID" eq="$website_id">
+        <$MTSetVar name="item_label" value="<__trans phrase="Home">"$>
+        </MTIf>
+    </MTIfObjectGroupItemIsBlog>
+    <MTIf name="item_link">
+    <li><a href="<$MTGetVar name="item_link" escape="html"$>"><$MTGetVar name="item_label" escape="html"$></a></li>
+    </MTIf>
+    <$MTSetVar name="item_link" value=""$>
+    <$MTSetVar name="item_label" value=""$>
+    <$MTSetVar name="has_global_nav" value="1"$>
+    <$MTSetVar name="count" op="++"$>
+</MTObjectGroupItems>
+<MTUnless name="has_global_nav">
+    <MTBlogParentWebsite>
+    <li id="hg_home"><a href="<$MTWebsiteURL escape="html"$>"><__trans phrase="Home"></a></li>
+    <MTBlogs include_blogs="children">
+    <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
+    </MTBlogs>
+    </MTBlogParentWebsite>
+</MTUnless>
+</ul>
+</MTSetVarBlock>
+
+    <body<$MTGetVar name="preview"$><$MTSetVar name="html_head" value=""$>>
+    <!-- [container] -->
+    <div id="container">
+        <!-- [header] -->
+        <div id="header">
+            <div id="header_logo">
+                <a href="<$MTVar name="website_url" escape="html"$>"><$MTVar name="website_name" escape="html"$></a>
+            </div>
+            <div id="header_util">
+                <ul id="hu_nav">
+                    <MTBlogParentWebsite>
+                    <MTPages tag="@sitemap" lastn="1">
+                        <li id="hu_sitemap"><a href="<$MTPagePermalink escape="html"$>"><$MTPageTitle escape="html"$></a></li>
+                    </MTPages>
+                    <MTPages tag="@contact" lastn="1">
+                        <li id="hu_contact"><a href="<$MTPagePermalink escape="html"$>"><$MTPageTitle escape="html"$></a></li>
+                    </MTPages>
+                    </MTBlogParentWebsite>
+                </ul>
+                <div id="hu_search">
+                    <form action="<$MTLink template="<__trans phrase="Search Results">"$>" method="get">
+                        <input type="text" name="query" id="hu_search_text" />
+                        <input type="hidden" name="offset" id="hu_search_offset" value="1" />
+                        <input type="hidden" name="limit" id="hu_search_linit" value="20" />
+                        <input type="hidden" name="blog_id" id="hu_blog_id" value="<$MTBlogID$>" />
+                        <MTSetVarBlock name="search_target"><MTIfWebsite><$MTWebsiteID setvar="current_id"$><$MTGetVar name="current_id"$><MTBlogs><$MTBlogID setvar="current_id2"$><MTBlogParentWebsite><MTIf tag="MTWebsiteID" eq="$current_id">,<$MTGetVar name="current_id2"$></MTIf></MTBlogParentWebsite></MTBlogs><MTElse><MTBlogParentWebsite><$MTBlogID$><MTBlogs blog_ids="children">,<$MTBlogID$></MTBlogs></MTBlogParentWebsite></MTElse></MTIfWebsite></MTSetVarBlock>
+                        <MTIf name="search_target">
+                        <input type="hidden" name="include_blogs" value="<$MTGetVar name="search_target"$>" />
+                        </MTIf>
+                        <input type="image" src="<$MTBlogURL escape="html"$>common/images/search.gif" alt="<__trans phrase="Search">" value="<__trans phrase="Search">" />
+                    </form>
+                </div>
+            </div>
+            <$MTGetVar name="global_nav"$>
+        </div>
+        <!-- /[header] -->

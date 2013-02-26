@@ -1,0 +1,18 @@
+<mt:if name="entry_class" eq 'page'><__trans phrase="[_1] does the Page to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"><mt:else><__trans phrase="[_1] does the Entry to this E-mail with mail that notifies the approval request to have been done to you." params="<$mt:var name="author_name"$>"></mt:else></mt:if>
+
+<__trans phrase="Access to Movable Type">:<mt:if name="revision_id">
+<<$mt:var name="script_uri"$>?__mode=preview_history&blog_id=<$mt:var name="blog_id"$>&entry_id=<$mt:var name="entry_id"$>&_type=<$mt:var name="entry_class"$>&revision_id=<$mt:var name="revision_id"$>><mt:else>
+<<$mt:var name="script_uri"$>?__mode=preview&blog_id=<$mt:var name="blog_id"$>&id=<$mt:var name="entry_id"$>></mt:if>
+------------------------------------------------------------------------
+
+<__trans phrase="Title"> : <$mt:var name="entry_title"$>
+<__trans phrase="Status"> : <$mt:var name="status_text"$>
+<__trans phrase="Date"> : <$mt:date$>
+
+<__trans phrase="Message">:
+<$mt:var name="message"$>
+
+------------------------------------------------------------------------
+
+<__trans phrase="Sender">: <$mt:var name="author_nickname"$> <mailto:<$mt:var name="author_email"$>>
+</__trans_section>

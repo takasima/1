@@ -1,0 +1,25 @@
+.listing-table .icon-revision {
+	display: block;
+/*
+	text-align: left;
+*/
+	white-space: nowrap;
+}
+
+.listing-table .icon-revision span {
+	display: inline-block;
+	width: 20px;
+}
+
+.listing-table .icon-revision .icon-revision-status {
+	margin: 0px 6px;
+}
+
+.col.head.revision {
+    width: 8em;
+    text-align:center;
+}
+
+td.col.revision {
+    text-align:center;
+}

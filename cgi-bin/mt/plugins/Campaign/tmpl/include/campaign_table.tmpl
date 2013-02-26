@@ -1,0 +1,165 @@
+<__trans_section component="Campaign">
+<mt:setvarblock name="list_id"><mt:var name="object_type">-listing</mt:setvarblock>
+<mt:if name="blog_id"><mt:var name="blog_view" value="1"></mt:if>
+<mt:unless name="search_replace">
+<mt:setvarblock name="action_buttons">
+        <button
+            onclick="if ( confirm ( '<__trans phrase="Are you sure you want to publish selected campaigns?">' ) ) { doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Campaigns" escape="js">', '<__trans phrase="Campaigns" escape="js">', 'id', 'publish_campaigns', { blog_id : <mt:if name="blog_id"><$mt:var name="blog_id"$><mt:else>0</mt:else></mt:if> }, '<__trans phrase="Publish" escape="js">'); return false;} else { return false; }"
+            accesskey="p"
+            title="<__trans phrase="Publish campaigns from selected datas (p)">"
+            ><__trans phrase="Publish"></button>
+        <button
+            onclick="if ( confirm ( '<__trans phrase="Are you sure you want to unpublish selected campaigns?">' ) ) { doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Campaigns" escape="js">', '<__trans phrase="Campaigns" escape="js">', 'id', 'unpublish_campaigns', { blog_id : <mt:if name="blog_id"><$mt:var name="blog_id"$><mt:else>0</mt:else></mt:if> }, '<__trans phrase="Unpublish" escape="js">'); return false;} else { return false; }"
+            accesskey="u"
+            title="<__trans phrase="Unpublish campaigns from selected datas (u)">"
+            ><__trans phrase="Unpublish"></button>
+        <button
+            onclick="if ( confirm ( '<__trans phrase="Are you sure you want to end selected campaigns?">' ) ) { doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Campaigns" escape="js">', '<__trans phrase="Campaigns" escape="js">', 'id', 'end_campaigns', { blog_id : <mt:if name="blog_id"><$mt:var name="blog_id"$><mt:else>0</mt:else></mt:if> }, '<__trans phrase="End" escape="js">'); return false;} else { return false; }"
+            accesskey="e"
+            title="<__trans phrase="End campaigns from selected datas (e)">"
+            ><__trans phrase="End"></button>
+        <button
+            onclick="if ( confirm ( '<__trans phrase="Are you sure you want to reserve selected campaigns?">' ) ) { doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Campaigns" escape="js">', '<__trans phrase="Campaigns" escape="js">', 'id', 'reserve_campaigns', { blog_id : <mt:if name="blog_id"><$mt:var name="blog_id"$><mt:else>0</mt:else></mt:if> }, '<__trans phrase="Reserve" escape="js">'); return false;} else { return false; }"
+            accesskey="r"
+            title="<__trans phrase="Reserve campaigns from selected datas (r)">"
+            ><__trans phrase="Reserve"></button>
+        <button
+            class="mt-delete-items"
+            onclick="doRemoveItems(getByID('<mt:var name="object_type">-listing-form'), '<__trans phrase="Campaigns" escape="js">', '<__trans phrase="Campaigns" escape="js">'); return false;"
+            accesskey="x"
+            title="<__trans phrase="Delete selected Campaigns (x)">"
+            ><__trans phrase="Delete"></button>
+</mt:setvarblock>
+</mt:unless>
+
+<mt:setvarblock name="table_header">
+    <tr>
+    <mt:unless name="search_replace">
+    <th class="cb col head" style="width:21px;padding:7px;">
+        <mt:unless name="dialog_view">
+            <mt:if name="can_edit">
+                <input type="checkbox" name="id-head" value="all" class="select" />
+            </mt:if>
+        </mt:unless>
+    </th>
+    </mt:unless>
+        <th class="col head status" style="padding:7px;text-align:left;width:23px"><img src="<mt:var name="static_uri">images/status_icons/invert-flag.gif" width="9" height="9" alt="<__trans phrase="Status">" /></th>
+        <th class="col head title" style="padding:7px;<mt:if name="dialog_view">width:330px</mt:if>"><__trans phrase="Title"> (<__trans phrase="basename">)</th>
+    <mt:unless name="dialog_view">
+        <th class="col head set_period" style="padding:7px;width:55px"><__trans phrase="Set Period"></th>
+        <th class="col head publishing_on" style="padding:7px;"><__trans phrase="Publishing date"></th>
+        <th class="col head period_on" style="padding:7px;"><__trans phrase="End date"></th>
+        <th class="col head author_name" style="padding:7px;width:68px"><__trans phrase="Author"></th>
+        <th class="col head displays" style="padding:7px;width:77px"><__trans phrase="PV(Clicks)"></th>
+        <th class="col head displays" style="padding:7px;width:77px"><__trans phrase="UU(Clicks)"></th>
+        <th class="col head conversion" style="padding:7px;width:77px"><__trans phrase="Conversion(PV)"></th>
+    </mt:unless>
+        <mt:ignore>
+        <th class="col head max_displays" style="padding:7px;"><__trans phrase="Max Displays"> (<__trans phrase="Displays">)</th>
+        <th class="col head max_clicks" style="padding:7px;"><__trans phrase="Max Clicks"> (<__trans phrase="Clicks">)</th>
+        </mt:ignore>
+        <mt:if name="scope_type" ne="blog">
+        <th class="col head blog_name"><__trans phrase="Blog"></th>
+        </mt:if>
+        <mt:ignore><th class="col head created_on" style="padding:7px;"><__trans phrase="Created on"></th></mt:ignore>
+        <th class="col head url" style="padding:7px;width:40px"><__trans phrase="Url"></th>
+    </tr>
+</mt:setvarblock>
+
+<mtapp:listing id="$list_id">
+    <mt:if __first__>
+            <thead><mt:var name="table_header"></thead>
+            <tfoot><mt:var name="table_header"></tfoot>
+            <tbody>
+    </mt:if>
+                <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+                <mt:unless name="search_replace">
+                    <td class="cb col">
+                        <mt:if name="dialog_view">
+                            <input type="radio" name="id" value="<mt:var name="id" escape="html">" class="select" />
+                        <mt:else>
+                            <mt:if name="can_edit"><input type="checkbox" name="id" value="<mt:var name="id" escape="html">" class="select" /></mt:if>
+                        </mt:if>
+                    </td>
+                </mt:unless>
+                    <td class="status col" style="text-align:center;padding-top:10px">
+                    <mt:unless name="search_replace">
+                    <a href="<mt:var name="mt_url">?__mode=list_campaign&amp;blog_id=<mt:var name="blog_id">&amp;filter=status&amp;filter_val=<mt:var name="status">">
+                    </mt:unless>
+                        <mt:if name="status" eq="1"><img src="<mt:var name="static_uri">images/status_icons/draft.gif" width="9" height="9" alt="<__trans phrase="Draft">" /></mt:if>
+                        <mt:if name="status" eq="2"><img src="<mt:var name="static_uri">images/status_icons/success.gif" width="9" height="9" alt="<__trans phrase="Publishing">" /></mt:if>
+                        <mt:if name="status" eq="3"><img src="<mt:var name="static_uri">images/status_icons/future.gif" width="9" height="9" alt="<__trans phrase="Scheduled">" /></mt:if>
+                        <mt:if name="status" eq="4"><img src="<mt:var name="static_uri">images/status_icons/close.gif" width="9" height="9" alt="<__trans phrase="Ended">" /></mt:if>
+                    <mt:unless name="search_replace">
+                    </a>
+                    </mt:unless>
+                    </td>
+                    <td class="title col">
+                    <input type="hidden" id="name-<mt:var name="id" escape="html">" value="<mt:var name="title" escape="html">" />
+                    <mt:if name="thumbnail">
+                        <a target="_blank" href="<mt:var name="image_url">"><img src="<mt:var name="thumbnail">" alt="<mt:var name="asset_alt" escape="html">" height="32" width="32" /></a>
+                        &nbsp;
+                    </mt:if>
+                    <mt:if name="can_edit"><a <mt:if name="dialog_view">target="_blank"</mt:if>href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="blog_id">&amp;id=<mt:var name="id">&amp;_type=campaign"></mt:if>
+                        <mt:if name="title"><mt:var name="title" escape="html"><mt:else>...</mt:else></mt:if>
+                        (<mt:var name="basename" escape="html">)
+                    <mt:if name="can_edit"></a></mt:if>
+                    </td>
+                <mt:unless name="dialog_view">
+                    <td class="set_period col">
+                    <mt:unless name="search_replace">
+                    <a href="<mt:var name="mt_url">?__mode=list_campaign&amp;blog_id=<mt:var name="blog_id">&amp;filter=set_period&amp;filter_val=<mt:var name="set_period">">
+                    </mt:unless>
+                    <mt:if name="set_period" eq="1"><__trans phrase="Yes"><mt:else><__trans phrase="No"></mt:else></mt:if>
+                    <mt:unless name="search_replace">
+                    </a>
+                    </mt:unless>
+                    </td>
+                    <td class="publishing_on col"><mt:var name="publishing_on"></td>
+                    <td class="period_on col"><mt:var name="period_on"></td>
+                    <td class="author_name col">
+                    <mt:unless name="search_replace">
+                    <a href="<mt:var name="mt_url">?__mode=list_campaign&amp;blog_id=<mt:var name="blog_id">&amp;filter=author_id&amp;filter_val=<mt:var name="author_id">">
+                    </mt:unless>
+                    <mt:var name="author_name" escape="html">
+                    <mt:unless name="search_replace">
+                    </a>
+                    </mt:unless>
+                    </td>
+                    <td class="displays col" style="text-align:right"><mt:if name="displays"><mt:var name="displays" escape="html"><mt:else>-</mt:else></mt:if> (<mt:if name="clicks"><mt:var name="clicks" escape="html"><mt:else>-</mt:else></mt:if>)</td>
+                    <td class="uniqdisplays col" style="text-align:right"><mt:if name="uniqdisplays"><mt:var name="uniqdisplays" escape="html"><mt:else>-</mt:else></mt:if> (<mt:if name="uniqclicks"><mt:var name="uniqclicks" escape="html"><mt:else>-</mt:else></mt:if>)</td>
+                    <td class="conversion col" style="text-align:right"><mt:if name="conversion"><mt:var name="conversion" escape="html"><mt:else>-</mt:else></mt:if> (<mt:if name="conversionview"><mt:var name="conversionview" escape="html"><mt:else>-</mt:else></mt:if>)</td>
+                </mt:unless>
+                    <mt:ignore>
+                    <td class="max_displays col"><mt:var name="max_displays" escape="html"> (<mt:if name="displays"><mt:var name="displays" escape="html"><mt:else>0</mt:else></mt:if>)</td>
+                    <td class="max_clicks col"><mt:var name="max_clicks" escape="html"> (<mt:if name="clicks"><mt:var name="clicks" escape="html"><mt:else>0</mt:else></mt:if>)</td>
+                    </mt:ignore>
+                    <mt:if name="scope_type" ne="blog">
+                    <td class="blog_name col">
+                    <mt:unless name="search_replace">
+                    <a href="<mt:var name="mt_url">?__mode=list_campaign&amp;blog_id=<mt:var name="weblog_id">">
+                    </mt:unless>
+                    <mt:var name="weblog_name" escape="html">
+                    <mt:unless name="search_replace">
+                    </a>
+                    </mt:unless>
+                    </td>
+                    </mt:if>
+                    <mt:ignore><td class="created_on col"><mt:var name="created_on"></td></mt:ignore>
+                    <td class="url" style="text-align:center;padding-top:10px">
+                    <mt:if name="url">
+                        <a target="_blank" href="<mt:var name="url" escape="html">" title="<mt:var name="url" escape="html">">
+                            <img src="<mt:var name="static_uri">images/status_icons/view.gif" width="13" height="9" alt="<__trans phrase="View">" />
+                        </a>
+                    </mt:if>
+                    </td>
+                </tr>
+    <mt:if __last__>
+            </tbody>
+    </mt:if>
+</mtapp:listing>
+
+<mt:if name="dialog_view">
+<mt:include name="include/js_attachfield_multi.tmpl">
+</mt:if>
+</__trans_section>

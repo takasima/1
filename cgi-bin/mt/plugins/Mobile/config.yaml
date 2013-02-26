@@ -1,0 +1,96 @@
+name: Mobile
+id: Mobile
+version: 2.5
+schema_version: 0.3
+description: '<__trans phrase="For mobile websites.">'
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+l10n_class: Mobile::L10N
+
+blog_config_template: mobile_config_blog.tmpl
+
+settings:
+    create_other_fomatted_image_is_default:
+        Default: 0
+        Scope: blog
+    not_show_other_fomatted_images:
+        Default: 0
+        Scope: blog
+
+    # following is from MailPost
+    mailpost_account:
+        Default:
+        Scope: blog
+    mailpost_password:
+        Default:
+        Scope: blog
+    mailpost_server:
+        Default: mail.example.com
+        Scope: blog
+    mailpost_protocol:
+        Default: pop3
+        Scope: blog
+    mailpost_outdir:
+        Default: files
+        Scope: blog
+    mailpost_address:
+        Default: post@example.com
+        Scope: blog
+    mailpost_imagewidth:
+        Default: 480
+        Scope: blog
+    mailpost_imagemarkup:
+        Default: <p class="image">,</p>
+        Scope: blog
+
+callbacks:
+    cms_upload_image: $Mobile::Mobile::Callbacks::_cb_cms_upload_image
+    MT::App::CMS::template_param.asset_upload: $Mobile::Mobile::Callbacks::_cb_tp_asset_upload
+    MT::App::CMS::template_source.asset_insert: $Mobile::Mobile::Callbacks::_cb_tp_asset_insert
+    MT::App::CMS::template_source.asset_replace: $Mobile::Mobile::Callbacks::_cb_ts_asset_replace
+    MT::App::CMS::template_source.asset_options: $Mobile::Mobile::Callbacks::_cb_ts_asset_replace
+
+    #following is from MailPost
+    cms_post_save.author: $Mobile::Mobile::Callbacks::_post_save_author
+    MT::App::CMS::template_param.edit_author: $Mobile::Mobile::Callbacks::_edit_author_param
+    MT::App::CMS::template_param.cfg_prefs: $Mobile::Mobile::Callbacks::_cfg_prefs_param
+    MT::App::CMS::template_source.mobile_config_blog: $Mobile::Mobile::Callbacks::_cb_ts_mobile_config_blog
+    cms_post_delete.category: $Mobile::Mobile::Callbacks::_cb_cms_post_delete_category
+
+#following is from MailPost
+object_types:
+    blog:
+        allow_mailpost: boolean
+    author:
+        mobile_address: string meta
+    permission:
+        mobile_categories: string(255)
+
+tasks:
+    MailPost:
+        key: MailPost
+        label: Post entry from e-mail
+        frequency: 2
+        code: $Mobile::Mobile::Tasks::_entry_from_email
+list_properties:
+    member:
+        category_at_mailpost:
+            display: optional
+            label: Category at mailpost
+            order: 305
+            html: $Mobile::Mobile::Listing::_html_category_at_mailpost
+            condition: >
+                sub {
+                    my $app = MT->instance();
+                    if ( $app->blog && $app->blog->is_blog ) {
+                        return 1;
+                    }
+                }
+list_actions:
+    member: $Mobile::Mobile::Listing::_list_actions_members
+applications:
+    cms:
+        methods:
+            add_category_at_mailpost: $Mobile::Mobile::CMS::_mode_add_category_at_mailpost
+            remove_category_at_mailpost: $Mobile::Mobile::CMS::_mode_remove_category_at_mailpost
+            manage_category_at_mailpost: $Mobile::Mobile::CMS::_mode_manage_category_at_mailpost

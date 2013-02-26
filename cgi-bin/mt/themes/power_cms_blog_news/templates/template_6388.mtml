@@ -1,0 +1,18 @@
+<?php
+    $param = NULL;
+    if ( isset( $_POST[ 'sessid' ] ) ) {
+        $param = "sessid=" . $_POST[ 'sessid' ];
+    }
+    if ( isset( $_POST[ 'url' ] ) ) {
+        $url = $_POST[ 'url' ];
+        $website_url = '<MTBlogParentWebsite><MTWebsiteRelativeURL></MTBlogParentWebsite>';
+        $search = preg_quote( $website_url, '/' );
+        if ( preg_match( "/$search/", $url ) ) {
+            header( "Location: {$url}" );
+        } else {
+            $error_message = 'Invalid requiest.';
+            print $error_message;
+            exit;
+        }
+    }
+?>

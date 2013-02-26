@@ -1,0 +1,55 @@
+<MTIf tag="MTPageBody">
+<div class="text">
+<$MTPageBody$>
+</div>
+</MTIf>
+<MTIf tag="MTPageMore">
+<div class="text_more">
+<$MTPageMore$>
+</div>
+</MTIf>
+<div class="extrafields">
+<MTExtFields>
+	<MTIfExtFieldType type="text">
+		<h3><$MTExtFieldText$></h3>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="textarea">
+		<$MTExtFieldText$>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="file">
+		<MTIfExtFieldNonEmpty>
+			<MTIfExtFieldTypeImage>
+				<p><img src="<$MTExtFieldFilePath$>" alt="<$MTExtFieldAlt escape="html"$>" width="<$MTExtFieldImageWidth$>" height="<$MTExtFieldImageHeight$>" /></p>
+			<MTElse>
+				<p>Download:<a href="<$MTExtFieldFilePath$>"><img src="<$MTStaticWebPath$>plugins/ExtFields/icons/icon32_<$MTExtFieldFileSuffix$>.gif" width="32" width="32"><$MTExtFieldAlt escape="html"$></a></p>
+			</MTElse>
+			</MTIfExtFieldTypeImage>
+		</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="cbgroup">
+			<MTIfExtFieldNonEmpty>
+				<p><$MTExtFieldText$></p>
+			</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="radio">
+		<MTIfExtFieldNonEmpty>
+			<p><$MTExtFieldLabel escape="html"$>:<$MTExtFieldText$></p>
+		</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="select">
+		<MTIfExtFieldNonEmpty>
+			<p><$MTExtFieldLabel escape="html"$>:<$MTExtFieldText$></p>
+		</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="checkbox">
+		<MTIfExtFieldNonEmpty>
+			<p><$MTExtFieldText$></p>
+		</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+	<MTIfExtFieldType type="date">
+		<MTIfExtFieldNonEmpty>
+			<p><$MTExtFieldLabel escape="html"$>:<$MTExtFieldText$></p>
+		</MTIfExtFieldNonEmpty>
+	</MTIfExtFieldType>
+</MTExtFields>
+</div>

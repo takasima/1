@@ -1,0 +1,24 @@
+<mt:setvarblock name="html_head" append="1">
+    <MTIfWebsite>
+        <$MTBlogThemeID setvar="theme_id"$>
+        <mt:if name="theme_id" ne="power-cms-website">
+            <script type="text/javascript">
+                jQuery(function(){
+                    jQuery('option[value="power_cms_blog_blog"],option[value="power_cms_blog_news"],option[value="power_cms_blog_case_study"]').remove();
+                });
+            </script>
+        </mt:if>
+        <mt:else>
+            <MTBlogParentWebsite>
+                <$MTBlogThemeID setvar="theme_id"$>
+                <mt:if name="theme_id" ne="power-cms-website">
+                    <script type="text/javascript">
+                        jQuery(function(){
+                            jQuery('#theme-power_cms_blog_blog,#theme-power_cms_blog_news,#theme-power_cms_blog_case_study').remove();
+                        });
+                    </script>
+                </mt:if>
+            </MTBlogParentWebsite>
+        </mt:else>
+    </MTIfWebsite>
+</mt:setvarblock>

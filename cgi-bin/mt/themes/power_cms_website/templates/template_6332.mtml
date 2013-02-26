@@ -1,0 +1,64 @@
+<header id="top" class="clearfix">
+    <p id="site_title">
+        <a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a>
+    </p>
+    <nav>
+        <ul id="util_nav">
+        <$MTBlogURL setvar="blog_url"$>
+        <li><a href="<$MTVar name="blog_url" escape="html"$>"><img src="<$MTGetVar name="blog_url" escape="html"$>common/images/smartphone/util_nav_home.png" width="24" height="22" alt="<$MTBlogName escape="html"$>" /></a></li>
+        <MTPages tag="@sitemap" lastn="1">
+        <li><a href="<$MTPagePermalink escape="html"$>"><img src="<$MTBlogURL escape="html"$>common/images/smartphone/util_nav_sitemap.png" width="24" height="22" alt="<$MTPageTitle escape="html"$>" /></a></li>
+        </MTPages>
+        <MTPages tag="@contact" lastn="1">
+        <li><a href="<$MTPagePermalink escape="html"$>"><img src="<$MTBlogURL escape="html"$>common/images/smartphone/util_nav_contact.png" width="24" height="22" alt="<$MTPageTitle escape="html"$>" /></a></li>
+        </MTPages>
+        </ul>
+    </nav>
+</header>
+
+<MTIf name="main_index">
+<nav>
+<ul id="global_nav">
+<$MTSetVar name="count" value="1"$>
+<$MTWebsiteID setvar="website_id"$>
+<MTObjectGroupItems blog_id="$website_id" group="<__trans phrase="Global menu">">
+    <MTIfObjectGroupItemIsEntry>
+        <$MTEntryPermalink setvar="item_link"$>
+        <$MTEntryTitle setvar="item_label"$>
+    </MTIfObjectGroupItemIsEntry>
+    <MTIfObjectGroupItemIsBlog>
+        <$MTBlogURL setvar="item_link"$>
+        <$MTBlogName setvar="item_label"$>
+        <MTIf tag="MTBlogID" eq="$website_id">
+        <$MTSetVar name="item_label" value="<__trans phrase="Home">"$>
+        </MTIf>
+    </MTIfObjectGroupItemIsBlog>
+    <MTIf name="item_link">
+    <li><a href="<$MTGetVar name="item_link" escape="html"$>"><$MTGetVar name="item_label" escape="html"$></a></li>
+    </MTIf>
+    <$MTSetVar name="item_link" value=""$>
+    <$MTSetVar name="item_label" value=""$>
+    <MTSetVar name="has_global_nav" value="1">
+    <$MTSetVar name="count" op="++"$>
+</MTObjectGroupItems>
+<MTUnless name="has_global_nav">
+    <li id="hg_home"><a href="<$MTWebsiteURL escape="html"$>"><__trans phrase="Home"></a></li>
+    <MTBlogs include_blogs="children">
+    <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
+    </MTBlogs>
+</MTUnless>
+</ul>
+</nav>
+<MTElse>
+<h1 id="page_title"><a href="#global_nav">
+<MTIf tag="MTWebsiteName" eq="$page_title">
+&nbsp;
+<MTElse>
+<$MTGetVar name="page_title" escape="html"$>
+</MTElse>
+</MTIf>
+</a></h1>
+</MTElse>
+</MTIf>
+
+<div id="contents">

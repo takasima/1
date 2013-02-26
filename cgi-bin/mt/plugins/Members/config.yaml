@@ -1,0 +1,90 @@
+name: Members
+id: Members
+key: members
+version: 1.2
+schema_version: 0.25
+description: <__trans phrase='Enable members area.'>
+author_name: Alfasado Inc.
+author_link: 'http://alfasado.net/'
+l10n_class: Members::L10N
+
+config_settings:
+    MemberScript:
+        default: mt-members.cgi
+
+system_config_template: members_sysconfig.tmpl
+blog_config_template: members_config.tmpl
+
+settings:
+    members_path_base:
+        default:
+    members_session_timeout:
+        default: 3600
+    members_signup_timeout:
+        default: 604800
+    members_registration_status:
+        default: 3
+    members_email_notify2_active:
+        default: 1
+    members_email_notify2:
+        default:
+    members_email_from:
+        default:
+    members_registration_all:
+        default: 0
+
+object_types:
+    template:
+        subject: text revisioned
+    blog:
+        is_members: boolean
+    author:
+        mobile_id: string meta
+        mobile_address: string meta
+        mail_token: string meta
+        regist_blog_id: integer meta
+        is_mobile_signup: integer meta
+
+callbacks:
+    MT::App::Upgrader::post_run: $Members::Members::Callbacks::_post_run
+    MT::App::CMS::template_param.cfg_prefs:        $Members::Members::Callbacks::_cfg_prefs_param
+    MT::App::CMS::Members::template_source.login:  $Members::Members::Callbacks::_cb_tmpl_source
+    MT::App::CMS::Members::template_source.signup: $Members::Members::Callbacks::_cb_tmpl_source
+    cms_pre_load_filtered_list.author: $Members::Members::Callbacks::filtered_list_author
+    cms_post_save.blog:   $Members::Members::Callbacks::_do_plugin_setting
+    cms_post_save.author: $Members::Members::Callbacks::_notify_registered
+    search_blog_list:     $Members::Members::Callbacks::_pre_search
+    mail_filter:          $Members::Members::Callbacks::_recover_mail_filter
+    build_file_filter:    $Members::Members::Callbacks::_cb_build_file_filter
+    MT::App::ContactForm::pre_redirect:  $Members::Members::Callbacks::_contactform_pre_redirect
+    api_save_filter.comment: $Members::Members::Callbacks::_cb_api_save_filter_comment
+    MT::App::Comments::init_request: >
+        sub {
+            my $app = MT->instance();
+            my $blog = $app->blog;
+            if ( $blog && $blog->is_members ) {
+                $app->{ requires_login } = 1;
+            }
+        }
+
+permissions:
+    blog.view:
+        label: View Site
+        group: blog_comment
+        order: 100
+
+tags:
+    block:
+        IfMemberLogin?: $Members::Members::Tags::_hdlr_if_member_login
+    function:
+        MembersScript:     $Members::Members::Tags::_hdlr_members_script
+        MembersLoginCheck: $Members::Members::Tags::_hdlr_members_login_check
+        AuthorMobileEmail: $Members::Members::Tags::_hdlr_author_mobile_email
+        AuthorMobileToken: $Members::Members::Tags::_hdlr_author_mobile_token
+        CustomFieldQuery:  $Members::Members::Tags::_hdlr_field_query
+    modifier:
+        add_session_for_mobile:   $Members::Members::Tags::_fltr_add_session_for_mobile
+        external_link_for_mobile: $Members::Members::Tags::_hdlr_modifier
+
+system_filters:
+    author: $Members::Members::Listing::system_filters

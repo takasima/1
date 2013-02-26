@@ -1,0 +1,52 @@
+<__trans_section component="community">
+<mt:Entries sort_by="score" namespace="community_pack_recommend" limit="1">
+    <mt:EntriesHeader>
+<div id="popular-entry" class="entry">
+    <h2><__trans phrase="Popular topics"></h2>
+    </mt:EntriesHeader>
+    <div class="entry-asset">
+        <div class="entry-asset-inner">
+            <div class="entry-header">  
+                <h3 class="entry-title"><a href="<$mt:EntryPermalink$>"><$mt:EntryTitle$></a><mt:Unless name="category_archive"> <span class="category-name"><a href="<$mt:EntryLink archive_type="Category"$>"><$mt:EntryCategory$></a></span></mt:Unless></h3>
+            </div>
+            <$mt:Include module="<__trans phrase="Userpic">" userpic_size="50"$>
+            <div class="asset-meta">
+                <span class="byline"><__trans phrase="By [_1] on [_2]" params='<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:EntryAuthorID$>"><$mt:EntryAuthorDisplayName encode_html="1"$></a></span>%%<abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>'></span>
+                <a href="javascript:void(0)" onclick="return mtScore(<$mt:EntryID$>)" id="scoring-id-<$mt:EntryID$>" class="scoring">
+                    <span id="scoring-vote-<$mt:EntryID$>" class="scoring-vote"><__trans phrase="Vote"></span>
+                    <span id="scoring-score-<$mt:EntryID$>" class="scoring-score"><$mt:EntryScore namespace="community_pack_recommend" singular="1" plural="#" none="0"$></span>
+                    <span id="scoring-score-label-<$mt:EntryID$>" class="scoring-score-label"><$mt:EntryScore namespace="community_pack_recommend" singular="<__trans phrase="Vote">" plural="<__trans phrase="Votes">" none="<__trans phrase="Votes">"$></span>
+                </a>
+            </div>
+            <div class="entry-body">
+                <$mt:EntryExcerpt$>
+            </div>
+            <div class="entry-comments">
+                <p class="comment-count icon-comment"><a href="<$mt:EntryPermalink$>#comments"><$mt:EntryCommentCount singular="<__trans phrase="1 Reply">" plural="<__trans phrase="# Replies">" none="<__trans phrase="Add a Reply">"$></a></p>
+                <div class="last-comment">
+        <mt:If tag="EntryCommentCount">
+                    <h4><__trans phrase="Last Reply"></h4>
+            <mt:Comments lastn="1" sort_order="descend">
+                <mt:SetVarBlock name="comment_author_link">
+                <mt:If tag="CommenterID">
+<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:CommenterID$>"><$mt:CommenterName$></a></span>
+                <mt:Else>
+<span class="vcard author"><$mt:CommenterName$></span>
+                </mt:If>
+                </mt:SetVarBlock>
+                    <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36" userpic_type="commenter"$>
+                    <div class="asset-meta">
+                        <a href="<$mt:EntryPermalink$>#comment-<$mt:CommentID$>" title="<__trans phrase="Permalink to this Reply">"><abbr title="<$mt:CommentDate format_name="iso8601"$>"><$mt:CommentDate format="%b %e, %Y"$></abbr></a>
+                        <div class="byline"><__trans phrase="By [_1]" params='<$mt:Var name="comment_author_link">'></div>
+                    </div>
+            </mt:Comments>
+        </mt:If>
+                </div>
+            </div>
+        </div>
+    </div>
+    <mt:EntriesFooter>
+</div>
+    </mt:EntriesFooter>
+</mt:Entries>
+</__trans_section>

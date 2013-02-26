@@ -1,0 +1,38 @@
+<$mt:BlogID setvar="blog_id"$>
+<$mt:setvar name="login_page" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Password Recovery"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<$mt:Include module="<__trans phrase="Mobile-Login Header">"$>
+
+<mt:if name="error">
+	<span style="color:red"><mt:var name="error"></span>
+	<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+<mt:If name="not_unique_email">
+	<span style="color:red"><__trans phrase="The email address provided is not unique.  Please enter your username."></span>
+	<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+
+<mt:if name="recovered">
+	<__trans phrase="An email with a link to reset your password has been sent to your email address ([_1]).", params="<mt:var name="mobile_address" escape="html">">
+	<mt:If name="return_to">
+		<div align="center" style="margin-top:0.3em;">
+			<a href="<$mt:var name="return_to" escape="html" $>"><__trans phrase="Go Back"></a>
+		</div>
+	</mt:If>
+	<mt:else>
+		<form method="post" action="<mt:var name="script_url">">
+			<input type="hidden" name="__mode" value="recover" />
+			<input type="hidden" name="blog_id" value="<MT:BlogID>" />
+			<input type="hidden" name="return_to" value="<mt:Var name="return_to" escape="html">" />
+			<__trans phrase="Email Address"><br />
+			<input type="text" name="mobile_address" id="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="mobile_address" escape="html">" />
+			<mt:If name="not_unique_email">
+			<__trans phrase="Username"><br />
+			<input type="text" name="name" id="name" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="name" escape="html">" />
+			</mt:If>
+			<div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Recover">" /></div>
+		</form>
+	</mt:else>
+</mt:if>
+<$mt:Include module="<__trans phrase="Mobile-Login Footer">"$>

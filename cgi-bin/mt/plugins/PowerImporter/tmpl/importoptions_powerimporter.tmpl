@@ -1,0 +1,88 @@
+    <mtapp:setting
+        id="entryoption"
+        label="<__trans phrase="Entry Option">">
+        <div style="margin-bottom:12px;"><label><input type="checkbox" name="html_overwrite" value="1" /> <__trans phrase="Overwrite if permalink exists."></label></div>
+        <div style="margin-bottom:12px;"><label><input type="radio" name="entry_class" value="entry" /> <__trans phrase="Import as entry"></label>
+        <label><input type="radio" name="entry_class" value="page" /> <__trans phrase="Import as page"></label></div>
+        <div style="margin-bottom:12px;">
+        <label><__trans phrase="File extensions(Comma separated)"><br />
+        <div class="textarea-wrapper" style="width:200px">
+        <input type="text" name="html_extensions" value="" style="width:200px" />
+        </div>
+        </label>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label><__trans phrase="Import root"><br />
+        <div class="textarea-wrapper">
+        <input type="text" name="html_import_root" class="full-width" value="" />
+        </div>
+        </label>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label><__trans phrase="Exclude path(es)"><br />
+        <div class="textarea-wrapper">
+        <input type="text" name="html_exclude_root" class="full-width" value="" />
+        </div>
+        </label>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label><__trans phrase="Separator character"><br />
+        <div class="textarea-wrapper" style="width:200px">
+        <input type="text" name="start_end_separator" value="" style="width:200px" />
+        </div>
+        </label>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label for="html_title_field"><__trans phrase="Title field"></label> <label><input type="checkbox" name="title_regex" value="1" /> <__trans phrase="Regex"></label><br />
+        <div class="textarea-wrapper">
+        <input type="text" id="html_title_field" name="html_title_field" class="full-width" value="" />
+        </div>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label for="html_text_field"><__trans phrase="Text field"></label> <label><input type="checkbox" name="text_regex" value="1" /> <__trans phrase="Regex"></label><br />
+        <div class="textarea-wrapper">
+        <input type="text" id="html_text_field" name="html_text_field" class="full-width" value="" />
+        </div>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label for="html_more_field"><__trans phrase="Text More field"></label> <label><input type="checkbox" name="more_regex" value="1" /> <__trans phrase="Regex"></label><br />
+        <div class="textarea-wrapper">
+        <input type="text" id="html_more_field" name="html_more_field" class="full-width" value="" />
+        </div>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label for="html_expt_field"><__trans phrase="Excerpt field"></label> <label><input type="checkbox" name="expt_regex" value="1" /> <__trans phrase="Regex"></label><br />
+        <div class="textarea-wrapper">
+        <input type="text" id="html_expt_field" name="html_expt_field" class="full-width" value="" />
+        </div>
+        </div>
+        <div style="margin-bottom:12px;">
+        <label for="html_kywd_field"><__trans phrase="Keywords field"></label> <label><input type="checkbox" name="kywd_regex" value="1" /> <__trans phrase="Regex"></label><br />
+        <div class="textarea-wrapper">
+        <input type="text" id="html_kywd_field" name="html_kywd_field" class="full-width" value="" />
+        </div>
+        </div>
+    </mtapp:setting>
+    <mtapp:setting
+        id="create_folder"
+        label="<__trans phrase="Category Option">">
+    <div style="margin-bottom:12px;">
+    <label><input type="checkbox" id="create_folder" name="create_folder" value="1" /> <__trans phrase="Create folders(categories)."></label>
+    </div>
+    <div>
+    <label><input type="checkbox" id="all_cats" name="all_cats" value="1" /> <__trans phrase="The entry belongs to the all parent categories(only entry)."></label>
+    </div>
+    </mtapp:setting>
+    <mtapp:setting
+        id="html_save_settings"
+        label="<__trans phrase="Settings">">
+    <label><input type="checkbox" id="html_save_settings" name="html_save_settings" value="1" /> <__trans phrase="Save settings."></label>
+    </mtapp:setting>
+    <input type="hidden" id="html_do_realtime" name="html_do_realtime" value="1" />
+    <mt:ignore>
+    <mtapp:setting
+        id="html_do_realtime"
+        label="<__trans phrase="Import">">
+    <label><input type="checkbox" id="html_do_realtime" name="html_do_realtime" value="1" /> <__trans phrase="Import now."></label>
+    </mtapp:setting>
+    </mt:ignore>

@@ -1,0 +1,55 @@
+<mt:setvarblock name="system_msg" append="1">
+<__trans_section component="ContactForm">
+    <div id="msg-container">
+    <mt:if name="request.saved_deleted">
+        <mtapp:statusmsg
+            id="saved-deleted"
+            class="success">
+                <__trans phrase="The Feedback has been deleted from the database.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.approved">
+        <mtapp:statusmsg
+            id="saved-approved"
+            class="success">
+                <__trans phrase="The Feedback has been approved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.unapproved">
+        <mtapp:statusmsg
+            id="saved-unapproved"
+            class="success">
+                <__trans phrase="The Feedback has been unapproved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.flagged">
+        <mtapp:statusmsg
+            id="saved-flagged"
+            class="success">
+                <__trans phrase="The Feedback has been flagged.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_approved">
+        <mtapp:statusmsg
+            id="saved-approved"
+            class="success">
+                <__trans phrase="The Feedback has not been approved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_unapproved">
+        <mtapp:statusmsg
+            id="saved-unapproved"
+            class="success">
+                <__trans phrase="The Feedback has not been unapproved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_flagged">
+        <mtapp:statusmsg
+            id="saved-flagged"
+            class="success">
+                <__trans phrase="The Feedback has not been flagged.">
+        </mtapp:statusmsg>
+    </mt:if>
+    </div>
+</__trans_section>
+</mt:setvarblock>

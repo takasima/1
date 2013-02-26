@@ -1,0 +1,124 @@
+<$MTSetVar name="_" function="undef"$>
+<MTSetVarBlock name="global_nav">
+<MTObjectGroupItems blog_id="$site_id" group="<__trans phrase="Global menu">">
+<$MTSetVar name="item_link" value=""$>
+<MTIfObjectGroupItemIsEntry>
+<$MTEntryPermalink setvar="item_link"$>
+<$MTEntryTitle setvar="item_title"$>
+<MTElse><MTIfObjectGroupItemIsBlog>
+<$MTObjectGroupItemClass setvar="item_class"$>
+<MTIf name="item_class" ne="website">
+<$MTBlogURL setvar="item_link"$>
+<$MTBlogName setvar="item_title"$>
+</MTIf>
+</MTIfObjectGroupItemIsBlog></MTIfObjectGroupItemIsEntry>
+<MTIf name="item_link">
+<div style="font-size:small;padding:0 0 0 15px">
+<img src="<$MTVar name="common_path" escape="html"$>images/icon_head.gif" alt="" width="8" height="14" />
+<a href="<$MTVar name="item_link" escape="html"$>"><$MTVar name="item_title" escape="html"$></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+</MTIf>
+<MTSetVar name="has_global_nav" value="1">
+</MTObjectGroupItems>
+<MTUnless name="has_global_nav">
+    <div style="font-size:small;padding:0 0 0 15px">
+    <img src="<$MTVar name="common_path" escape="html"$>images/icon_head.gif" alt="" width="8" height="14" />
+    <a href="<$MTWebsiteURL escape="html"$>"><__trans phrase="Home"></a><br />
+    <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+    </div>
+    <MTBlogs include_blogs="children">
+    <div style="font-size:small;padding:0 0 0 15px">
+    <img src="<$MTVar name="common_path" escape="html"$>images/icon_head.gif" alt="" width="8" height="14" />
+    <a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a><br />
+    <img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+    </div>
+    </MTBlogs>
+</MTUnless>
+</MTSetVarBlock>
+
+<MTIf name="global_nav" like="/\S/">
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<$MTVar name="global_nav"$>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+</div>
+</MTIf>
+<MTPages tags="(@sitemap) OR (@contact)" lastn="0">
+<MTPagesHeader>
+<$MTSetVar name="_pages" function="undef"$>
+</MTPagesHeader>
+<$MTSetVar name="_key" value=""$>
+<MTPageIfTagged include_private="1" tag="@sitemap"><$MTSetVar name="_key" value="0"$>
+<MTElse><MTPageIfTagged include_private="1" tag="@contact"><$MTSetVar name="_key" value="1"$>
+</MTPageIfTagged></MTPageIfTagged>
+<MTIf name="_key" like="/\d/">
+<$MTSetVar name="_" function="undef"$>
+<MTSetVarBlock name="_" key="link"><$MTPagePermalink$></MTSetVarBlock>
+<MTSetVarBlock name="_" key="title"><$MTPageTitle escape="html"$></MTSetVarBlock>
+<$MTSetVar name="_pages" key="$_key" value="$_"$>
+</MTIf>
+<MTPagesFooter>
+<MTLoop name="_pages" sort_by="key" glue="|">
+<MTIf name="__first__">
+<div style="text-align:center;font-size:x-small">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+</MTIf>
+<a href="<$MTVar name="__value__" key="link" escape="html"$>"><$MTVar name="__value__" key="title" escape="html"$></a>
+<MTIf name="__last__">
+<br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+</MTIf>
+</MTLoop>
+</MTPagesFooter>
+</MTPages>
+
+<div style="text-align:center;background-color:#EDEDED;padding:0 6px">
+<div style="font-size:x-small">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<a href="#top" accesskey="*">[*]<__trans phrase="Page top"></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<div style="background-color:#A6A6A6">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="1" />
+</div>
+
+<div style="font-size:x-small">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<a href="<$MTBlogURL escape="html"$>" accesskey="0">[0]<__trans phrase="Home"></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<div style="background-color:#A6A6A6;">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="1" />
+</div>
+
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<form method="get" action="<$MTLink template="<__trans phrase="Search Results">"$>">
+<input type="hidden" name="blog_id" value="<$MTBlogID$>" />
+<input type="hidden" name="sessid" value="<MTIfDynamic><$MTGetVar name="request.sessid" escape="html"$><MTElse><mtml tag="MTGetVar" params='name="request.sessid" escape="html"'></MTElse></MTIfDynamic>" />
+<MTSetVarBlock name="search_target"><MTIfWebsite><$MTWebsiteID setvar="current_id"$><$MTGetVar name="current_id"$><MTBlogs><$MTBlogID setvar="current_id2"$><MTBlogParentWebsite><MTIf tag="MTWebsiteID" eq="$current_id">,<$MTGetVar name="current_id2"$></MTIf></MTBlogParentWebsite></MTBlogs><MTElse><MTBlogParentWebsite><$MTBlogID$><MTBlogs blog_ids="children">,<$MTBlogID$></MTBlogs></MTBlogParentWebsite></MTElse></MTIfWebsite></MTSetVarBlock>
+<MTIf name="search_target">
+<input type="hidden" name="include_blogs" value="<$MTGetVar name="search_target"$>" />
+</MTIf>
+<div>
+<input type="text" name="query" value="<$MTAltSearchQuery escape="html"$>" /><br />
+<input type="submit" value="<__trans phrase="Search">" />
+</div>
+</form>
+
+<div style="font-size:x-small">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<$MTSetVar name="_" function="undef"$>
+Copyright (c) <$MTDate format="%Y"$><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+
+</div>
+<$MTVar name="<__trans phrase="Mobile_body">"$><$MTVar name="<__trans phrase="Mobile_body_post">"$></body>
+</html>

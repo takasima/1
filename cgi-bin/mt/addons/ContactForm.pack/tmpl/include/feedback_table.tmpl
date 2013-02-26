@@ -1,0 +1,133 @@
+<__trans_section component="ContactForm">
+<mt:setvarblock name="list_id"><mt:var name="object_type">-listing</mt:setvarblock>
+<mt:if name="blog_id"><mt:var name="blog_view" value="1"></mt:if>
+<mt:unless name="search_replace">
+<mt:setvarblock name="action_buttons">
+        <button
+            class="mt-delete-items"
+            onclick="doRemoveItems(getByID('<mt:var name="object_type">-listing-form'), '<__trans phrase="Feedback" escape="js">', '<__trans phrase="Feedbacks" escape="js">'); return false;"
+            accesskey="x"
+            title="<__trans phrase="Delete selected Feedbacks (x)">"
+            ><__trans phrase="Delete"></button>
+        <button
+            onclick="doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Feedback" escape="js">', '<__trans phrase="Feedbacks" escape="js">', 'id', 'approve_feedbacks', {}, '<__trans phrase="Approval" escape="js">'); return false;"
+            accesskey="a"
+            title="<__trans phrase="Approval selected Feedbacks (a)">"
+            ><__trans phrase="Approval"></button>
+        <button
+            onclick="doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Feedback" escape="js">', '<__trans phrase="Feedbacks" escape="js">', 'id', 'unapprove_feedbacks', {}, '<__trans phrase="Unapproval" escape="js">'); return false;"
+            accesskey="u"
+            title="<__trans phrase="Unapproval selected Feedbacks (u)">"
+            ><__trans phrase="Unapproval"></button>
+        <button
+            onclick="doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Feedback" escape="js">', '<__trans phrase="Feedbacks" escape="js">', 'id', 'addflag2_feedbacks', {}, '<__trans phrase="Flagged" escape="js">'); return false;"
+            accesskey="f"
+            title="<__trans phrase="Add Flag to selected Feedbacks (f)">"
+            ><__trans phrase="Add Flag"></button>
+        <button
+            onclick="doForMarkedInThisWindow(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="Feedback" escape="js">', '<__trans phrase="Feedbacks" escape="js">', 'id', 'download_feedbacks', {}, '<__trans phrase="Download" escape="js">'); return false;"
+            accesskey="d"
+            title="<__trans phrase="Download selected Feedbacks (d)">"
+            ><__trans phrase="CSV"></button>
+</mt:setvarblock>
+</mt:unless>
+<mt:setvarblock name="table_header">
+    <tr>
+    <mt:unless name="search_replace">
+        <th class="cb">
+        <input type="checkbox" name="id-head" value="all" class="select" />
+        </th>
+    </mt:unless>
+        <th class="col head status" style="text-align:left;width:23px;padding:7px"><img src="<mt:var name="static_uri">images/status_icons/invert-flag.gif" width="9" height="9" alt="<__trans phrase="Status">" /></th>
+        <th class="col head identifier" style="width:40px;padding:7px;"><__trans phrase="Identifier"></th>
+        <th class="col head value" style="padding:7px;"><__trans phrase="Value"></th>
+        <th class="col head form_name" style="width:55px;padding:7px;"><__trans phrase="Form"></th>
+        <th class="col head author_name" style="width:50px;padding:7px;"><__trans phrase="Owner"></th>
+        <th class="col head email" style="width:55px;padding:7px;"><__trans phrase="Email"></th>
+        <th class="col head object" style="width:70px;padding:7px;"><__trans phrase="Object"></th>
+        <mt:if name="scope_type" ne="blog">
+        <th class="col head blog_name" style="width:55px;padding:7px;"><__trans phrase="Blog"></th>
+        </mt:if>
+        <th class="col head created_on" style="width:57px;padding:7px;"><__trans phrase="Post On"></th>
+        <mt:Ignore>
+        <th class="col head memo" style="width:55px;padding:7px;"><__trans phrase="Memo"></th>
+        <th class="remote_ip" style="width:55px;padding:7px;"><__trans phrase="IP"></th>
+        </mt:Ignore>
+    </tr>
+</mt:setvarblock>
+
+<mtapp:listing id="$list_id">
+    <mt:if __first__>
+            <thead><mt:var name="table_header"></thead>
+            <tfoot><mt:var name="table_header"></tfoot>
+            <tbody>
+    </mt:if>
+                <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+                <mt:unless name="search_replace">
+                    <td class="col cb">
+                        <mt:if name="can_edit">
+                            <input type="checkbox" name="id" value="<mt:var name="id" escape="html">" class="select" />
+                        </mt:if>
+                    </td>
+                </mt:unless>
+                    <td class="col status" style="text-align:center;padding-top:10px">
+                    <a title="<mt:if name="status" eq="1"><__trans phrase="Only show Unapproval Feedback"><mt:elseif name="status" eq="2"><__trans phrase="Only show Approval Feedback"><mt:elseif name="status" eq="3"><__trans phrase="Only show Flagged Feedback"></mt:if>"
+                        href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter=status&amp;filter_val=<mt:var name="status">">
+                        <mt:if name="status" eq="1"><img src="<mt:var name="static_uri">images/status_icons/draft.gif" width="9" height="9" alt="<__trans phrase="Unapproval">" /></mt:if>
+                        <mt:if name="status" eq="2"><img src="<mt:var name="static_uri">images/status_icons/success.gif" width="9" height="9" alt="<__trans phrase="Approval">" /></mt:if>
+                        <mt:if name="status" eq="3"><img src="<mt:var name="static_uri">images/status_icons/primary.png" width="9" height="9" alt="<__trans phrase="Fllaged">" /></mt:if>
+                    </a>
+                    </td>
+                    <td class="col identifier">
+                    <a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter=identifier&amp;filter_val=<mt:var name="identifier">">
+                    <mt:var name="identifier">
+                    </a>
+                    </td>
+                    <td class="col value">
+                        <input type="hidden" id="name-<mt:var name="id" escape="html">" value="<mt:var name="name" escape="html">" />
+                    <mt:if name="can_edit"><a href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="blog_id">&amp;id=<mt:var name="id">&amp;_type=feedback"></mt:if>
+                        <mt:if name="value"><mt:var name="value"><mt:else>...</mt:if>
+                    <mt:if name="can_edit"></a></mt:if>
+                    </td>
+                    <td class="col form_name">
+                    <a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter_key=_form_id&amp;form_id=<mt:var name="contactform_group_id">">
+                    <mt:var name="form_name">
+                    </a>
+                    </td>
+                    <td class="col form_author_name">
+                    <mt:if name="author_id"><a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter_key=_owner_id&amp;owner_id=<mt:var name="form_author_id">"></mt:if>
+                        <mt:var name="form_author_name" escape="html">
+                    <mt:if name="author_id"></a></mt:if>
+                    </td>
+                    <td class="col email">
+                    <mt:if name="email"><a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter=email&amp;filter_val=<mt:var name="email" encode_url="1">"></mt:if>
+                        <mt:var name="email" escape="html">
+                    <mt:if name="email"></a></mt:if>
+                    </td>
+                    <td class="col object">
+                        <a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter_key=_object&amp;object_id=<mt:var name="object_id">&amp;model=<mt:var name="model" escape="html">">
+                            <mt:var name="parent_object_name" escape="html">
+                        </a>
+                        (<mt:var name="parent_object_label" escape="html">)
+                        <input type="hidden" name="object_<mt:var name="object_id">_<mt:var name="model">" value="<mt:var name="parent_object_name" escape="html">(<mt:var name="parent_object_label" escape="html">)" />
+                    </td>
+                    <mt:if name="scope_type" ne="blog">
+                    <td class="col blog_name"><a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="weblog_id">"><mt:var name="weblog_name" escape="html"></a></td>
+                    </mt:if>
+                    <td class="col created_on"><mt:var name="created_on"></td>
+                    <mt:Ignore>
+                    <td class="col memo">
+                        <mt:var name="memo" escape="html">
+                    </td>
+                    <td class="col remote_ip">
+                        <a href="<mt:var name="mt_url">?__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">&amp;filter=remote_ip&amp;filter_val=<mt:var name="remote_ip">">
+                            <mt:var name="remote_ip" escape="html">
+                        </a>
+                    </td>
+                    </mt:Ignore>
+                </tr>
+    <mt:if __last__>
+            </tbody>
+    </mt:if>
+</mtapp:listing>
+</__trans_section>

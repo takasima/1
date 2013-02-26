@@ -1,0 +1,410 @@
+<mt:setvarblock name="html_head" append="1">
+    <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/SidebarAssets/css/SidebarAssets.css" type="text/css" />
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/jquery.form.js"></script>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/BrowserDetect.js"></script>
+    <mt:if name="can_upload">
+    <MTIfAuthorCanDropBox>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/gears_init.js"></script>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/SidebarAssets.gears.js"></script>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/SidebarAssets.fileapi.js"></script>
+    </MTIfAuthorCanDropBox>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/si.files.js"></script>
+    </mt:if>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/SidebarAssets/js/SidebarAssets.js"></script>
+</mt:setvarblock>
+
+<__trans_section component="SidebarAssets">
+<ul class="asset_tab"><!--
+    --><li id="asset_all" class="asset"><img src="<$mt:var name="static_uri"$>plugins/SidebarAssets/images/ico_asset_all.gif" width="25" height="21" alt="" /></li><!--
+    --><li id="asset_file" class="asset"><img src="<$mt:var name="static_uri"$>plugins/SidebarAssets/images/ico_asset_item.gif" width="17" height="21" alt="" /></li><!--
+    --><li id="asset_image" class="asset"><img src="<$mt:var name="static_uri"$>plugins/SidebarAssets/images/ico_asset_image.gif" width="21" height="21" alt="" /></li><!--
+    --><li id="asset_audio" class="asset"><img src="<$mt:var name="static_uri"$>plugins/SidebarAssets/images/ico_asset_audio.gif" width="20" height="21" alt="" /></li><!--
+    --><li id="asset_video" class="asset"><img src="<$mt:var name="static_uri"$>plugins/SidebarAssets/images/ico_asset_video.gif" width="20" height="21" alt="" /></li>
+</ul>
+<div id="asset_all_list" class="asset_list_box">
+    <div class="list"></div>
+    <div class="indicate"><img src="<$mt:var name="static_uri"$>images/indicator.gif" width="40" height="40" /></div>
+</div>
+<div id="asset_file_list" class="asset_list_box">
+    <div class="list"></div>
+    <div class="indicate"><img src="<$mt:var name="static_uri"$>images/indicator.gif" width="40" height="40" /></div>
+</div>
+<div id="asset_image_list" class="asset_list_box">
+    <div class="list"></div>
+    <div class="indicate"><img src="<$mt:var name="static_uri"$>images/indicator.gif" width="40" height="40" /></div>
+</div>
+<div id="asset_audio_list" class="asset_list_box">
+    <div class="list"></div>
+    <div class="indicate"><img src="<$mt:var name="static_uri"$>images/indicator.gif" width="40" height="40" /></div>
+</div>
+<div id="asset_video_list" class="asset_list_box">
+    <div class="list"></div>
+    <div class="indicate"><img src="<$mt:var name="static_uri"$>images/indicator.gif" width="40" height="40" /></div>
+</div>
+<mt:if name="can_upload">
+    <div class="multi_upload">
+        <form id="upload_form" class="open" action="<$mt:var name="script_url"$>" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="__mode" value="sidebarimage" />
+            <input type="hidden" name="magic_token" value="<$mt:var name="magic_token"$>" />
+            <input type="hidden" name="blog_id" value="<$mt:var name="blog_id"$>" />
+            <input type="hidden" name="type" value="upload" />
+            <input type="hidden" name="offset" value="0" />
+            <input type="hidden" name="flds" value="0" />
+            <input type="hidden" name="author_id" value="<$mt:var name="author_id"$>" />
+            <div class="trigger"><span><__trans phrase="Create"></span></div>
+            <div class="input SI-FILES-STYLIZED">
+                <div class="sidebar_blocks" id="sidebar_block_1">
+                    <img class="close_icon" src="<$mt:var name="static_uri"$>images/status_icons/close.gif" width="9" height="9" alt="" />
+                    <input type="text" class="file_name" name="sidebar_name_1" id="sidebar_name_1" />
+                    <span class="cabinet">
+                        <input id="sidebar_image_1"<mt:ignore> class="file multi_files"</mt:ignore> name="sidebar_image_1" type="file" />
+                    </span>
+                </div>
+            </div>
+            <p class="buttons">
+                <button type="submit" id="uploads_button" class="button primary-button"><__trans phrase="Upload"></button>
+                <button id="uploads_cancel_button" class="button cancel"><__trans phrase="Cancel"></button>
+            </p>
+            <div id="uploadOutput"></div>
+
+            <mt:ignore>
+            <input type="hidden" name="__mode" value="upload_files" />
+            <input type="hidden" name="blog_id" value="<$mt:var name="blog_id"$>" />
+            <input type="hidden" name="magic_token" value="<$mt:var name="magic_token"$>" />
+            <div class="wrapper odd">
+                <input type="file" name="Filedata" id="uploads" class="multi"/>
+            </div>
+            </mt:ignore>
+        </form>
+    </div>
+</mt:if>
+<MTIfAuthorCanDropBox>
+<div id="drop" class="target"><__trans phrase="Drop Here"></div>
+</MTIfAuthorCanDropBox>
+
+<script type="text/javascript">
+
+    sidebar_options = {
+        os          : BrowserDetect.OS,
+        browser     : BrowserDetect.browser,
+        version     : BrowserDetect.version,
+        url         : "<$mt:var name="script_url"$>?__mode=upload_files&blog_id=<$mt:var name="blog_id"$>&magic_token=<$mt:var name="magic_token" escape="js"$>",
+        data_url    : "<$mt:var name="script_url"$>?__mode=sidebarimage&blog_id=<$mt:var name="blog_id"$>&limit=20",
+        magic_token : "<$mt:var name="magic_token"$>",
+        target_id   : 'drop'
+    };
+    
+    var blog_id = <mt:if name="blog_id"><$mt:var name="blog_id"$><mt:else>0</mt:else></mt:if>;
+    var script_url         = '<$mt:var name="script_url"$>';
+    var static_uri         = '<$mt:var name="static_uri"$>';
+    var magic_token = '<mt:var name="magic_token">';
+    var toolbar_height = false;
+    var is_upload      = false;
+    var is_dnd         = false;
+    var is_edit_entry  = <mt:if name="editor_content">true<mt:else>false</mt:else></mt:if>;
+    
+    asset_list.trans = new Array();
+    asset_list.trans['text_delete']        = '<__trans phrase="Delete">';
+    asset_list.trans['text_paste']        = '<__trans phrase="Paste">';
+    asset_list.trans['Edit']         = '<__trans phrase="Edit">';
+    asset_list.trans['Do you really want to delete files?\nThere is no way to undo this operation.']  = '<__trans phrase="Do you really want to delete files?\nThere is no way to undo this operation.">';
+    asset_list.trans['Failed to load items list.\nPlease retry to login.'] = '<__trans phrase="Failed to load items list.\nPlease retry to login.">'
+</script>
+
+<mt:if name="can_upload">
+<script type="text/javascript">
+
+    var global_counter   = 0;
+    var global_files     = null;
+    var global_max       = 0;
+    var global_uploading = 0;
+    var global_mode      = '';
+    var global_now_ext   = '';
+    jQuery(function(jQuery){
+        <MTIfAuthorCanDropBox>
+        if (jQuery.browser.msie) {
+            if (jQuery.browser.version >= 7) {
+                is_dnd = true;
+                var screen_moves = 0;
+                var desktop      = null;
+                var action       = ['install', trans('install')];
+                try {
+                    if(!window.google || !window.google.gears)
+                        throw null;
+                    action = ['upgrade', trans('upgrade')];
+                    desktop = google.gears.factory.create('beta.desktop');
+                } catch(e) {
+                    var message = trans('Do you want to [_1] Gears now?', action[1]);
+                    var install_url = 'http://gears.google.com/?action=' + action[0]
+                                     + '&message=' + encodeURIComponent(message)
+                                     + '&return=' + encodeURIComponent(window.location.href);
+                    if(!jQuery.cookie('no_gears')){
+                        if (window.confirm(message)) {
+                            window.location.href = install_url;
+                            is_dnd = true;
+                        } else {
+                            is_dnd = false;
+                            jQuery.cookie('no_gears','1');
+                        }
+                    }
+                }
+                permission = 0;
+                if (is_dnd) {
+                    var eventMap = {
+                        'dragenter' : 'dragenter',
+                        'dragover'  : 'dragover',
+                        'dragleave' : 'dragexit',
+                        'drop'      : 'dragdrop'
+                    };
+                    var targetEl = document.getElementById('drop');
+                    addEvent(targetEl, 'dragenter', handleEnterOver);
+                    addEvent(targetEl, 'dragover',  handleEnterOver);
+                    addEvent(targetEl, 'dragleave', handleLeave);
+                    addEvent(targetEl, 'drop',      handleDrop);
+                    function addEvent(element, name, handler) {
+                        element.attachEvent('on' + name, handler);
+                    }
+                    function escapeHtml(s) {
+                        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    }
+                    function handleEnterOver(event) {
+                        jQuery('#drop').addClass('hover_box');
+                        event.returnValue = false;
+                        desktop.setDragCursor(event, 'copy');
+                        if (screen_moves == 0) {
+                            scrolled = jQuery(document).scrollTop();
+                        }
+                        screen_moves++;
+                        jQuery('html,body').scrollTop(jQuery('html,body').scrollTop());
+                    }
+                    function handleLeave(event) {
+                        jQuery('#drop').removeClass('hover_box');
+                        event.returnValue = false;
+                        desktop.setDragCursor(event, 'none');
+                        screen_moves = 0;
+                    }
+                    function handleDrop(event) {
+                        if (global_uploading == 1) {
+                            alert(trans('Another uploading process is in progress.'));
+                            return;
+                        }
+                        global_uploading = 1;
+                        event.stopPropagation && event.stopPropagation();
+                        var data       = desktop.getDragData(event, 'application/x-gears-files');
+                        //if ( data.count > 10 ) {
+                        //    alert(trans('You can upload up to [_1] files at one time.', 10));
+                        //    global_uploading = 0;
+                        //    return;
+                        //}
+                        //if ( <MTCGIMaxUpload> < data.totalLength ) {
+                        //    alert(trans('Exceeded the size limit for uploading files at one time.'));
+                        //    global_uploading = 0;
+                        //    return;
+                        //}
+                        var files      = data && data.files;
+                        global_files   = files;
+                        global_counter = 0;
+                        global_max = data.count;
+                        global_upload_token = 'ut_' + (new Date()).getTime();
+                        jQuery('.asset_list_box .list').html('');
+                        jQuery('.asset_list_box').hide();
+                        jQuery('#asset_all_list').show();
+                        jQuery('#asset_all_list .indicate').toggle();
+                        asset_list.init_before_reload();
+                        setTimeout('handleUpload()', 100 );
+                    }
+                    function get_list_data(mode)
+                    {
+                        if (permission > 0) {
+                            alert(permission_denied);
+                        }
+                        if (window.get == false) {
+                            jQuery.ajax({
+                                'url'      : sidebar_options.data_url + '&__=' + (new Date()).getTime(),
+                                'method'   : 'get',
+                                'dataType' : 'text',
+                                success : function(data, dataType){
+                                    if(data.match('<head>')){
+                                        asset_list.load_error();
+                                        return;
+                                    }
+                                    jQuery('#asset_all_list .list').append(data);
+                                    jQuery('#asset_all_list .indicate').toggle();
+                                    jQuery('#asset_all_list .thumbnail a')
+                                        .mousedown(
+                                            function(e) {
+                                                var menu_offset = pcms_util.px2int(jQuery('#menu').css('top'));
+                                                jQuery(this).children('span').css({
+                                                    'top'  : e.pageY - menu_offset + "px",
+                                                    'left' : e.pageX + "px"
+                                                });
+                                            }
+                                        );
+                                    jQuery('#asset_all_list .thumbnail a span').css('opacity', 0);
+                                    mode = 'all';
+                                    jQuery('.asset_tab li').removeClass('current end loaded');
+                                    jQuery('.asset_tab li#asset_all').addClass('current');
+                                    jQuery('#asset_all_list .thumbnail a').bind('contextmenu', asset_list.context);
+                                    jQuery('.asset_list_box').removeClass('end');
+                                    asset_list.set_loaded_css('all');
+                                    asset_list.set_next_loading(1, 'all');
+                                }
+                            });
+                            /*
+                            jQuery('#asset_all_list .list').load(
+                                sidebar_options.data_url + '&__=' + (new Date()).getTime(),
+                                function(){
+                                    jQuery('#asset_all_list .indicate').toggle();
+                                    jQuery('#asset_all_list .thumbnail a')
+                                        .mousedown(
+                                            function(e) {
+                                                var menu_offset = pcms_util.px2int(jQuery('#menu').css('top'));
+                                                jQuery(this).children('span').css({
+                                                    'top'  : e.pageY - menu_offset + "px",
+                                                    'left' : e.pageX + "px"
+                                                });
+                                            }
+                                        );
+                                    jQuery('#asset_all_list .thumbnail a span').css('opacity', 0);
+                                    mode = 'all';
+                                    jQuery('.asset_tab li').removeClass('current end loaded');
+                                    jQuery('.asset_tab li#asset_all').addClass('current');
+                                    jQuery('#asset_all_list .thumbnail a').bind('contextmenu', asset_list.context);
+                                    
+                                    jQuery('.asset_list_box').removeClass('end');
+                                    asset_list.set_loaded_css('all');
+                                    asset_list.set_next_loading(1, 'all');
+                                }
+                            );
+                            */
+                            window.get = true;
+                        }
+                    }
+                    window.get_list_data = get_list_data;
+                    jQuery('#drop').show();
+                }
+            }
+        } else if (sidebar_options.browser == "Firefox" && Number(sidebar_options.version) >= '3.6') {
+            jQuery(document).PCMS2FileApi(sidebar_options);
+        } else if (window.google && google.gears) {
+            jQuery(document).PCMS2Gears(sidebar_options);
+        } else {
+            jQuery('#drop').css('visibility','hidden');
+        }
+        </MTIfAuthorCanDropBox>
+    });
+    var is_upload = true;
+    SI.Files.stylizeAll();
+    function handleUpload() {
+<MTIfAuthorCanDropBox>
+        if (jQuery.browser.msie) {
+            if (jQuery.browser.version >= 7) {
+                var files      = global_files;
+                var i = global_counter;
+                var boundary   = '------multipartformboundary' + (new Date).getTime();
+                var dashdash   = '--';
+                var crlf       = '\r\n';
+                window.get = false;
+                var ext  = '';
+                var file = files[i];
+                try{
+                    var dummy = file.name;
+                }catch(e){
+                    asset_list.init_before_reload();
+                    get_list_data(global_mode);
+                    return;
+                }
+                if (file.name) {
+                    var now_ext;
+                    if (global_mode != 'all') {
+                        if (file.name.match(/(gif|jpe?g|png|bmp|tiff?)$/i)) {
+                            now_ext = 'image';
+                        } else if (file.name.match(/(mov|avi|3gp|asf|mp4|qt|wmv|asx|mpg|flv|mkv|ogm)$/i)) {
+                            now_ext = 'video';
+                        } else if (file.name.match(/(mp3|ogg|aiff?|wav|wma|aac|flac|m4a)$/i)) {
+                            now_ext = 'audio';
+                        } else {
+                            now_ext = 'other';
+                        }
+                        if (global_counter > 0) {
+                            if (global_now_ext != now_ext) {
+                                global_mode = 'all';
+                            } else {
+                                global_mode = global_now_ext;
+                            }
+                        } else {
+                            global_mode = now_ext;
+                        }
+                        global_now_ext = now_ext;
+                    }
+                    var builder = google.gears.factory.create('beta.blobbuilder');
+                    builder.append(dashdash);
+                    builder.append(boundary);
+                    builder.append(crlf);
+                    /* Generate headers. */
+                    var disposition = 'Content-Disposition: form-data; name="Filedata"; '
+                                    + 'filename="' + encodeURIComponent(file.name) + '"; '
+                                    + 'magic_token="' + magic_token + '";';
+                    builder.append(disposition);
+                    builder.append(crlf);
+                    builder.append('Content-Type: application/octet-stream');
+                    builder.append(crlf);
+                    builder.append(crlf);
+                    /* Append binary data. */
+                    builder.append(file.blob);
+                    builder.append(crlf);
+                    /* Write boundary. */
+                    builder.append(dashdash);
+                    builder.append(boundary);
+                    builder.append(crlf); 
+                    /* Mark end of the request. */
+                    builder.append(dashdash);
+                    builder.append(boundary);
+                    builder.append(dashdash);
+                    builder.append(crlf);
+                    var request = google.gears.factory.create('beta.httprequest');
+                    request.onreadystatechange = function() {
+                        switch(request.readyState) {
+                            case 4:
+                            global_counter++;
+                            if ( global_counter < global_max ) {
+                                setTimeout('handleUpload()', 100 );
+                            } else {
+                                //alert('Complete!'+global_mode);
+                                global_counter   = 0;
+                                global_files     = null;
+                                global_max       = 0;
+                                global_uploading = 0;
+                                global_mode      = '';
+                                global_now_ext   = '';
+                                asset_list.init_before_reload();
+                                get_list_data(global_mode);
+                            }
+                        }
+                    };
+                    /* Use Gears to submit the data. */
+                    //alert(sidebar_options.url + '&upload_token=' + global_upload_token + '&file_num=' + global_max)
+                    request.open("POST", sidebar_options.url + '&upload_token=' + global_upload_token + '&file_num=' + global_max);
+                    request.setRequestHeader('content-type', 'multipart/form-data; boundary=' + boundary);
+                    request.send(builder.getAsBlob());
+                }
+            }
+        }
+</MTIfAuthorCanDropBox>
+    }
+
+</script>
+</mt:if>
+
+<MTIfIE>
+    <script type="text/javascript">
+        var _changeType;
+        if (typeof changeType == "function" && (typeof document.documentMode == "undefined" || document.documentMode < 8)) {
+            _changeType = changeType;
+            changeType = function(s) { _changeType(s || jQuery('select[id="type"]').get(0) || jQuery('input[id="type"]').get(0)) }
+        }
+    </script>
+</MTIfIE>
+
+</__trans_section>

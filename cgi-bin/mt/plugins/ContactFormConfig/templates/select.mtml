@@ -1,0 +1,44 @@
+<$mt:SetVar name="display_description" value="0"$>
+<mt:unless name="field_mode"><$mt:SetVar name="display_description" value="1"$></mt:unless>
+<mt:if name="field_error"><$mt:SetVar name="display_description" value="1"$></mt:if>
+<div id="<mt:var name="field_basename">-field" class="contact-form-field clf">
+    <p class="form-label">
+        <label for="<mt:var name="field_basename">">
+        <mt:var name="field_name" escape="html">
+        <mt:if name="display_description">
+            <mt:if name="field_description"><span class="description"><mt:var name="field_description"></span></mt:if>
+            <mt:if name="field_required"><span class="must"><$MT:Trans phrase="*Required" component="ContactForm"$></span></mt:if>
+        </mt:if>
+        </label>
+    </p>
+    <p class="form-element">
+        <mt:setvar name="show_fields" value="1">
+        <mt:if name="field_mode">
+            <mt:unless name="field_error">
+            <mt:setvar name="show_fields" value="0">
+            <span class="field_value">
+                <mt:var name="field_value" escape="html">
+                <input type="hidden" name="<mt:var name="field_basename">" value="<mt:var name="field_value" escape="html">" />
+            </span>
+            </mt:unless>
+        </mt:if>
+        <mt:if name="show_fields">
+            <select name="<mt:var name="field_basename">" id="<mt:var name="field_basename">">
+                <mt:loop name="field_loop">
+                <option<mt:if name="option_default"> selected="selected"</mt:if> value="<mt:var name="option_value" escape="html">">
+                <mt:if name="option_value"><mt:var name="option_value" escape="html"><mt:else><__trans phrase="Select..."></mt:else></mt:if></option>
+                </mt:loop>
+            </select>
+            <mt:if name="field_error">
+                <span class="field_<mt:if name="field_error">error<mt:else>form</mt:else></mt:if>">
+                <mt:if name="field_error" eq="invalid">
+                    <$MT:Trans phrase="Invalid '[_1]'." component="ContactForm" params="$field_name"$>
+                <mt:else>
+                    <$MT:Trans phrase="'[_1]' is required." component="ContactForm" params="$field_name"$>
+                </mt:else>
+                </mt:if>
+                </span>
+            </mt:if>
+        </mt:if>
+    </p>
+</div>

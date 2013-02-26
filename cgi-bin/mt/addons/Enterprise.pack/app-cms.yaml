@@ -1,0 +1,341 @@
+methods:
+    delete_group: $Enterprise::MT::Enterprise::CMS::delete_group
+    edit_group_members: $Enterprise::MT::Enterprise::CMS::edit_group_members
+    add_group_members: $Enterprise::MT::Enterprise::CMS::add_group_members
+    remove_member: $Enterprise::MT::Enterprise::CMS::remove_member
+    remove_group: $Enterprise::MT::Enterprise::CMS::remove_group
+    add_member: $Enterprise::MT::Enterprise::CMS::add_member
+    add_group: $Enterprise::MT::Enterprise::CMS::add_group
+    dialog_select_group: $Enterprise::MT::Enterprise::CMS::dialog_select_group
+    dialog_select_user: $Enterprise::MT::Enterprise::CMS::dialog_select_user
+    dialog_select_group_user: $Enterprise::MT::Enterprise::CMS::dialog_select_group_user
+    view_group: $Enterprise::MT::Enterprise::CMS::view_group
+    edit_group: $Enterprise::MT::Enterprise::CMS::view_group
+    author_bulk: $Enterprise::MT::Enterprise::CMS::author_bulk
+    upload_author_bulk: $Enterprise::MT::Enterprise::CMS::upload_author_bulk
+    export_authors: $Enterprise::MT::Enterprise::CMS::export_authors
+    dialog_grant_role: $Enterprise::MT::Enterprise::CMS::dialog_grant_role
+    synchronize: $Enterprise::MT::Enterprise::CMS::synchronize
+    grant_role: $Enterprise::MT::Enterprise::CMS::grant_role
+    view_role: $Enterprise::MT::Enterprise::CMS::edit_role
+
+menus:
+    group:
+        label: Groups
+        order: 650
+    group:manage:
+        label: Manage
+        order: 1000
+        mode: list
+        args:
+            _type: group
+        view: system
+        system_permission: administer
+    group:create:
+        label: New
+        order: 2000
+        mode: view
+        args:
+            _type: group
+        view:
+            - system
+        system_permission: administer
+        condition: >
+            sub {
+                my $app = MT->instance;
+                $app->config->ExternalGroupManagement ? 0 : 1;
+            }
+    group:save_group:
+        order: 10000
+        mode: save
+        args:
+            _type: group
+        view:
+            - system
+        system_permission: administer
+        display: 0
+    group:group_member:
+        label: Manage Member
+        order: 3000
+        mode: list
+        args:
+            _type: group_member
+        view:
+            - system
+        system_permission: administer
+        display: 0
+user_menus:
+    group:
+        label_handler: |
+            sub {
+                my ($app, $param) = @_;
+                my $aid = $param->{user_menu_id};
+                my $asso_class = MT->model('association');
+                my $gcount = $asso_class->count(
+                    {
+                        type => $asso_class->USER_GROUP(),
+                        author_id => $aid,
+                        group_id  => \' is not null',
+                    },
+                );
+                my $pack = MT->component('enterprise');
+                return $pack->translate('Groups ([_1])', $gcount);
+            }
+        order: 1000
+        link: |
+            sub {
+                my ($app, $param) = @_;
+                if ( $app->can_do('access_to_group_list') ) {
+                    return $app->uri(
+                        mode => 'list',
+                        args => {
+                            blog_id    => 0,
+                            _type      => 'group',
+                            filter     => 'author_id',
+                            filter_val => $param->{user_menu_id},
+                        },
+                    );
+                }
+                else {
+                    return $app->uri(
+                        mode => 'list',
+                        args => {
+                            blog_id => 0,
+                            _type   => 'group',
+                        },
+                    );
+                }
+            }
+        user_param: filter_val
+        condition: |
+            sub {
+                my ( $app, $param ) = @_;
+                $param->{is_me} ? 1
+                                : $app->can_do('manage_groups');
+            }        
+content_actions:
+    author:
+        bulk_author_export:
+            class: icon-action
+            label: Bulk Author Export
+            mode: export_authors
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalUserManagement ? 0 : 1;
+                }
+        bulk_author_import:
+            class: icon-action
+            label: Bulk Author Import
+            mode: author_bulk
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalUserManagement ? 0 : 1;
+                }
+            dialog: 1
+        synchronize_user:
+            class: icon-action
+            label: Synchronize Users
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalUserManagement ? 1 : 0;
+                }
+            mode: synchronize
+            args:
+                _type: author
+    group:
+        synchronize_group:
+            class: icon-action
+            label: Synchronize Groups
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalGroupManagement ? 1 : 0;
+                }
+            mode: synchronize
+            args:
+                _type: group
+
+    group_member:
+        add_member:
+            class: icon-action
+            label: Add user to group
+            mode: dialog_select_group_user
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalGroupManagement ? 0 : 1;
+                }
+            dialog: 1
+
+page_actions:
+    list_group_members:
+        bulk_author_import:
+            label: Bulk Author Import
+            dialog: author_bulk
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalUserManagement ? 0 : 1;
+                }
+    list_group:
+        synchronize_user:
+            label: Synchronize Groups
+            system_permission: administer
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->config->ExternalGroupManagement ? 1 : 0;
+                }
+            mode: synchronize
+            args:
+                _type: group
+
+list_actions:
+    group:
+        delete_group:
+            label: Delete
+            order: 100
+            continue_prompt_handler: >
+                sub {
+                    my $pack = MT->component('enterprise');
+                    $pack->translate('Are you sure you want to delete the selected group(s)?')
+                }
+            handler: $Enterprise::MT::Enterprise::CMS::delete_group
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->user->is_superuser()
+                        && ( !$app->config->ExternalGroupManagement )
+                        && ( !$app->param('author_id') );
+                }
+
+        enable_group:
+            label: Enable
+            mode: enable_object
+            order: 100
+            js_message: enable
+            button: 1
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->user->is_superuser()
+                        && ( !$app->param('author_id') );
+                }
+
+        disable_group:
+            label: Disable
+            mode: disable_object
+            order: 200
+            js_message: disable
+            button: 1
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->user->is_superuser()
+                        && ( !$app->param('author_id') );
+                }
+    group_member:
+        remove_member:
+            label: Remove
+            button: 1
+            order: 100
+            continue_prompt_handler: >
+                sub {
+                    my $pack = MT->component('enterprise');
+                    $pack->translate('Are you sure you want to remove the selected member(s) from the group?')
+                }
+            mode: remove_member
+            condition: >
+                sub {
+                    my $app = MT->instance;
+                    $app->user->is_superuser()
+                        && ( !$app->config->ExternalGroupManagement )
+                }
+
+search_apis:
+    group:
+        order: 850
+        system_permission: administer
+        label: Groups
+        perm_check: >
+            sub {
+                return 1 if $author->is_superuser;
+                if ($blog_id) {
+                    my $perm = $author->permissions($blog_id);
+                    return $perm->can_administer_blog;
+                }
+                return 0;
+            }
+        search_cols:
+            name: Group Name
+            display_name: Display Name
+            description: Description
+        can_replace: 0
+        can_search_by_date: 0
+        setup_terms_args: >
+            sub {
+                my ($terms, $args, $blog_id) = @_;
+                if ($blog_id) {
+                    $args->{'join'} =
+                      MT->model('association')->join_on( 'group_id',
+                        { blog_id => $blog_id } );
+                }
+            }
+        handler: $Enterprise::MT::Enterprise::CMS::build_group_table
+        results_table_template: <mt:include name="include/group_table.tmpl">
+        view: system
+
+callbacks:
+    cms_view_permission_filter.group: $Enterprise::MT::Enterprise::CMS::CMSViewPermissionFilter_group
+    cms_save_permission_filter.group: $Enterprise::MT::Enterprise::CMS::CMSSavePermissionFilter_group
+    cms_delete_permission_filter.group: $Enterprise::MT::Enterprise::CMS::CMSDeletePermissionFilter_group
+    cms_save_filter.group: $Enterprise::MT::Enterprise::CMS::CMSSaveFilter_group
+    cms_pre_save.author: $Enterprise::MT::Enterprise::CMS::CMSPreSave_author
+    template_param.edit_author: $Enterprise::MT::Enterprise::CMS::edit_author
+    template_param.cfg_registration: $Enterprise::MT::Enterprise::CMS::cfg_registration
+    template_param.cfg_system_users: $Enterprise::MT::Enterprise::CMS::cfg_registration
+    template_param.cfg_archives: $Enterprise::MT::Enterprise::CMS::cfg_archives
+    MT::Author::pre_save: $Enterprise::MT::Enterprise::Author::pre_save_author
+    cms_delete_ext_author_filter: $Enterprise::MT::Enterprise::Author::delete_author_ext_auth_filter
+    cms_pre_load_filtered_list.group_member: >
+        sub {
+            my ( $cb, $app, $filter, $opts, $cols ) = @_;
+            $filter->append_item({
+                type => '_type',
+            });
+        }
+    cms_pre_load_filtered_list.group: >
+        sub {
+            my ( $cb, $app, $filter, $opts, $cols ) = @_;
+            if ( !$app->can_do('access_to_any_group_list') ) {
+                $filter->append_item({
+                    type => 'author_id',
+                    args => {
+                        option => 'eq',
+                        value  => $app->user->id,
+                    },
+                });
+            }
+        }
+    list_template_param.group: >
+        sub {
+            my $cb = shift;
+            my ( $app, $param, $tmpl ) = @_;
+            return if $app->can_do('access_to_permission_list');
+            $param->{use_filters} = 0;
+            $param->{use_actions} = 0;
+            $param->{has_list_actions} = 0;
+            my $author_name = $app->user->name;
+            my $pack = MT->component('enterprise');
+            $param->{page_title} = $pack->translate( q{[_1]'s Group}, $author_name );
+        }
+

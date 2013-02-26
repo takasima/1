@@ -1,0 +1,392 @@
+name: Campaign
+id:   Campaign
+key:  campaign
+version: 2.1
+schema_version: 0.194
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+l10n_class: Campaign::L10N
+description: <__trans phrase="Manage campaign, banner image and movie.">
+config_settings:
+    CampaignCustomFieldScope:
+        default: blog
+    CampaignScript:
+        default: mt-banner.cgi
+
+listing_screens:
+    campaign:
+        object_label: Campaign
+        primary: title
+        default_sort_key: title
+        condition: $campaign::Campaign::Plugin::_campaign_permission
+        view:
+            - website
+            - blog
+            - system
+    campaigngroup:
+        object_label: Campaign Group
+        primary: name
+        default_sort_key: name
+        condition: $campaign::Campaign::Plugin::_group_permission
+        view:
+            - website
+            - blog
+            - system
+list_properties:
+    campaign: $campaign::Campaign::Listing::list_props
+    campaigngroup: $campaign::Campaign::Listing::list_props_group
+    tag: $campaign::Campaign::Listing::list_props_tag
+system_filters:
+    campaign: $campaign::Campaign::Listing::system_filters_campaign
+    tag: $campaign::Campaign::Listing::system_filters_tag
+list_actions:
+    campaign: $campaign::Campaign::Listing::list_actions
+    campaigngroup: $campaign::Campaign::Listing::list_group_actions
+permissions:
+    blog.manage_campaign:
+        label: Edit Campaign
+        group: auth_pub
+        order: 1000
+    blog.manage_campaigngroup:
+        label: Manage Campaign Group
+        group: blog_admin
+        order: 1000
+customfield_types: $campaign::Campaign::Field::_customfield_types
+settings:
+    default_status:
+        Default: 2
+    min_banner_size:
+        Default: 40
+    max_banner_size:
+        Default: 728
+    default_banner_width:
+        Default: 0
+    default_banner_height:
+        Default: 0
+    banner_directory:
+        Default: banner
+    cookie_expire:
+        Default: 30
+    default_campaign_period:
+        Default: 30
+    exclude_ip_table:
+    conversion_redirect:
+    use_wysiwyg:
+        Default: 1
+    editor_style_css:
+        Default: '<$MTStaticWebPath$>plugins/TinyMCE/css/editor_style.css'
+    theme_advanced_buttons1:
+        Default: bold,|,justifyleft,justifycenter,justifyright,|,bullist,|,forecolor,|,indent,outdent,|,link,unlink,formatselect,|,anchor,|,pasteword,|,code,|,mt-image,mt-file,|,fullscreen
+    theme_advanced_buttons2:
+    theme_advanced_buttons3:
+    theme_advanced_buttons4:
+    theme_advanced_buttons5:
+    default_module_mtml:
+blog_config_template: campaign_config.tmpl
+applications:
+    cms:
+        menus:
+            campaign:
+                label: Campaign
+                order: 460
+            campaign:list_campaign:
+                label: Manage
+                order: 1
+                mode: list
+                args:
+                    blog_id: 0
+                    _type: campaign
+                condition: $campaign::Campaign::Plugin::_campaign_permission
+                view:
+                    - website
+                    - blog
+                    - system
+            campaign:create_campaign:
+                label: New
+                order: 2
+                mode: view
+                args:
+                    _type: campaign
+                condition: $campaign::Campaign::Plugin::_campaign_permission
+                view:
+                    - website
+                    - blog
+            campaign:list_campaigngroup:
+                label: Manage Groups
+                mode: list
+                args:
+                    _type: campaigngroup
+                    blog_id: 0
+                order: 3
+                view:
+                    - website
+                    - blog
+                    - system
+                condition: $campaign::Campaign::Plugin::_group_permission
+            campaign:create_campaigngroup:
+                label: Create Group
+                mode: view
+                args:
+                    _type: campaigngroup
+                order: 4
+                view:
+                    - website
+                    - blog
+                condition: $campaign::Campaign::Plugin::_group_permission
+            campaign:edit_tags:
+                label: Tags
+                mode: list
+                args:
+                    _type: tag
+                    filter_key: campaign
+                order: 5
+                view:
+                    - website
+                    - blog
+                permission: edit_tags
+        compose_menus:
+            campaign:
+                label: Campaign
+                order: 900
+                mode: view
+                args:
+                    _type: campaign
+                view:
+                    - website
+                    - blog
+                condition: $campaign::Campaign::Plugin::_campaign_permission
+        methods:
+            # list_campaign: $campaign::Campaign::CMS::_list_campaign
+            # list_campaigngroup: $campaign::Campaign::CMS::_list_campaign
+            view_campaign: $campaign::Campaign::CMS::_view_campaign
+            view_campaigngroup: $campaign::Campaign::CMS::_view_campaign
+            save_campaign: $campaign::Campaign::CMS::_save_campaign
+            publish_campaigns: $campaign::Campaign::CMS::_publish_campaigns
+            unpublish_campaigns: $campaign::Campaign::CMS::_unpublish_campaigns
+            reserve_campaigns: $campaign::Campaign::CMS::_reserve_campaigns
+            end_campaigns: $campaign::Campaign::CMS::_end_campaigns
+            add_tags_to_campaign: $campaign::Campaign::Plugin::_add_tags_to_campaign
+            remove_tags_to_campaign: $campaign::Campaign::Plugin::_remove_tags_to_campaign
+object_types:
+    campaign: Campaign::Campaign
+    campaigngroup: Campaign::CampaignGroup
+    campaignorder: Campaign::CampaignOrder
+customfield_objects:
+    campaign:
+        context:
+            - system
+            - website
+            - blog
+        order: 10000
+callbacks:
+    init_app:
+        handler: $campaign::Campaign::Field::_init_tags
+        priority: 10
+    MT::App::Upgrader::post_run: $campaign::Campaign::Tools::_post_run
+    init_request: $campaign::Campaign::CMS::_init_request
+    MT::App::CMS::pre_run: $campaign::Campaign::Plugin::_pre_run
+    MT::App::CMS::template_param.edit_campaign: $campaign::Campaign::Plugin::_edit_campaign
+    # MT::App::CMS::template_output.edit_campaign: $campaign::Campaign::Plugin::_edit_campaign_out
+    MT::App::CMS::template_param.edit_campaigngroup: $campaign::Campaign::Plugin::_edit_campaigngroup
+    MT::App::CMS::template_param.asset_insert:
+        handler: $campaign::Campaign::Plugin::_asset_insert
+        priority: 10
+    MT::App::CMS::template_param.list_tag: $campaign::Campaign::Plugin::_list_tag
+    MT::App::CMS::template_param.edit_template: $campaign::Campaign::Plugin::_edit_template_param
+    cms_post_save.template: $campaign::Campaign::Plugin::_cms_post_save_template
+    cms_post_delete.template: $campaign::Campaign::Plugin::_cms_post_delete_template
+    cms_post_save.campaign: CustomFields::App::CMS::CMSPostSave_customfield_objs
+    cms_save_filter.campaign: $campaign::Campaign::Plugin::_cms_save_filter_campaign
+    # blog_template_set_change: $campaign::Campaign::Tools::_install_role
+    list_template_param.campaign: $campaign::Campaign::Listing::_list_template_param
+    list_template_param.campaigngroup: $campaign::Campaign::Listing::_list_template_param_group
+    cms_pre_load_filtered_list.campaign: $campaign::Campaign::Listing::_cms_pre_load_filtered_list
+    cms_pre_load_filtered_list.campaigngroup: $campaign::Campaign::Listing::_cms_pre_load_filtered_list
+    save_permission_filter.campaignorder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    delete_permission_filter.campaignorder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    restore: $campaign::Campaign::Plugin::_cb_restore
+    tasks:
+        - handler: $campaign::Campaign::Field::_init_tags
+          priority: 1
+search_apis:
+    campaign:
+        label: Campaign
+        handler: $campaign::Campaign::CMS::_search_campaign
+        condition: >
+            sub {
+                my $app = MT->instance;
+                if ( $app->user->is_superuser ) {
+                    return 1;
+                }
+                if ( my $blog = $app->blog ) {
+                    if ( $blog->is_blog ) {
+                        return Campaign::Plugin::_campaign_permission( $blog );
+                    } else {
+                        my $blogs = $blog->blogs;
+                        for my $b ( @$blogs ) {
+                            if ( Campaign::Plugin::_campaign_permission( $b ) ) {
+                                return 1;
+                                last;
+                            }
+                        };
+                    }
+                }
+            }
+        perm_check: $campaign::Campaign::Plugin::_campaign_permission
+        can_replace: 0
+        order: 680
+        can_search_by_date: 1
+        date_column: publishing_on
+        search_cols:
+            title: Title
+            memo: Memo
+            text: Text
+            url: URL
+        setup_terms_args: >
+            sub {
+                my ( $terms, $args, $blog_id ) = @_;
+                require Campaign::Plugin;
+                my $app = MT->instance;
+                if ( my $blog = $app->blog ) {
+                    if ( $blog->is_blog ) {
+                        $terms->{ blog_id } = $blog_id;
+                    } else {
+                        my @ids;
+                        push ( @ids, $blog_id );
+                        my $blogs = $blog->blogs;
+                        for my $b ( @$blogs ) {
+                            if ( Campaign::Plugin::_campaign_permission( $b ) ) {
+                                push ( @ids, $b->id )
+                            }
+                        };
+                        $terms->{ blog_id } = \@ids;
+                    }
+                } else {
+                    if (! $app->user->is_superuser ) {
+                        require MT::Blog;
+                        my $all_blogs = MT::Blog->load( { class => '*' } );
+                        my @ids;
+                        for my $b ( @$all_blogs ) {
+                            if ( Campaign::Plugin::_campaign_permission( $b ) ) {
+                                push ( @ids, $b->id );
+                            }
+                        }
+                        $terms->{ blog_id } = \@ids;
+                    }
+                }
+            }
+        results_table_template: include/campaign_table.tmpl
+upgrade_functions:
+    install_role_campaign:
+        plugin: Campaign
+        code: $campaign::Campaign::Tools::_install_role
+    install_role_campaign_nv:
+        plugin: Campaign
+        version_limit: 0.192
+        code: $campaign::Campaign::Tools::_install_role
+tasks:
+    scheduled_publish:
+        label: Campaign scheduled publish
+        frequency: 60
+        code: $campaign::Campaign::Tools::_scheduled_publish
+        priority: 5
+    campaign_adjust_order:
+        label: Cleanup order
+        code: $campaign::Campaign::Tools::_task_adjust_order
+        frequency: 180
+tags:
+    block:
+        Banners: $campaign::Campaign::Tags::_hdlr_campaigns
+        Banner: $campaign::Campaign::Tags::_hdlr_campaign
+        BannerRandom: $campaign::Campaign::Tags::_hdlr_campaign_random
+        BannerAuthor: $campaign::Campaign::Tags::_hdlr_campaign_author
+        BannerTags: $campaign::Campaign::Tags::_hdlr_campaign_tags
+        BannerIfTagged?: $campaign::Campaign::Tags::_hdlr_if_campaign_tagged
+        BannerAsset: $campaign::Campaign::Tags::_hdlr_campaign_asset
+        IfBannerActive?: $campaign::Campaign::Tags::_hdlr_campaign_active
+        IfBannerHasImage?: $campaign::Campaign::Tags::_hdlr_if_campaign_has_image
+        IfBannerHasMovie?: $campaign::Campaign::Tags::_hdlr_if_campaign_has_movie
+        BannersHeader: $campaign::Campaign::Tags::_hdlr_pass_tokens
+        BannersFooter: $campaign::Campaign::Tags::_hdlr_pass_tokens
+        IfIE?: $campaign::Campaign::Tags::_hdlr_if_ie
+        IfNotSent?: $campaign::Campaign::Tags::_hdlr_if_not_sent
+# BACKWARD
+        Campaigns: $campaign::Campaign::Tags::_hdlr_campaigns
+        Campaign: $campaign::Campaign::Tags::_hdlr_campaign
+        CampaignRandom: $campaign::Campaign::Tags::_hdlr_campaign_random
+        CampaignAuthor: $campaign::Campaign::Tags::_hdlr_campaign_author
+        CampaignTags: $campaign::Campaign::Tags::_hdlr_campaign_tags
+        CampaignIfTagged?: $campaign::Campaign::Tags::_hdlr_if_campaign_tagged
+        CampaignAsset: $campaign::Campaign::Tags::_hdlr_campaign_asset
+        IfCampaignActive?: $campaign::Campaign::Tags::_hdlr_campaign_active
+        IfCampaignHasImage?: $campaign::Campaign::Tags::_hdlr_if_campaign_has_image
+        IfCampaignHasMovie?: $campaign::Campaign::Tags::_hdlr_if_campaign_has_movie
+        CampaignsHeader: $campaign::Campaign::Tags::_hdlr_pass_tokens
+        CampaignsFooter: $campaign::Campaign::Tags::_hdlr_pass_tokens
+    function:
+        BannerID: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerTitle: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerText: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerMemo: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerURL: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerClicks: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerDisplays: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerUniqDisplays: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerUniqClicks: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerConversion: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerConversionView: $campaign::Campaign::Tags::_hdlr_campaign_int
+        BannerMaxClicks: $campaign::Campaign::Tags::_hdlr_campaign_max
+        BannerMaxDisplays: $campaign::Campaign::Tags::_hdlr_campaign_max
+        BannerMaxUniqClicks: $campaign::Campaign::Tags::_hdlr_campaign_max
+        BannerMaxUniqDisplays: $campaign::Campaign::Tags::_hdlr_campaign_max
+        BannerBasename: $campaign::Campaign::Tags::_hdlr_campaign_column
+        BannerBannerURL: $campaign::Campaign::Tags::_hdlr_campaign_banner_url
+        BannerBannerWidth: $campaign::Campaign::Tags::_hdlr_campaign_banner_width
+        BannerBannerHeight: $campaign::Campaign::Tags::_hdlr_campaign_banner_height
+        BannerMovieURL: $campaign::Campaign::Tags::_hdlr_campaign_movie_url
+        BannerPublishingOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        BannerPeriodOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        BannerCreatedOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        BannerAuthorDisplayName: $campaign::Campaign::Tags::_hdlr_author_displayname
+        BannerCounter: $campaign::Campaign::Tags::_hdlr_campaign_counter
+        BannerRedirect: $campaign::Campaign::Tags::_hdlr_campaign_redirect
+        BannerConversionCounter: $campaign::Campaign::Tags::_hdlr_campaign_conversioncounter
+        BannerFieldScope: $campaign::Campaign::Tags::_hdlr_campaign_field_scope
+        BannerScript: $campaign::Campaign::Tags::_hdlr_campaign_script
+# BACKWARD
+        CampaignID: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignTitle: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignText: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignMemo: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignURL: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignClicks: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignDisplays: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignUniqDisplays: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignUniqClicks: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignConversion: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignConversionView: $campaign::Campaign::Tags::_hdlr_campaign_int
+        CampaignMaxClicks: $campaign::Campaign::Tags::_hdlr_campaign_max
+        CampaignMaxDisplays: $campaign::Campaign::Tags::_hdlr_campaign_max
+        CampaignMaxUniqClicks: $campaign::Campaign::Tags::_hdlr_campaign_max
+        CampaignMaxUniqDisplays: $campaign::Campaign::Tags::_hdlr_campaign_max
+        CampaignBasename: $campaign::Campaign::Tags::_hdlr_campaign_column
+        CampaignBannerURL: $campaign::Campaign::Tags::_hdlr_campaign_banner_url
+        CampaignBannerWidth: $campaign::Campaign::Tags::_hdlr_campaign_banner_width
+        CampaignBannerHeight: $campaign::Campaign::Tags::_hdlr_campaign_banner_height
+        CampaignMovieURL: $campaign::Campaign::Tags::_hdlr_campaign_movie_url
+        CampaignPublishingOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        CampaignPeriodOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        CampaignCreatedOn: $campaign::Campaign::Tags::_hdlr_campaign_date
+        CampaignAuthorDisplayName: $campaign::Campaign::Tags::_hdlr_author_displayname
+        CampaignCounter: $campaign::Campaign::Tags::_hdlr_campaign_counter
+        CampaignRedirect: $campaign::Campaign::Tags::_hdlr_campaign_redirect
+        CampaignConversionCounter: $campaign::Campaign::Tags::_hdlr_campaign_conversioncounter
+        CampaignFieldScope: $campaign::Campaign::Tags::_hdlr_campaign_field_scope
+        CampaignScript: $campaign::Campaign::Tags::_hdlr_campaign_script
+backup_instructions:
+    campaign:
+        order: 505
+    campaigngroup:
+        order: 550
+    campaignorder:
+        order: 560

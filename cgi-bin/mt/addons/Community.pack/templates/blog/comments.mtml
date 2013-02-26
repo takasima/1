@@ -1,0 +1,55 @@
+<__trans_section component="community">
+<mt:IfCommentsActive>
+<div id="comments" class="comments">
+    <mt:If name="comment_preview">
+    <$mt:Include module="<__trans phrase="Comment Form">"$>
+    </mt:If>
+    <mt:Comments lastn="$comments_per_page">
+        <mt:CommentsHeader>
+    <div class="comments-header">
+      <h2><$mt:EntryCommentCount singular="<__trans phrase="1 Comment">" plural="<__trans phrase="# Comments">" none="<__trans phrase="No Comments">"$></h2>
+      <mt:IfCommentsAccepted>
+          <span class="separator">|</span>
+          <a href="#comments-open"><__trans phrase="Leave a comment"></a>
+      </mt:IfCommentsAccepted>
+    </div>
+    <mt:If tag="EntryCommentCount" gt="$comments_per_page">
+      <ul id="top-comment-nav">
+        <li id="top-prev-comments">
+          <a href="javascript://" id="top-prev-comments-link" title="<__trans phrase="Previous">">&lt;&lt;&nbsp;<__trans phrase="Previous"></a>
+        </li>
+        <li id="top-num-comments"><span id="top-current-comments"></span></li>
+        <li id="top-next-comments">
+          <a href="javascript://" id="top-next-comments-link" title="<__trans phrase="Next">"><__trans phrase="Next">&nbsp;&gt;&gt;</a>
+        </li>
+      </ul>
+    </mt:If>
+    <div id="comments-content">
+        </mt:CommentsHeader>
+        <mt:Ignore><__trans phrase="The data in #comments-content will be replaced by some calls to paginate script"></mt:Ignore>
+        <div class="comments-content">
+        	<$mt:Include module="<__trans phrase="Comment Detail">"$>
+        </div>
+        <mt:CommentsFooter>
+    </div>
+        </mt:CommentsFooter>
+    </mt:Comments>
+    <mt:If tag="EntryCommentCount" gt="$comments_per_page">
+    	<mt:Ignore><__trans phrase="The data is modified by the paginate script"></mt:Ignore>
+    	<ul id="comment-nav">
+        <li id="prev-comments">
+          <a href="javascript://" id="prev-comments-link" title="<__trans phrase="Previous">">&lt;&lt;&nbsp;<__trans phrase="Previous"></a>
+        </li>
+        <li id="num-comments"><span id="current-comments"></span></li>
+        <li id="next-comments">
+          <a href="javascript://" id="next-comments-link" title="<__trans phrase="Next">"><__trans phrase="Next">&nbsp;&gt;&gt;</a>
+        </li>
+      </ul>
+    </mt:If>
+    
+    <mt:Unless name="comment_preview">
+    <$mt:Include module="<__trans phrase="Comment Form">"$>
+    </mt:Unless>
+</div>
+</mt:IfCommentsActive>
+</__trans_section>

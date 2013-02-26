@@ -1,0 +1,155 @@
+<mt:setvarblock name="html_head" append="1">
+<__trans_section component="Link">
+<script type="text/javascript">
+var select_upload_file;
+function file_select() {
+    select_upload_file = 1;
+}
+function upload_csv() {
+    if ( getByID( 'import_file' ).style.display == 'none' ) {
+        getByID( 'import_file' ).style.display = 'inline';
+        return false;
+    }
+    if ( select_upload_file == 1 ) {
+        if ( window.confirm( '<__trans phrase="Are you sure you want to import link from CSV or OPML?">' ) ) {
+            var form = getByID( 'upload_link' );
+            form.submit();
+        }
+    } else {
+        alert( '<__trans phrase="Please select a file to upload.">' );
+    }
+    return false;
+}
+</script>
+</__trans_section>
+</mt:setvarblock>
+<mt:setvarblock name="system_msg" append="1">
+<__trans_section component="Link">
+    <div id="msg-container">
+    <mt:if name="dynamic_all">
+        <mt:setvar name="rebuild" value="">
+    <mt:elseif name="request.no_rebuild">
+        <mt:setvar name="rebuild" value="">
+    <mt:else>
+        <mt:if name="blog_id">
+            <mt:setvar name="rebuild" value="all">
+        <mt:else>
+            <mt:setvar name="rebuild" value="">
+        </mt:if>
+    </mt:if>
+    <mt:if name="request.saved">
+        <mtapp:statusmsg
+            id="saved"
+            class="success"
+            rebuild="$rebuild">
+            <__trans phrase="Your changes have been saved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.saved_deleted">
+        <mtapp:statusmsg
+            id="saved-deleted"
+            class="success"
+            rebuild="$rebuild">
+            <mt:Trans component="$component" phrase="The [_1] has been deleted from database." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+
+    <mt:if name="request.published">
+        <mtapp:statusmsg
+            id="saved-published"
+            class="success"
+            rebuild="all">
+                <__trans phrase="The Link has been published.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_published">
+        <mtapp:statusmsg
+            id="saved-not_published"
+            class="success">
+                <__trans phrase="The Link has not been published.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.unpublished">
+        <mtapp:statusmsg
+            id="saved-unpublished"
+            class="success"
+            rebuild="all">
+                <__trans phrase="The Link has been unpublished.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_unpublished">
+        <mtapp:statusmsg
+            id="saved-not_unpublished"
+            class="success">
+                <__trans phrase="The Link has not been unpublished.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.imported">
+        <mtapp:statusmsg
+            id="imported"
+            class="success">
+                <__trans phrase="The Link has been imported from File.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_imported">
+        <mtapp:statusmsg
+            id="not_imported"
+            class="error">
+                <__trans phrase="The Link has not been imported from File.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_broken">
+        <mtapp:statusmsg
+            id="not_broken"
+            class="success">
+                <__trans phrase="The broken Link was not found.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.broken">
+        <mtapp:statusmsg
+            id="broken"
+            class="error">
+                <mt:setvar name="message" value="">
+                <mt:if name="request.broken_links">
+                    <mt:setvarblock name="message" append="1"><mt:var name="request.broken_links"><__trans phrase=" Links"></mt:setvarblock>
+                </mt:if>
+                <mt:if name="request.broken_rsses">
+                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_rsses"><__trans phrase=" RSS"></mt:setvarblock>
+                </mt:if>
+                <mt:if name="request.broken_images">
+                    <mt:setvarblock name="message" append="1"><mt:if name="message">, </mt:if><mt:var name="request.broken_images"><__trans phrase=" Images"></mt:setvarblock>
+                </mt:if>
+                <__trans phrase="The broken Link was found."> (<mt:var name="message" escape="html">)
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.add_tags_to_link">
+        <mtapp:statusmsg
+            id="add_tags_to_link"
+            class="success">
+                <__trans phrase="Added Tags to selected Link.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_add_tags_to_link">
+        <mtapp:statusmsg
+            id="not_add_tags_to_link"
+            class="error">
+                <__trans phrase="Not added Tags to selected Link.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.remove_tags_to_link">
+        <mtapp:statusmsg
+            id="remove_tags_to_link"
+            class="success">
+                <__trans phrase="Remove Tags from selected Link.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_remove_tags_to_link">
+        <mtapp:statusmsg
+            id="not_remove_tags_to_link"
+            class="error">
+                <__trans phrase="Not removed Tags from selected Link.">
+        </mtapp:statusmsg>
+    </mt:if>
+    </div>
+</__trans_section>
+</mt:setvarblock>

@@ -1,0 +1,49 @@
+<?php
+    $blog_id = <$mt:BlogID$>;
+    $mt_dir = '<$mt:CGIServerPath encode_php="q"$>';
+    require_once $mt_dir . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'mt.php';
+    $mt = MT::get_instance( $blog_id, '<$mt:ConfigFile encode_php="q"$>' );
+    set_error_handler( array( &$mt, 'error_handler' ) );
+    $ctx =& $mt->context();
+    $plugin_data = $mt->db()->fetch_plugin_data( 'members', 'configuration' );
+    $plugin_path = '<$mt:PluginPath component="DynamicMTML" folder="php" encode_php="q"$>';
+    require_once ( $plugin_path . 'dynamicmtml.util.php' );
+    $timeout = $plugin_data[ 'members_session_timeout' ] ? 3600
+                                                         : $plugin_data[ 'members_session_timeout' ];
+    $client_author = get_author( $ctx, $timeout, 'view' );
+    if ( isset ( $client_author ) ) {
+        $goto = $_GET[ 'goto' ];
+        if ( $goto != '' ) {
+            $goto = encode_php( $goto );
+            header( "HTTP/1.1 302 Found" );
+            header( "Location: " . $goto );
+            exit();
+        }
+    }
+    echo "<h1>Forbidden</h1>";
+    exit();
+    function encode_php( $text, $type ) {
+        switch ( $type ) {
+            case 'qq':
+                $out = encode_phphere( $text );
+                $out = str_replace( '"', '\"', $out );
+                break;
+            case 'here':
+                $out = encode_phphere( $text );
+                break;
+            default:  // 'q'
+                $out = str_replace( "\\", "\\\\", $text );
+                $out = str_replace( "'", "\\'", $out );
+                break;
+        }
+        return $out;
+    }
+    function encode_phphere( $text ) {
+        $out = str_replace( "\\", "\\\\", $text );
+        $out = str_replace( '$', '\$', $out );
+        $out = str_replace( "\n", '\n', $out );
+        $out = str_replace( "\r", '\r', $out );
+        $out = str_replace( "\t", '\t', $out);
+        return $out;
+    }
+?>

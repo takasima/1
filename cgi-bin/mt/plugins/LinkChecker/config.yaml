@@ -1,0 +1,61 @@
+name: Link Checker
+id: LinkChecker
+key: linkchecker
+version: 3.4
+schema_version: 1.1
+description: '<__trans phrase="Do link check after rebuilt.">'
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+l10n_class: LinkChecker::L10N
+system_config_template: linkchecker_config.tmpl
+settings:
+    index:
+        default: 'index.html,index.php'
+    outlink:
+        default: 1
+    innerlink:
+        default: 1
+    cgipath:
+    do_by_task:
+    notifi_send2:
+    is_error:
+        default: 1
+    cgi_bin:
+    cgi_rel:
+    doc_root:
+    path_alias:
+    lc_exclude_suffix:
+
+object_types:
+    temporarylog: LinkChecker::TemporaryLog
+applications:
+    cms:
+        methods:
+            linkcheck: $linkchecker::LinkChecker::CMS::_mode_linkcheck
+upgrade_functions:
+    add_mail_tmpl_nv:
+        priority: 9.3
+        code: $linkchecker::LinkChecker::Plugin::_add_mail_tmpl
+    add_mail_tmpl:
+        version_limit: 5.1
+        priority: 9.3
+        code: $linkchecker::LinkChecker::Plugin::_add_mail_tmpl
+callbacks:
+    build_page:
+        handler: $linkchecker::LinkChecker::Plugin::_linkcheck
+        priority: 10
+    build_dynamic: $linkchecker::LinkChecker::Plugin::_build_dynamic
+    MT::App::CMS::template_source.rebuild_confirm: $linkchecker::LinkChecker::Plugin::_cb_ts_rebuild_confirm
+    MT::App::CMS::template_param.rebuild_confirm: $linkchecker::LinkChecker::Plugin::_cb_tp_rebuild_confirm
+    MT::App::CMS::template_source.rebuilding: $linkchecker::LinkChecker::Plugin::_cb_ts_rebuilding
+    MT::App::CMS::template_param.rebuilding: $linkchecker::LinkChecker::Plugin::_cb_tp_rebuilding
+    MT::App::CMS::template_source.rebuilt: $linkchecker::LinkChecker::Plugin::_cb_ts_rebuilt
+    MT::App::CMS::template_param.rebuilt: $linkchecker::LinkChecker::Plugin::_cb_tp_rebuilt
+tasks:
+    linkcheckertask:
+        label: Link Check
+        frequency: 10
+        code: $linkchecker::LinkChecker::Plugin::_link_check_task
+backup_instructions:
+    temporarylog:
+        skip: 1

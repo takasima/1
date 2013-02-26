@@ -1,0 +1,46 @@
+<mtapp:widget id="rebuild_shortcut" class="widget rebuild-shortcut-widget" label="<__trans phrase="_REBUILD_PUBLISH">" can_close="1">
+<div style="text-align:center">
+<mt:if name="scope_type" like="user|system">
+    <form>
+    <select name="quick_rebuild" id="quick_rebuild" style="width:165px;">
+    <mt:WebSites>
+    <mt:IfUserCan permission="rebuild"><option value="<mt:BlogID>">[W] <mt:BlogName escape="html" bt_trim_to="15"></option></mt:IfUserCan>
+    <mt:WebsiteHasBlog>
+    <mt:Blogs include_blogs="children">
+    <mt:IfUserCan permission="rebuild"><option value="<mt:BlogID>">[B] <mt:BlogName escape="html" bt_trim_to="15"></option></mt:IfUserCan>
+    </mt:Blogs>
+    </mt:WebsiteHasBlog>
+    </mt:WebSites>
+    </select>
+    <button type="submit" class="button" onclick="open_rebuild_confirm(document.getElementById('quick_rebuild').value)" ><__trans phrase="_REBUILD_PUBLISH"></button>
+    </form>
+</mt:if>
+<mt:if name="scope_type" eq="website">
+    <form>
+    <select name="quick_rebuild" id="quick_rebuild" style="width:165px;">
+    <mt:IfUserCan permission="rebuild"><option value="<mt:BlogID>">[W] <mt:BlogName escape="html" bt_trim_to="15"></option></mt:IfUserCan>
+    <mt:WebsiteHasBlog>
+    <mt:Blogs include_blogs="children">
+    <mt:IfUserCan permission="rebuild"><option value="<mt:BlogID>">[B] <mt:BlogName escape="html" bt_trim_to="15"></option></mt:IfUserCan>
+    </mt:Blogs>
+    </mt:WebsiteHasBlog>
+    </mt:WebSites>
+    </select>
+    <button type="submit" class="button" onclick="open_rebuild_confirm(document.getElementById('quick_rebuild').value)" ><__trans phrase="_REBUILD_PUBLISH"></button>
+    </form>
+</mt:if>
+<mt:if name="scope_type" eq="blog">
+    <form>
+    <select name="quick_rebuild" id="quick_rebuild" style="width:165px;">
+    <mt:IfUserCan permission="rebuild"><option value="<mt:BlogID>">[B] <mt:BlogName escape="html" bt_trim_to="15"></option></mt:IfUserCan>
+    </select>
+    <button type="submit" class="button" onclick="open_rebuild_confirm(document.getElementById('quick_rebuild').value)" ><__trans phrase="_REBUILD_PUBLISH"></button>
+    </form>
+</mt:if>
+<script type="text/javascript">
+function open_rebuild_confirm ( blog_id ) {
+    window.open('<mt:var name="script_url">?__mode=rebuild_confirm&blog_id=' + blog_id , 'rebuild_confirm', 'width=400, height=400, menubar=no, toolbar=no, scrollbars=no');
+}
+</script>
+</div>
+</mtapp:widget>

@@ -1,0 +1,436 @@
+@charset "UTF-8";
+@import "default.css";
+
+/*============================================================**
+        Force overwrite Default style
+**============================================================*/
+
+
+.bt-body .jstree li {
+    min-height: 22px !important;
+    line-height: 22px !important;
+    margin-left: 22px !important;
+    min-width: 22px !important;
+}
+.bt-body .jstree-rtl li {
+    margin-right: 22px !important;
+}
+
+.bt-body .jstree > ul > li {
+    margin-left: 0 !important;
+}
+
+.bt-body .jstree ins {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+.bt-body .jstree a {
+    line-height: 20px !important;
+    height: 20px !important;
+}
+
+.bt-body .jstree .inactive > a {
+    color: #999;
+}
+
+.bt-body .jstree a > ins {
+    height: 20px !important;
+    width: 20px !important;
+}
+
+.bt-body .jstree-default li,
+.bt-body .jstree-default ins { background-image: url(../images/d.gif);}
+.bt-body .jstree-default li { background-position: -100px 0; }
+.bt-body .jstree-default .jstree-open > ins { background-position: -80px -4px; }
+.bt-body .jstree-default .jstree-closed > ins { background-position: -60px -4px; }
+.bt-body .jstree-default .jstree-leaf > ins { background-position: -40px -4px; }
+.bt-body .jstree-default a .jstree-icon { background-position: -63px -23px; }
+.bt-body .jstree-default .jstree-no-dots .jstree-open > ins { background-position: -20px -4px; }
+.bt-body .jstree-default .jstree-no-dots .jstree-closed > ins { background-position: 0 -4px; }
+
+
+/*============================================================**
+       home
+**============================================================*/
+
+.bt-body .home {
+    line-height: 22px;
+    padding: 0;
+    font-weight: bold;
+    white-space: nowrap;
+    min-height: 22px !important;
+    line-height: 22px !important;
+    min-width: 22px !important;
+}
+
+.bt-body .home > a ins {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 3px 0 0;
+    background: url(../images/blog_open.gif) no-repeat 50% 50%;
+}
+
+.bt-body.hide_tree .home > a ins {
+    background: url(../images/blog_close.gif) no-repeat 50% 50%;
+}
+
+.bt-body.bt-body-website .home > a:first-child ins {
+/*    background: url(../images/web_open.gif) no-repeat 50% 50%;*/
+    background: url(../images/home_open.gif) no-repeat 50% 50%;
+}
+
+.bt-body.bt-body-website.hide_tree .home > a:first-child ins {
+/*    background: url(../images/web_close.gif) no-repeat 50% 50%;*/
+    background: url(../images/home.gif) no-repeat 50% 50%;
+}
+
+.bt-body .home a {
+    text-decoration: none;
+    line-height: 20px;
+}
+
+.bt-body .home a {
+    cursor: pointer;
+}
+
+.bt-body .home a.clickable {
+    cursor: default;
+}
+
+.bt-body .home > a * {
+    text-decoration: none;
+}
+/*
+.bt-body .home.show_meta .meta {
+    display: block !important;
+}
+*/
+.bt-body .home .meta {
+    font-weight: normal;
+    line-height: 20px;
+}
+
+.bt-body .home .meta a {
+    text-decoration: none;
+}
+
+.bt-body .home .meta ins {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    height: 20px !important;
+    width: 20px !important;
+    margin-right: 0;
+}
+
+.bt-body .home .meta .setting .jstree-icon {
+    background: url(../images/setting.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .edit.edit-entry .jstree-icon {
+    background: url(../images/blog_newpage.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .edit.edit-page .jstree-icon {
+    background: url(../images/web_newpage.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .edit.edit-category .jstree-icon {
+    background: url(../images/blog_new.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .edit.edit-folder .jstree-icon {
+    background: url(../images/folder_new.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .list-template .jstree-icon {
+    background: url(../images/template_edit.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .home .meta .upload .jstree-icon {
+    background: url(../images/normal_new.gif) no-repeat 50% 50% !important;
+}
+
+/*============================================================**
+       meta styles
+**============================================================*/
+
+.bt-body .meta {
+    display: none;
+/*    background: url(../images/arrow.gif) no-repeat 0 50%;*/
+    padding-left: 0;
+    margin-left: 5px;
+}
+
+.bt-body .meta .meta_label {
+    display: none;
+}
+
+.bt-body .show_meta > .meta {
+    display: inline;
+}
+
+.bt-body .meta .edit .jstree-icon {
+    background: url(../../../images/status_icons/draft.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .meta .duplicate .jstree-icon {
+    background: url(../images/duplicate.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .meta .view .jstree-icon {
+    background: url(../../../images/status_icons/view.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .category .meta .new .jstree-icon {
+    background: url(../images/blog_newpage.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .folder .meta .new .jstree-icon {
+    background: url(../images/web_newpage.gif) no-repeat 50% 50% !important;
+}
+
+.bt-body .meta .upload .jstree-icon {
+    background: url(../images/normal_new.gif) no-repeat 50% 50% !important;
+}
+
+
+
+
+.bt-body .show_meta .meta a {
+    color: #507EA4;
+}
+
+.bt-body .show_meta .meta a:hover {
+    color: #839B5C;
+}
+
+.bt-body .show_meta > a .label {
+    background: #BEEBFF;
+}
+
+
+/*============================================================**
+       icon styles
+**============================================================*/
+
+/*============================================**
+       category
+**============================================*/
+
+.bt-body .jstree-default .category > a ins.jstree-icon {
+    background: url(../images/category.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .category.jstree-open > a ins.jstree-icon {
+    background: url(../images/category_open.gif) no-repeat 50% 50%;
+}
+
+/*-- inactive --*/
+
+.bt-body .jstree-default .category.inactive > a ins.jstree-icon {
+    background: url(../images/g_category.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .category.jstree-open.inactive > a ins.jstree-icon {
+    background: url(../images/g_category_open.gif) no-repeat 50% 50%;
+}
+
+/*============================================**
+       folder
+**============================================*/
+
+
+.bt-body .jstree-default .folder > a ins.jstree-icon {
+    background: url(../images/folder.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .folder.jstree-open > a ins.jstree-icon{
+    background: url(../images/folder_open.gif) no-repeat 50% 50%;
+}
+
+/*-- inactive --*/
+
+.bt-body .jstree-default .folder.inactive > a ins.jstree-icon {
+    background: url(../images/g_folder.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .folder.jstree-open.inactive > a ins.jstree-icon{
+    background: url(../images/g_folder_open.gif) no-repeat 50% 50%;
+}
+
+/*============================================**
+       entry
+**============================================*/
+
+.bt-body .jstree-default .entry > a ins.jstree-icon {
+    background: url(../images/blogentry.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.future > a ins.jstree-icon {
+    background: url(../images/blogtime.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.approval > a ins.jstree-icon {
+    background: url(../images/blogstar.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.draft > a ins.jstree-icon {
+    background: url(../images/blogedit.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.more > a ins.jstree-icon {
+    background: url(../images/blogmore.gif) no-repeat 50% 50%;
+}
+
+/*-- inactive --*/
+
+.bt-body .jstree-default .entry.inactive > a ins.jstree-icon {
+    background: url(../images/g_blogentry.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.future.inactive > a ins.jstree-icon {
+    background: url(../images/g_blogtime.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.approval.inactive > a ins.jstree-icon {
+    background: url(../images/g_blogstar.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .entry.draft.inactive > a ins.jstree-icon {
+    background: url(../images/g_blogedit.gif) no-repeat 50% 50%;
+}
+
+/*============================================**
+       page
+**============================================*/
+
+.bt-body .jstree-default .page > a ins.jstree-icon {
+    background: url(../images/webentry.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.future > a ins.jstree-icon {
+    background: url(../images/webtime.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.approval > a ins.jstree-icon {
+    background: url(../images/webstar.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.draft > a ins.jstree-icon {
+    background: url(../images/webedit.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.more > a ins.jstree-icon {
+    background: url(../images/webmore.gif) no-repeat 50% 50%;
+}
+
+/*-- inactive --*/
+
+.bt-body .jstree-default .page.inactive > a ins.jstree-icon {
+    background: url(../images/g_webentry.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.future.inactive > a ins.jstree-icon {
+    background: url(../images/g_webtime.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.approval.inactive > a ins.jstree-icon {
+    background: url(../images/g_webstar.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .page.draft.inactive > a ins.jstree-icon {
+    background: url(../images/g_webedit.gif) no-repeat 50% 50%;
+}
+
+/*============================================**
+       asset
+**============================================*/
+
+.bt-body .jstree-default .asset > a ins.jstree-icon {
+    background: url(../images/normal.gif) no-repeat 50% 50%;
+}
+
+.bt-body .jstree-default .asset.ext_doc > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/doc_sm.gif)}
+.bt-body .jstree-default .asset.ext_eps > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/eps_sm.gif)}
+.bt-body .jstree-default .asset.ext_fla > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/fla_sm.gif)}
+.bt-body .jstree-default .asset.ext_gif > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/gif_sm.gif)}
+.bt-body .jstree-default .asset.ext_jpg > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/jpg_sm.gif)}
+.bt-body .jstree-default .asset.ext_mp3 > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/mp3_sm.gif)}
+.bt-body .jstree-default .asset.ext_mpeg > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/mpeg_sm.gif)}
+.bt-body .jstree-default .asset.ext_pdf > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/pdf_sm.gif)}
+.bt-body .jstree-default .asset.ext_png > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/png_sm.gif)}
+.bt-body .jstree-default .asset.ext_ppt > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/ppt_sm.gif)}
+.bt-body .jstree-default .asset.ext_psd > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/psd_sm.gif)}
+.bt-body .jstree-default .asset.ext_txt > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/txt_sm.gif)}
+.bt-body .jstree-default .asset.ext_xls > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/xls_sm.gif)}
+.bt-body .jstree-default .asset.ext_zip > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/zip_sm.gif)}
+
+.bt-body .jstree-default .asset.ext_flv > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/mpeg_sm.gif)}
+.bt-body .jstree-default .asset.ext_mov > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/mpeg_sm.gif)}
+.bt-body .jstree-default .asset.ext_avi > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/mpeg_sm.gif)}
+.bt-body .jstree-default .asset.ext_swf > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/fla_sm.gif)}
+.bt-body .jstree-default .asset.ext_jpeg > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/jpg_sm.gif)}
+
+.bt-body .jstree-default .asset.ext_docx > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/doc_sm.gif)}
+.bt-body .jstree-default .asset.ext_pptx > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/ppt_sm.gif)}
+.bt-body .jstree-default .asset.ext_xlsx > a ins.jstree-icon {background-image: url(../../../images/filetype_icons/xls_sm.gif)}
+
+
+/*============================================================**
+       more
+**============================================================*/
+
+.bt-body .jstree-default .more > a {
+    cursor: pointer;
+}
+
+
+/*============================================================**
+       etc
+**============================================================*/
+
+#blog_tree-container {
+    padding: 5px;
+}
+
+.bt-body {
+    margin-bottom: 5px;
+}
+
+.bt-body.is_child {
+    padding-left: 22px;
+}
+
+.bt-body a {
+    cursor: default;
+}
+
+.bt-body .meta a {
+    cursor: pointer;
+}
+
+.bt-body.hide_tree div.tree {
+    display: none;
+}
+
+
+
+
+/*
+.bt-body li {
+    position: relative;
+}
+
+.bt-body .meta {
+    position: absolute;
+    right: 0;
+}
+
+.bt-body .show_meta {
+    background-color: #FEFEFE !important;
+}
+*/

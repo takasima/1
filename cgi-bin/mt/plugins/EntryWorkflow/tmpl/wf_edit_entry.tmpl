@@ -1,0 +1,18 @@
+<mt:if name="object_type" eq="entry">
+<mt:IfAuthorPostLimitInBlog blog_id="$blog_id">
+<mt:setvarblock name="html_head" append="1">
+<__trans_section component="EntryWorkflow">
+<script type="text/javascript">
+jQuery(function(){
+    jQuery('.actions-bar button[type="submit"]').click(function(){
+        if(!jQuery('input#category-ids').val()){
+            alert('<__trans phrase="Select categories">');
+            return false;
+        }
+    });
+})
+</script>
+</__trans_section>
+</mt:setvarblock>
+</mt:IfAuthorPostLimitInBlog>
+</mt:if>

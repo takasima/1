@@ -1,0 +1,33 @@
+<__trans_section component="community">
+<mt:If name="comment_confirmation">
+    <$mt:Var name="page_title" value="<__trans phrase="Reply Submitted">"$>
+    <$mt:Var name="message" value="<p><__trans phrase="Your reply has been accepted."></p>"$>
+<mt:Else name="comment_pending">
+    <$mt:Var name="page_title" value="<__trans phrase="Thank you for replying.">"$>
+    <$mt:Var name="message" value="<p><__trans phrase="Your reply has been received and held for approval by the forum administrator."></p>"$>
+<mt:Else name="comment_error">
+    <$mt:Var name="page_title" value="<__trans phrase="Reply Submission Error">"$>
+    <mt:SetVarBlock name="message"><p><__trans phrase="Your reply submission failed for the following reasons: [_1]" params="<$mt:ErrorMessage$>"></p></mt:SetVarBlock>
+</mt:If>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+<mt:SetVarBlock name="html_head"> 
+    <script type="text/javascript"> 
+    /* <![CDATA[ */ 
+    var user = <$mt:UserSessionState$>; 
+    var is_preview = true; 
+    /* ]]> */ 
+    </script> 
+</mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">"$>
+
+<div class="content-header">
+    <h1 id="page-title"><$mt:Var name="page_title"$></h1>
+</div>
+
+<$mt:Var name="message"$>
+
+<p><__trans phrase="Return to the <a href="[_1]">original topic</a>." params="<mt:If name="comment_error">javascript:history.back()<mt:Else><$mt:EntryLink$></mt:If>"></p>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

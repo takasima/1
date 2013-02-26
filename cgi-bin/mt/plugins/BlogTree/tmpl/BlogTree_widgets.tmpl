@@ -1,0 +1,123 @@
+<__trans_section component="BlogTree">
+<mt:setvarblock name="html_head" append="1">
+    <link rel="stylesheet" href="<$mt:var name="static_uri"$>plugins/BlogTree/css/BlogTree.css" type="text/css" />
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/BlogTree/lib/jstree/jquery.jstree.js"></script>
+    <script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/BlogTree/js/BlogTree.js"></script>
+    <$MTBlogTreeDashboardCSS$>
+    <__trans_section component="BlogTree">
+    <script type="text/javascript">
+        BlogTree.trans = new Object();
+        BlogTree.trans['Hide_Tree'] = '<__trans phrase="Hide Tree">';
+        BlogTree.trans['Show_Tree'] = '<__trans phrase="Show Tree">';
+    </script>
+    </__trans_section>
+</mt:setvarblock>
+
+<mt:setvartemplate name="tree_container">
+    <mt:blogid setvar="current_blog_id">
+    <mtif name="current_blog_id">
+        <mt:IfWebsite>
+            <mt:SetVarBlock name="blog_tree_label"><$mt:BlogName trimj_to="20","..." esscape="html"$></mt:SetVarBlock>
+            <mtelse>
+                <mt:SetVarBlock name="blog_tree_label"><$mt:BlogName trimj_to="20","..." esscape="html"$></mt:SetVarBlock>
+            </mt:else>
+        </mt:IfWebsite>
+        <mt:else>
+            <mt:if name="scope_type" eq="user">
+                <mt:SetVarBlock name="blog_tree_label"><__trans phrase="User Dashboard"></mt:SetVarBlock>
+                <mt:else>
+                    <mt:SetVarBlock name="blog_tree_label"><__trans phrase="System"></mt:SetVarBlock>
+                </mt:else>
+            </mt:if>
+        </mt:else>
+    </mt:if>
+    <div class="bt-body<mt:if name="tree_is_child"> is_child</mt:if><mt:if name="no_load_tree"> hide_tree</mt:if> <mt:IfWebsite>bt-body-website<mt:else>bt-body-blog</mt:else></mt:IfWebsite>" id="bt-body-<mt:var name="current_blog_id">">
+        <div class="home active">
+            <a<mt:if name="no_load_tree"> title="<__trans phrase="Show Tree">" class="clickable"</mt:if>><ins class="jstree-icon">&nbsp;</ins></a><a href="<mt:var name="script_url">?__mode=dashboard&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Go to dashboard">"><mt:var name="blog_tree_label"></a>
+            <span class="meta">
+                <span class="setting"><a href="<mt:var name="script_url">?__mode=cfg_prefs&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Settings">"><span class="meta_label"><__trans phrase="Settings"></span></a></span>
+                <mt:IfWebsite><mt:else><span class="edit edit-entry"><a href="<mt:var name="script_url">?__mode=view&amp;_type=entry&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Create Entry">"><span class="meta_label"><__trans phrase="Create Entry"></span></a></span></mt:else></mt:IfWebsite>
+                <span class="edit edit-page"><a href="<mt:var name="script_url">?__mode=view&amp;_type=page&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Create Page">"><span class="meta_label"><__trans phrase="Create Page"></span></a></span>
+                <mt:IfWebsite><mt:else><span class="edit edit-category"><a href="<mt:var name="script_url">?__mode=view&amp;_type=category&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Create Category">"><span class="meta_label"><__trans phrase="Create Category"></span></a></span></mt:else></mt:IfWebsite>
+                <span class="edit edit-folder"><a href="<mt:var name="script_url">?__mode=view&amp;_type=folder&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Create Folder">"><span class="meta_label"><__trans phrase="Create Folder"></span></a></span>
+                <MTIfUserHasPermission permission="upload">
+                <span class="upload"><a href="<MTvar name="script_url">?__mode=start_upload&amp;blog_id=<$MTBlogID$>&amp;dialog=1&amp;extra_path=&amp;blogtree=1" onclick="BlogTree.open_upload_dialog_root(this,'<mt:var name="current_blog_id" escape="html">');return false;" title="<__trans phrase="Upload file">"><span class="meta_label"><__trans phrase="Upload file"></span></a></span>
+                </MTIfUserHasPermission>
+                <span class="list-template"><a href="<mt:var name="script_url">?__mode=list_template&amp;blog_id=<mt:var name="current_blog_id" escape="html">" title="<__trans phrase="Edit Template">"><span class="meta_label"><__trans phrase="Edit Template"></span></a></span>
+                <span class="view"><a href="<mt:blogurl escape="html">" target="_blank" title="<__trans phrase="View">"><span class="meta_label"><__trans phrase="View"></span></a></span>
+            </span>
+        </div>
+        <div id="tree_<mt:var name="current_blog_id">" class="tree"></div>
+        <script type="text/javascript">
+        jQuery(function () {
+            var target_ele = 'tree_<mt:var name="current_blog_id">';
+            var load_url = ScriptURI + '?__mode=blogtree&_type=open_directory&blog_id=<mt:var name="current_blog_id" escape="js">';
+            <mt:unless name="no_load_tree">
+                BlogTree.set_tree(target_ele,load_url);
+                <mt:else>
+                jQuery('#bt-body-<mt:var name="current_blog_id"> .home .clickable').one('click',function(){
+                    BlogTree.set_tree(target_ele,load_url);
+                })
+                </mt:else>
+            </mt:unless>
+        });
+        </script>
+    </div>
+</mt:setvartemplate>
+
+<mtapp:widget
+    class="widget blog_tree-widget"
+    can_close="1"
+    label="<__trans phrase="Blog Tree">">
+        <div id="blog_tree-container">
+            <mt:unless name="blog_id">
+                <mt:Websites>
+                    <mtsetvar name="no_load_tree" value="1">
+                    <mtsetvar name="tree_is_child" value="0">
+                    <mt:setvar name="editable" value="0">
+                    <MTIfUserCanCreateEntry><mt:setvar name="editable" op="++"></MTIfUserCanCreateEntry>
+                    <MTIfUserCanCreatePage><mt:setvar name="editable" op="++"></MTIfUserCanCreatePage>
+                    <mt:if name="editable">
+                        <$MTSetVar name="is_website_children" value=""$>
+                        <mt:var name="tree_container">
+                    </mt:if>
+                    <MTWebsiteHasBlog>
+                        <MTBlogs blog_ids="children">
+                            <mtsetvar name="no_load_tree" value="1">
+                            <mtsetvar name="tree_is_child" value="1">
+                            <mt:setvar name="editable" value="0">
+                            <MTIfUserCanCreateEntry><mt:setvar name="editable" op="++"></MTIfUserCanCreateEntry>
+                            <MTIfUserCanCreatePage><mt:setvar name="editable" op="++"></MTIfUserCanCreatePage>
+                            <mt:if name="editable">
+                                <mt:var name="tree_container">
+                            </mt:if>
+                        </MTBlogs>
+                    </MTWebsiteHasBlog>
+                </mt:Websites>
+                <mt:else>
+                    <mtsetvar name="tree_is_child" value="0">
+                    <mt:setvar name="editable" value="0">
+                    <MTIfUserCanCreateEntry><mt:setvar name="editable" op="++"></MTIfUserCanCreateEntry>
+                    <MTIfUserCanCreatePage><mt:setvar name="editable" op="++"></MTIfUserCanCreatePage>
+                    <mt:if name="editable">
+                        <MTCMSBlogContext>
+                            <mt:var name="tree_container">
+                        </MTCMSBlogContext>
+                    </mt:if>
+                    <MTWebsiteHasBlog>
+                        <mtsetvar name="no_load_tree" value="1">
+                        <mtsetvar name="tree_is_child" value="1">
+                        <MTBlogs blog_ids="children">
+                            <mt:setvar name="editable" value="0">
+                            <MTIfUserCanCreateEntry><mt:setvar name="editable" op="++"></MTIfUserCanCreateEntry>
+                            <MTIfUserCanCreatePage><mt:setvar name="editable" op="++"></MTIfUserCanCreatePage>
+                            <mt:if name="editable">
+                                <mt:var name="tree_container">
+                            </mt:if>
+                        </MTBlogs>
+                    </MTWebsiteHasBlog>
+                </mt:else>
+            </mt:unless>
+        </div>
+</mtapp:widget>
+</__trans_section>

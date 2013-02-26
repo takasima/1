@@ -1,0 +1,39 @@
+<MTIfDynamic><MTElse>
+<MTIgnore>Login check</MTIgnore>
+<mtml tag="mt:BlogIsMembersOnly" params='setvar="is_members_site"'>
+<mtml tag="mt:If" params='name="is_members_site"'>
+<mtml tag="mt:SetVar" params='name="requires_login" value="1"'>
+<mtml tag="mt:IfLogin">
+<mtml tag="mt:IfUserHasPermission" params='permission="view"'>
+<mtml tag="mt:SetVar" params='name="requires_login" value="0"'>
+<mtml tag="/mt:IfUserHasPermission">
+<mtml tag="/mt:IfLogin">
+<mtml tag="/mt:If">
+<mtml tag="mt:If" params='name="requires_login"'>
+<mtml tag="mt:Include" params='module="<__trans phrase="SP-Login">"'>
+<mtml tag="mt:else">
+</MTElse></MTIfDynamic>
+<MTSetVars>
+<MTBlogParentWebsite>
+website_id=<$MTWebsiteID$>
+website_url=<$MTWebsiteURL$>
+website_name=<$MTWebsiteName$>
+</MTBlogParentWebsite>
+</MTSetVars>
+<!DOCTYPE HTML>
+<html lang="<$MTBlogLanguage$>" dir="ltr">
+<head>
+<meta charset="<$MTPublishCharset$>">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+<title><$MTGetVar name="page_title" escape="html"$><MTUnless name="body_class" eq="mt-main-index"> | <$MTGetVar name="website_name" escape="html"$></MTUnless></title>
+<MTIf name="description"><meta name="description" content="<$MTGetVar name="description"$>"></MTIf>
+<MTIf name="keywords"><meta name="keywords" content="<$MTGetVar name="keywords"$>"></MTIf>
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="<$MTLink template="<__trans phrase="Feed - Recent Entries">"$>">
+<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(import.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+<script src="<$MTLink template="JavaScript(jquery.js)"$>"></script>
+<script src="<$MTLink template="JavaScript"$>"></script>
+<script src="<$MTLink template="<__trans phrase="SP-JavaScript(main.js)">"$>"></script>
+<$MTGetVar name="html_head"$>
+<$MTSetVar name="html_head" value=""$>
+</head>
+<body<$MTGetVar name="preview"$><$MTSetVar name="html_head" value=""$>>

@@ -1,0 +1,11 @@
+<mtml tag="mt:IfUserAgent" params='wants="keitai" trim="1"'>
+<$MTInclude module="<__trans phrase="Mobile-Main Index">"$>
+<mtml tag="mt:else">
+    <mtml tag="mt:IfUserAgent" params='wants="SmartPhone"'>
+<$MTInclude module="<__trans phrase="SP-Main Index">"$>
+    <mtml tag="mt:else">
+<$MTInclude module="<__trans phrase="PC-Main Index">"$>
+    <mtml tag="/mt:else">
+    <mtml tag="/mt:IfUserAgent">
+<mtml tag="/mt:else">
+<mtml tag="/mt:IfUserAgent">

@@ -1,0 +1,333 @@
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_is_active&quot;
+    label=&quot;&lt;__trans phrase=&quot;Enable&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_is_active&quot; name=&quot;is_active&quot;&lt;mt:if name=&quot;is_active&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; value=&quot;1&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;checkbox&quot; value=&quot;0&quot; /&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mt:IfNonSystemScope&gt;
+&lt;mt:else&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_menu_order&quot;
+    label=&quot;&lt;__trans phrase=&quot;Menu Order&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_menu_order&quot; name=&quot;menu_order&quot; value=&quot;&lt;mt:var name=&quot;menu_order&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;/mt:else&gt;
+&lt;/mt:IfNonSystemScope&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_label_en&quot;
+    label=&quot;&lt;__trans phrase=&quot;Label(en)&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_label_en&quot; name=&quot;label_en&quot; value=&quot;&lt;mt:var name=&quot;label_en&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_label_plural&quot;
+    label=&quot;&lt;__trans phrase=&quot;Label plural&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_label_plural&quot; name=&quot;label_plural&quot; value=&quot;&lt;mt:var name=&quot;label_plural&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_label_ja&quot;
+    label=&quot;&lt;__trans phrase=&quot;Label(ja)&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;<mt:var name="class">_label_ja&quot; name=&quot;label_ja&quot; value=&quot;&lt;mt:var name=&quot;label_ja&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mt:IfNonSystemScope&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_field_order&quot;
+    label=&quot;&lt;__trans phrase=&quot;Field Order&quot;&gt;&quot;&gt;
+&lt;ul id=&quot;<mt:var name="class">_sortable&quot;&gt;
+&lt;mt:var name=&quot;request.blog_id&quot; escape=&quot;html&quot; setvar=&quot;blog_id&quot;&gt;
+&lt;MTSetContext blog_id=&quot;$blog_id&quot;&gt;
+&lt;MT<mt:var name="plugin_id">CustomFields&gt;
+&lt;li id=&quot;<mt:var name="class">_&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;&quot;&gt;&lt;img style=&quot;cursor:move; vertical-align:middle&quot; src=&quot;&lt;mt:var name=&quot;static_uri&quot;&gt;images/status_icons/move.gif&quot; width=&quot;9&quot; height=&quot;9&quot; alt=&quot;&quot; /&gt;
+&lt;span style=&quot;vertical-align:middle&quot;&gt;&lt;MT<mt:var name="plugin_id">CustomFieldName escape=&quot;html&quot;&gt; (&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;)&lt;/span&gt;&lt;/li&gt;
+&lt;/MT<mt:var name="plugin_id">CustomFields&gt;
+&lt;/MTSetContext&gt;
+&lt;/ul&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;field_order&quot; id=&quot;<mt:var name="class">_field_order&quot; value=&quot;&lt;mt:var name=&quot;field_order&quot; escape=&quot;html&quot;&gt;&quot; /&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_display_options&quot;
+    label=&quot;&lt;__trans phrase=&quot;Display Options&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;MTSetContext blog_id=&quot;$blog_id&quot;&gt;
+&lt;div id=&quot;<mt:var name="class">_opt&quot;&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input id=&quot;<mt:var name="class">_display_options_cb_name&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; type=&quot;checkbox&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;name&quot; /&gt;
+&lt;__trans phrase=&quot;Name&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_body&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;body&quot; /&gt;
+&lt;__trans phrase=&quot;Body&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;MT<mt:var name="plugin_id">CustomFields&gt;
+&lt;div id=&quot;<mt:var name="class">_opt_&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;&quot;&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_customfield_&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;&quot;  onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;customfield_&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;&quot; /&gt;
+&lt;MT<mt:var name="plugin_id">CustomFieldName escape=&quot;html&quot;&gt; (&lt;MTCustomFieldColumnValue column=&quot;basename&quot; escape=&quot;html&quot;&gt;)
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;/MT<mt:var name="plugin_id">CustomFields&gt;
+&lt;/MTSetContext&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_keywords&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;keywords&quot; /&gt;
+&lt;__trans phrase=&quot;Keywords&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_tags&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;tags&quot; /&gt;
+&lt;__trans phrase=&quot;Tags&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_authored_on_date&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;authored_on_date&quot; /&gt;
+&lt;__trans phrase=&quot;Publish Date&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_period_on_date&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;period_on_date&quot; /&gt;
+&lt;__trans phrase=&quot;End date&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_basename&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;basename&quot; /&gt;
+&lt;__trans phrase=&quot;Basename&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;<mt:var name="class">_display_options_cb_folder&quot; onchange=&quot;set_<mt:var name="class">_display_options();&quot; name=&quot;<mt:var name="class">_display_options_cb&quot; value=&quot;folder&quot; /&gt;
+&lt;__trans phrase=&quot;Folder&quot;&gt;
+&lt;/label&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;display_options&quot; id=&quot;<mt:var name="class">_display_options&quot; value=&quot;&lt;mt:var name=&quot;display_options&quot; escape=&quot;html&quot;&gt;&quot; /&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;<mt:var name="class">_status&quot;
+    label=&quot;&lt;__trans phrase=&quot;Status&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+    &lt;table style=&quot;margin-left:0px&quot; cellpadding=&quot;2&quot;&gt;
+    &lt;tr&gt;
+        &lt;th&gt;&lt;__trans phrase=&quot;Active&quot;&gt;&lt;/th&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;checkbox&quot; name=&quot;status_draft&quot; value=&quot;1&quot;&lt;mt:if name=&quot;status_draft&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Draft&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;checkbox&quot; name=&quot;status_review&quot; value=&quot;1&quot;&lt;mt:if name=&quot;status_review&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Review&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;checkbox&quot; name=&quot;status_publishing&quot; value=&quot;1&quot;&lt;mt:if name=&quot;status_publishing&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Publishing&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;checkbox&quot; name=&quot;status_future&quot; value=&quot;1&quot;&lt;mt:if name=&quot;status_future&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Future&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;checkbox&quot; name=&quot;status_closed&quot; value=&quot;1&quot;&lt;mt:if name=&quot;status_closed&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Closed&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;th&gt;&lt;__trans phrase=&quot;Default&quot;&gt;&lt;/th&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;radio&quot; name=&quot;default_status&quot; value=&quot;1&quot;&lt;mt:if name=&quot;default_status&quot; eq=&quot;1&quot;&gt;checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Draft&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;radio&quot; name=&quot;default_status&quot; value=&quot;3&quot;&lt;mt:if name=&quot;default_status&quot; eq=&quot;3&quot;&gt;checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Review&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;radio&quot; name=&quot;default_status&quot; value=&quot;2&quot;&lt;mt:if name=&quot;default_status&quot; eq=&quot;2&quot;&gt;checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Publishing&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;radio&quot; name=&quot;default_status&quot; value=&quot;4&quot;&lt;mt:if name=&quot;default_status&quot; eq=&quot;4&quot;&gt;checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Future&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;
+            &lt;input type=&quot;radio&quot; name=&quot;default_status&quot; value=&quot;5&quot;&lt;mt:if name=&quot;default_status&quot; eq=&quot;5&quot;&gt;checked=&quot;checked&quot;&lt;/mt:if&gt; /&gt;
+            &lt;__trans phrase=&quot;Closed&quot;&gt;
+            &lt;/label&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+jQuery( function() {
+    jQuery( '#<mt:var name="class">_sortable' ).sortable( {
+        items: 'li',
+        distance: 3,
+        opacity: 0.8,
+        cursor: 'move',
+        containment: 'document',
+        update: function () {
+            <mt:var name="class">_set();
+        }
+    } );
+} );
+function set_<mt:var name="class">_display_options() {
+    var display_options = new Array();
+    var cb_opt = jQuery( &quot;*[name=<mt:var name="class">_display_options_cb]&quot; );
+    jQuery.each( cb_opt, function( i ) {
+        if ( this.checked ) {
+            display_options.push( this.value );
+        }
+    } );
+    display_options = display_options.join( ',' );
+    jQuery( '#<mt:var name="class">_display_options' ).val( display_options );
+}
+&lt;mt:if name=&quot;field_order&quot;&gt;
+    var <mt:var name="class">_list = jQuery( '#<mt:var name="class">_sortable' );
+    var <mt:var name="class">_opt = jQuery( '#<mt:var name="class">_opt' );
+    var <mt:var name="class">_field_order = '&lt;mt:var name=&quot;field_order&quot; escape=&quot;js&quot;&gt;';
+    var <mt:var name="class">_sort_items = <mt:var name="class">_field_order.split( ',' );
+    jQuery.each( <mt:var name="class">_sort_items, function( i ) {
+        var list = jQuery( '#' + '<mt:var name="class">_' + this );
+        <mt:var name="class">_list.append( list );
+        var opt = jQuery( '#' + '<mt:var name="class">_opt_' + this );
+        <mt:var name="class">_opt.append( opt );
+    } );
+&lt;/mt:if&gt;
+&lt;mt:if name=&quot;display_options&quot;&gt;
+var <mt:var name="class">_display_options = '&lt;mt:var name=&quot;display_options&quot; escape=&quot;js&quot;&gt;';
+var <mt:var name="class">_check_items = <mt:var name="class">_display_options.split( ',' );
+jQuery.each( <mt:var name="class">_check_items, function( i ) {
+    var cb = jQuery( '#' + '<mt:var name="class">_display_options_cb_' + this );
+    cb.attr( 'checked', true );
+} );
+&lt;mt:else&gt;
+var <mt:var name="class">_cbs = jQuery( &quot;*[name=<mt:var name="class">_display_options_cb]&quot; );
+jQuery.each( <mt:var name="class">_cbs, function( i ) {
+    var cb = jQuery( '#' + this.id );
+    cb.attr( 'checked', true );
+} );
+set_<mt:var name="class">_display_options();
+&lt;/mt:if&gt;
+function <mt:var name="class">_set() {
+    var field_order = new Array();
+    var list = jQuery( '#<mt:var name="class">_sortable' );
+    var children = list.children();
+    jQuery.each( children, function( i ) {
+        var ident = this.id + '';
+        ident = ident.replace( /^<mt:var name="class">_/, '' );
+        field_order.push( ident );
+    } );
+    field_order = field_order.join( ',' );
+    jQuery( '#<mt:var name="class">_field_order' ).val( field_order );
+}
+&lt;/script&gt;
+&lt;/mt:IfNonSystemScope&gt;
+&lt;mtapp:setting
+    id=&quot;default_period&quot;
+    label=&quot;&lt;__trans phrase=&quot;Default Period&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; class=&quot;text num&quot; id=&quot;default_period&quot; name=&quot;default_period&quot; value=&quot;&lt;mt:var name=&quot;default_period&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;default_module_mtml&quot;
+    label=&quot;&lt;__trans phrase=&quot;Module Template&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea rows=&quot;10&quot; class=&quot;text low&quot; name=&quot;default_module_mtml&quot; id=&quot;default_module_mtml&quot; /&gt;&lt;mt:var name=&quot;default_module_mtml&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;use_wysiwyg&quot;
+    label=&quot;&lt;__trans phrase=&quot;Use WYSIWYG&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;checkbox&quot; onclick=&quot;toggle_<mt:var name="class">_tiny_mce( this )&quot; id=&quot;use_wysiwyg&quot; name=&quot;use_wysiwyg&quot;&lt;mt:if name=&quot;use_wysiwyg&quot;&gt; checked=&quot;checked&quot;&lt;/mt:if&gt; value=&quot;1&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;use_wysiwyg&quot; value=&quot;0&quot; /&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;div id=&quot;<mt:var name="class">_tiny_mce&quot; &lt;mt:unless name=&quot;use_wysiwyg&quot;&gt;style=&quot;display:none;&quot;&lt;/mt:unless&gt;&gt;
+&lt;mtapp:setting
+    id=&quot;editor_style_css&quot;
+    label=&quot;&lt;__trans phrase=&quot;Editor CSS&quot;&gt;&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input type=&quot;text&quot; id=&quot;editor_style_css&quot; name=&quot;editor_style_css&quot; value=&quot;&lt;mt:var name=&quot;editor_style_css&quot; escape=&quot;html&quot;&gt;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;theme_advanced_buttons1&quot;
+    label=&quot;advanced_buttons1&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea class=&quot;text low&quot; id=&quot;theme_advanced_buttons1&quot; name=&quot;theme_advanced_buttons1&quot;&gt;&lt;mt:var name=&quot;theme_advanced_buttons1&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;theme_advanced_buttons2&quot;
+    label=&quot;advanced_buttons2&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea class=&quot;text low&quot; id=&quot;theme_advanced_buttons2&quot; name=&quot;theme_advanced_buttons2&quot;&gt;&lt;mt:var name=&quot;theme_advanced_buttons2&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;theme_advanced_buttons3&quot;
+    label=&quot;advanced_buttons3&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea class=&quot;text low&quot; id=&quot;theme_advanced_buttons3&quot; name=&quot;theme_advanced_buttons3&quot;&gt;&lt;mt:var name=&quot;theme_advanced_buttons3&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;theme_advanced_buttons4&quot;
+    label=&quot;advanced_buttons4&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea class=&quot;text low&quot; id=&quot;theme_advanced_buttons4&quot; name=&quot;theme_advanced_buttons4&quot;&gt;&lt;mt:var name=&quot;theme_advanced_buttons4&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;mtapp:setting
+    id=&quot;theme_advanced_buttons5&quot;
+    label=&quot;advanced_buttons5&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;textarea class=&quot;text low&quot; id=&quot;theme_advanced_buttons5&quot; name=&quot;theme_advanced_buttons5&quot;&gt;&lt;mt:var name=&quot;theme_advanced_buttons5&quot; escape=&quot;html&quot;&gt;&lt;/textarea&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/mtapp:setting&gt;
+&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function toggle_<mt:var name="class">_tiny_mce ( cb ) {
+    if ( cb.checked == true ) {
+        getByID( '<mt:var name="class">_tiny_mce' ).style.display = 'block';
+    } else {
+        getByID( '<mt:var name="class">_tiny_mce' ).style.display = 'none';
+    }
+}
+&lt;/script&gt;

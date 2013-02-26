@@ -1,0 +1,31 @@
+<__trans_section component="community">
+<$mt:Var name="body_class" value="mt-profile-post"$>
+<$mt:Var name="hide_sidebar" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Start a Topic"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+<mt:SetVarBlock name="html_head">
+<script type="text/javascript">
+<!-- <mt:Ignore>Pull Topic name and label from url</mt:Ignore>
+var url = document.URL;
+var cid;
+if (url) {
+    var query = location.search;
+    var q = query.match(/\?(\d+).*/);
+    if (q) {
+        cid = q[1];
+    }
+}
+//-->
+</script>
+</mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">"$>
+
+<div class="content-header">
+    <h1 id="page-title"><$mt:Var name="page_title"$></h1>
+</div>
+
+<$mt:Include module="<__trans phrase="Entry Form">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

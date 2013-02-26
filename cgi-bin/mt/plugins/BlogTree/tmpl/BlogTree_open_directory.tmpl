@@ -1,0 +1,271 @@
+<__trans_section component="BlogTree">
+<MTsetvarblock name="tree">
+
+<$MTSetVar name="item_count_max" value="20"$>
+
+<MTUnless name="offset">
+    <$MTSetVar name="item_offset" value="0"$>
+    <MTElse>
+        <$MTGetVar name="offset" setvar="item_offset"$>
+    </MTElse>
+</MTUnless>
+
+<MTSetVarTemplate name="item_base">
+    <li id="<$MTGetVar name="item_class"$>_<$MTGetVar name="item_id"$>" class="<$MTGetVar name="item_class"$><MTIf name="item_is_folder"> jstree-closed</MTIf><MTIf name="item_status"> <$MTGetVar name="item_status"$></MTIf><MTIf name="item_post_author"> author-<$MTGetVar name="item_post_author"$></MTIf><MTIf name="item_release"> status-<$MTGetVar name="item_release"$></MTIf>">
+        <a title="<$MTGetVar name="item_title" escape="html"$>"><span class="label"><$MTGetVar name="item_title" trimj_to="20","..." escape="html"$></span></a>
+        <span class="meta">
+            <MTif name="item_edit_url"><span class="edit"><a href="<$MTGetVar name="item_edit_url"$>" title="<$MTGetVar name="item_edit_label"$>"><span class="meta_label"><$MTGetVar name="item_edit_label"$></span></a></span></MTif>
+            <MTIf name="item_new"><span class="new"><a href="<$MTGetVar name="item_new"$>" title="<$MTGetVar name="item_new_label"$>"><span class="meta_label"><$MTGetVar name="item_new_label"$></span></a></span></MTIf>
+            <MTIf name="item_dup_url"><span class="duplicate"><a href="<$MTGetVar name="item_dup_url"$>" title="<$MTGetVar name="item_dup_label"$>"><span class="meta_label"><$MTGetVar name="item_dup_label"$></span></a></span></MTIf>
+            <MTIf name="item_view_url"><span class="view"><a href="<$MTGetVar name="item_view_url"$>" target="_blank" title="<$MTGetVar name="item_view_title"$>"><span class="meta_label"><$MTGetVar name="item_view_title"$></span></a></span></MTIf>
+            <MTIf name="item_upload_url"><span class="upload"><a href="<$MTGetVar name="item_upload_url"$>" title="<__trans phrase="Upload file in this folder">" onclick="BlogTree.open_upload_dialog(this,'<$MTBlogID$>');return false;"><span class="meta_label"><__trans phrase="Upload file in this folder"></span></a></span></MTIf>
+        </span>
+    </li>
+</MTSetVarTemplate>
+
+<MTSetVarTemplate name="listing_entries">
+    <$MTGetVar name="item_count_max" setvar="item_limit"$>
+    <MTBlogTreeEntries class="$item_class" primary="$item_primary" category_id="$category_id" isolation="$item_isolation" limit="$item_limit" offset="$item_offset" status_not="7">
+        <MTSetVars>
+            item_is_folder=
+            item_id=<$MTEntryID$>
+            item_title=<MTIf tag="MTEntryTitle"><$MTEntryTitle$><MTElse>...</MTElse></MTIf>
+            item_edit_url=<MTvar name="script_url">?__mode=view&amp;_type=<$MTGetVar name="item_class"$>&amp;id=<$MTEntryID$>&amp;blog_id=<$MTEntryBlogID$>
+            item_edit_label=<MTIf name="item_class" eq="entry"><__trans phrase="Edit this Entry"><MTElse><__trans phrase="Edit this Page"></MTElse></MTIf>
+            item_new=
+            item_dup_url=<MTvar name="script_url">?__mode=view&amp;_type=<$MTGetVar name="item_class"$>&amp;id=<$MTEntryID$>&amp;blog_id=<$MTEntryBlogID$>&amp;duplicate=1
+            item_dup_label=<MTIf name="item_class" eq="entry"><__trans phrase="Duplicate this Entry"><MTElse><__trans phrase="Duplicate this Page"></MTElse></MTIf>
+            item_status_num=<$MTEntryStatusNumber$>
+            item_post_author=<$mt:EntryAuthorID$>
+            item_upload_url=
+        </MTSetVars>
+        <MTSetVars>
+            <MTIf name="item_status_num" eq="1">
+                item_status=draft
+                <MTElseIf eq="2">
+                item_status=published
+                <MTElseIf eq="4">
+                item_status=future
+                <MTElseIf eq="3">
+                item_status=approval
+                <MTElseIf eq="7">
+                item_status=template
+                <MTElse>
+                item_status=no_status
+            </MTIf>
+            item_release=<MTIfBlogTreeEntryPublished>release<MTelse>draft</MTElse></MTIfBlogTreeEntryPublished>
+            <MTIf tag="MTEntryStatusNumber" eq="2">
+                item_view_class=view
+                item_view_url=<$MTEntryPermalink$>
+                item_view_title=<__trans phrase="View">
+            <MTelse>
+                item_view_class=preview
+                item_view_url=<$MTvar name="script_url"$>?__mode=preview&amp;_type=<$MTGetVar name="item_class"$>&amp;id=<$MTEntryID$>&amp;blog_id=<$MTBlogID$>
+                item_view_title=<__trans phrase="Preview">
+            </MTIf>
+            item_can_edit=1
+        </MTSetVars>
+        <$MTGetVar name="item_base"$>
+    </MTBlogTreeEntries>
+    
+    <$MTSetVar name="diplay_more" value=""$>
+    <$MTSetVar name="item_offset_limit" value="0"$>
+    <$MTBlogTreeEntriesCount class_type="$item_class" primary="$item_primary" category_id="$category_id" isolation="$item_isolation" status_not="7" setvar="item_total"$>
+    <MTIf name="item_total" gt="$item_count_max">
+        <$MTSetVar name="diplay_more" value="1"$>
+        <$MTGetVar name="item_offset" op="+" value="$item_limit" setvar="item_offset_limit"$>
+        <MTIf name="item_offset_limit" ge="$item_total">
+            <$MTSetVar name="diplay_more" value="0"$>
+        </MTIf>
+    </MTIf>
+    <MTIf name="diplay_more">
+        <li class="<$MTGetVar name="item_class"$> more">
+            <a href="<$MTGetVar name="script_url"$>?__mode=list&amp;_type=<$MTGetVar name="item_class"$>&amp;blog_id=<$MTBlogID$><MTIf name="category_id">&amp;filter=category_id&amp;filter_val=<$MTGetVar name="category_id"$></MTIf>">
+                <span class="label">
+                    ...(<__trans phrase="Show entries list">)
+                </span>
+            </a>
+        </li>
+    </MTIf>
+</MTSetVarTemplate>
+
+<MTSetVarTemplate name="listing_categories">
+    <MTIf name="item_class" eq="category">
+        <MTSubCategories top="$item_is_top">
+            <$MTBlogID setvar="current_blog_id"$>
+            <$MTCategoryID setvar="current_category_id"$>
+            <MTSetVarBlock name="create_link"><MTvar name="script_url">?__mode=view&amp;_type=entry&amp;category_id=<$MTCategoryID$>&amp;blog_id=<$MTBlogID$></MTSetVarBlock>
+            <$MTSetVar name="create_link_to" value=""$>
+            <MTIfPlugin component="EntryWorkflow">
+                <MTIfCanCreateInCategory category_id="$current_category_id">
+                    <$MTGetVar name="create_link" setvar="create_link_to"$>
+                </MTIfCanCreateInCategory>
+                <MTElse>
+                <$MTGetVar name="create_link" setvar="create_link_to"$>
+                </MTElse>
+            </MTIfPlugin>
+            <MTSetVars>
+                item_is_folder=1
+                item_id=<$MTCategoryID$>
+                item_title=<MTIf tag="MTCategoryLabel"><$MTCategoryLabel$><MTElse>...</MTElse></MTIf>
+                item_edit_url=<MTvar name="script_url">?__mode=view&amp;_type=<$MTGetVar name="item_class"$>&amp;blog_id=<$MTBlogID$>&amp;id=<$MTCategoryID$>
+                item_edit_label=<__trans phrase="Edit Category">
+                item_new=<$MTGetVar name="create_link_to"$>
+                item_new_label=<__trans phrase="Create Entry in this category">
+                item_dup_url=
+                item_status=
+                item_post_author=
+                <MTIf tag="MTCategoryArchiveLink">
+                    item_view_class=view
+                    item_view_url=<$MTCategoryArchiveLink$>
+                    item_view_title=<__trans phrase="View">
+                    <MTElse>
+                    item_view_class=view
+                    item_view_url=
+                    item_view_title=
+                </MTIf>
+                item_can_edit=1
+                item_release=
+                item_upload_url=
+            </MTSetVars>
+            <$MTGetVar name="item_base"$>
+        </MTSubCategories>
+    </MTIf>
+    <MTIf name="item_class" eq="folder">
+        <MTSubFolders top="$item_is_top">
+            <MTSetVars>
+                item_is_folder=1
+                item_id=<$MTFolderID$>
+                item_title=<MTIf tag="MTFolderLabel"><$MTFolderLabel$><MTElse>...</MTElse></MTIf>
+                item_edit_url=<MTvar name="script_url">?__mode=view&amp;_type=<$MTGetVar name="item_class"$>&amp;blog_id=<$MTBlogID$>&amp;id=<$MTCategoryID$>
+                item_edit_label=<__trans phrase="Edit Folder">
+                item_new=<MTvar name="script_url">?__mode=view&amp;_type=page&amp;category_id=<$MTFolderID$>&amp;blog_id=<$MTBlogID$>
+                item_new_label=<__trans phrase="Create Page in this folder">
+                item_dup_url=
+                item_status=
+                item_post_author=
+                item_view_class=view
+                item_view_url=
+                item_view_title=
+                item_can_edit=1
+                item_release=
+                item_upload_url=<MTIf name="can_upload"><MTvar name="script_url">?__mode=start_upload&amp;blog_id=<$MTBlogID$>&amp;dialog=1&amp;extra_path=<MTIf tag="MTFolderPath"><$MTFolderPath escape="html"$>/</MTIf>&amp;blogtree=1</MTIf>
+            </MTSetVars>
+            <$MTGetVar name="item_base"$>
+        </MTSubFolders>
+    </MTIf>
+</MTSetVarTemplate>
+
+<MTSetVarTemplate name="listing_assets">
+<MTUnless name="hide_assets">
+    <MTBlogTreeAssets folder_id="$category_id">
+        <MTSetVars>
+            item_is_folder=
+            item_id=<$MTAssetID$>
+            item_title=<$MTAssetFileName$><MTIgnore><MTIf tag="MTAssetLabel"><$MTAssetLabel$> (<$MTAssetFileName$>)<MTElse><$MTAssetFileName$></MTElse></MTIf></MTIgnore>
+            item_edit_url=<MTIf name="can_edit_assets"><MTvar name="script_url">?__mode=view&amp;_type=<$MTGetVar name="item_class"$>&amp;id=<$MTAssetID$>&amp;blog_id=<$MTBlogID$></MTIf>
+            item_edit_label=<__trans phrase="Edit this Asset">
+            item_new=
+            item_new_label=
+            item_dup_url=
+            item_dup_label=
+            item_status_num=
+            item_post_author=
+            item_upload_url=
+            item_status=ext_<$MTAssetFileExt$>
+            item_release=
+            item_view_class=view
+            item_view_url=<$MTAssetURL$>
+            item_view_title=<__trans phrase="View">
+            item_can_edit=1
+        </MTSetVars>
+        <$MTGetVar name="item_base"$>
+    </MTBlogTreeAssets>
+</MTUnless>
+</MTSetVarTemplate>
+
+<MTSetVarTemplate name="listing_children">
+    <MTIf name="class" eq="category">
+        <MTIgnore>Load Categories</MTIgnore>
+        <MTCategories show_empty="1">
+            <MTIf tag="MTCategoryID" eq="$category_id">
+                <$MTSetVar name="item_is_top" value="0"$>
+                <$MTSetVar name="item_class" value="category"$>
+                <$MTGetVar name="listing_categories"$>
+            </MTIf>
+        </MTCategories>
+        <MTIgnore>Load Entries</MTIgnore>
+        <$MTSetVar name="item_isolation" value="0"$>
+        <$MTSetVar name="item_primary" value="1"$>
+        <$MTSetVar name="item_class" value="entry"$>
+        <$MTGetVar name="listing_entries"$>
+        
+    </MTIf>
+    <MTIf name="class" eq="folder">
+        <MTIgnore>Load Folders</MTIgnore>
+        <MTFolders show_empty="1">
+            <MTIf tag="MTFolderID" eq="$category_id">
+                <$MTSetVar name="item_is_top" value="0"$>
+                <$MTSetVar name="item_class" value="folder"$>
+                <$MTGetVar name="listing_categories"$>
+            </MTIf>
+        </MTFolders>
+        <MTIgnore>Load Pages</MTIgnore>
+        <$MTSetVar name="item_isolation" value="0"$>
+        <$MTSetVar name="item_primary" value="1"$>
+        <$MTSetVar name="item_class" value="page"$>
+        <$MTGetVar name="listing_entries"$>
+        <$MTSetVar name="item_class" value="asset"$>
+        <$MTGetVar name="listing_assets"$>
+    </MTIf>
+</MTSetVarTemplate>
+
+<MTCMSBlogContext>
+    <$MTSetVar name="can_upload" value="0"$>
+    <$MTSetVar name="can_edit_assets" value="0"$>
+    <MTIfUserHasPermission permission="upload">
+    <$MTSetVar name="can_upload" value="1"$>
+    </MTIfUserHasPermission>
+    <MTIfUserHasPermission permission="edit_assets">
+    <$MTSetVar name="can_edit_assets" value="1"$>
+    </MTIfUserHasPermission>
+    
+    <MTUnless name="class">
+        <$MTSetVar name="item_is_top" value="1"$>
+        <$MTSetVar name="item_isolation" value="1"$>
+        <$MTSetVar name="item_class" value="category"$>
+        <$MTGetVar name="listing_categories"$>
+        <$MTSetVar name="item_class" value="entry"$>
+        <$MTGetVar name="listing_entries"$>
+        <$MTSetVar name="item_class" value="folder"$>
+        <$MTGetVar name="listing_categories"$>
+        <$MTSetVar name="item_class" value="page"$>
+        <$MTGetVar name="listing_entries"$>
+        <$MTSetVar name="item_class" value="asset"$>
+        <$MTGetVar name="listing_assets"$>
+        <MTElse>
+        <$MTGetVar name="listing_children"$>
+        </MTElse>
+    </MTUnless>
+    <MTIf name="class" eq="entry">
+        <$MTSetVar name="item_class" value="entry"$>
+        <$MTGetVar name="isolation" setvar="item_isolation"$>
+        <$MTGetVar name="id" setvar="category_id"$>
+        <MTIf name="category_id">
+        <$MTSetVar name="item_primary" value="1"$>
+        </MTIf>
+        <$MTGetVar name="listing_entries"$>
+    </MTIf>
+    <MTIf name="class" eq="page">
+        <$MTSetVar name="item_class" value="page"$>
+        <$MTGetVar name="isolation" setvar="item_isolation"$>
+        <$MTGetVar name="id" setvar="category_id"$>
+        <MTIf name="category_id">
+        <$MTSetVar name="item_primary" value="1"$>
+        </MTIf>
+        <$MTGetVar name="listing_entries"$>
+    </MTIf>
+</MTCMSBlogContext>
+</MTsetvarblock>
+<MTvar name="tree" strip_linefeeds="1" regex_replace="/\s\s+/g","" regex_replace="/    /g","">
+</__trans_section>

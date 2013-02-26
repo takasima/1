@@ -1,0 +1,40 @@
+<mt:setvarblock name="system_msg" append="1">
+    <div id="msg-container">
+    <mt:if name="dynamic_all">
+        <mt:setvar name="rebuild" value="">
+    <mt:elseif name="request.no_rebuild">
+        <mt:setvar name="rebuild" value="">
+    <mt:else>
+        <mt:if name="blog_id">
+            <mt:setvar name="rebuild" value="all">
+        <mt:else>
+            <mt:setvar name="rebuild" value="">
+        </mt:if>
+    </mt:if>
+    <mt:if name="request.saved_deleted">
+        <mtapp:statusmsg
+            id="saved-deleted"
+            class="success"
+            rebuild="$rebuild">
+        <__trans_section component="ContactForm">
+        <__trans phrase="The Forms has been deleted from the database.">
+        </__trans_section>
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.status_contactformgroup">
+        <mtapp:statusmsg
+            id="saved"
+            class="success"
+            rebuild="$rebuild">
+        <$mt:FormCMSFormStatusMsg$>
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="request.not_status_contactformgroup">
+        <mtapp:statusmsg
+            id="saved"
+            class="success">
+            <$mt:FormCMSFormStatusMsg$>
+        </mtapp:statusmsg>
+    </mt:if>
+    </div>
+</mt:setvarblock>

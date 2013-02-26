@@ -1,0 +1,345 @@
+<__trans_section component="ContactForm">
+<mt:setvarblock name="page_title">
+    <mt:if name="id">
+        <__trans phrase="Edit Form"> (<mt:var name="name" escape="html">)
+    <mt:else>
+        <__trans phrase="Create Form">
+    </mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="object_nav">
+    <ul class="object-nav">
+        <li id="previous-link"><mt:if name="previous_contactform_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=contactformgroup&amp;id=<mt:var name="previous_contactform_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Previous"></a><mt:else><span><__trans phrase="Previous"></span></mt:if></li>
+        <li id="next-link"><mt:if name="next_contactform_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=contactformgroup&amp;id=<mt:var name="next_contactform_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Next"></a><mt:else><span><__trans phrase="Next"></span></mt:if></li>
+    </ul>
+</mt:setvarblock>
+
+<mt:setvarblock name="html_head" append="1">
+<link rel="stylesheet" type="text/css" href="<mt:var name="static_uri">plugins/GroupSorting/css/item_sort.css" />
+<link rel="stylesheet" type="text/css" href="<mt:var name="static_uri">addons/ContactForm.pack/css/edit_contactformgroup.css" />
+<script type="text/javascript" src="<mt:var name="static_uri">jqueryui/ui.sortable.js"></script>
+<script type="text/javascript" src="<mt:var name="static_uri">plugins/GroupSorting/js/item_sort.js"></script>
+<script type="text/javascript" src="<mt:var name="static_uri">addons/ContactForm.pack/js/accordion.js"></script>
+<script type="text/javascript">
+var confirmMsg = '<__trans phrase="Are you sure you want to move to other page?">';
+function __toggle_template( cb, obj ) {
+    if ( cb.checked == true ) {
+        getByID( obj ).style.display = "inline";
+        if ( obj == 'mail_admin_tmpl-span' ) {
+            getByID( 'send_mailto-field' ).style.display = "block";
+            getByID( 'notify_subject-field' ).style.display = "block";
+        } else {
+            getByID( 'sender_subject-field' ).style.display = "block";
+        }
+    } else {
+        getByID( obj ).style.display = "none";
+        if ( obj == 'mail_admin_tmpl-span' ) {
+            getByID( 'send_mailto-field' ).style.display = "none";
+            getByID( 'notify_subject-field' ).style.display = "none";
+        } else {
+            getByID( 'sender_subject-field' ).style.display = "none";
+        }
+    }
+}
+function check_item () {
+    var name = jQuery( '#name' ).val();
+    if ( name == '' ) {
+        alert( '<__trans phrase="Enter a Form name.">' );
+        return false;
+    } else {
+<mt:if name="names_array">
+    varNames = new Array( <mt:var name="names_array"> );
+    for ( var i = 0; i <Names.length; i++ ) {
+        if (Names[i] == name ) {
+            alert( '<__trans phrase="Another Form already exists by that name.">' );
+            return false;
+        }
+    }
+</mt:if>
+        return true;
+    }
+}
+</script>
+</mt:setvarblock>
+
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved">
+        <mtapp:statusmsg
+           id="saved"
+            class="success"
+            rebuild="all">
+            <__trans phrase="Your changes have been saved.">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl">
+
+<MTSetVarBlock name="utility">
+    <div class="utility">
+        <div class="utility-inner">
+            <span class="check_all">
+                <input type="checkbox" value="all" class="select" />
+                <a href="javascript:void(0)"><img src="<$mt:var name="static_uri"$>plugins/GroupSorting/images/item_sort_icon_01.gif" wudth="16" height="16" alt="" style="vertical-align: text-bottom" /> <__trans phrase="Reverse Check"></a>
+            </span>
+            <a class="reverse" href="javascript:void(0)"><img src="<$mt:var name="static_uri"$>plugins/GroupSorting/images/item_sort_icon_02.gif" wudth="16" height="16" alt="" style="vertical-align: text-bottom" /> <__trans phrase="Reverse Item"></a>
+        </div>
+    </div>
+</MTSetVarBlock>
+
+<div class="pkg dropBox">
+    <div id="item-left" class="listing">
+        <div class="object-listing-header">
+            <h3>
+                <__trans phrase="List of Form Elements">
+            </h3>
+            <$mt:var name="utility"$>
+        </div>
+        <div class="object-listing-content">
+            <ul>
+                <mt:loop name="item_loop">
+                    <li id="li1_<mt:var name="item_num">">
+                        <span id="objectID<mt:var name="id">">
+                            <span><input type="checkbox" /></span>
+                            <mt:var name="item_name" remove_html="1">
+                            &lt;<mt:var name="label" remove_html="1">&gt;<mt:if name="can_edit"> -
+                            <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;id=<mt:var name="id">&amp;_type=contactform"><__trans phrase="Edit"></a></mt:if>
+                        </span>
+                    </li>
+                </mt:loop>
+            </ul>
+        </div>
+    </div>
+    <div id="item_arrow">
+        <img class="toRight" src="<$mt:var name="static_uri"$>plugins/GroupSorting/images/right.gif" width="28" height="30" alt="Move to Right" />
+        <img class="toLeft" src="<$mt:var name="static_uri"$>plugins/GroupSorting/images/left.gif" width="28" height="30" alt="Move to Left" />
+    </div>
+    <div id="item-right" class="listing">
+        <div class="object-listing-header">
+            <h3><__trans phrase="Form Elements of this Form"></h3>
+            <$mt:var name="utility"$>
+        </div>
+        <div class="object-listing-content">
+            <ul>
+                <mt:loop name="group_loop">
+                    <li id="li2_<mt:var name="item_num">">
+                        <span id="objectID<mt:var name="id">">
+                            <span><input type="checkbox" /></span>
+                            <mt:var name="item_name" remove_html="1">
+                            &lt;<mt:var name="label" remove_html="1">&gt;<mt:if name="can_edit"> -
+                            <a target="_blank" href="<mt:var name="mt_url">?__mode=view&amp;id=<mt:var name="id">&amp;_type=contactform"><__trans phrase="Edit"></a></mt:if>
+                        </span>
+                    </li>
+                </mt:loop>
+            </ul>
+        </div>
+    </div>
+</div>
+<form onsubmit="saveobject();" id="item_sort" name="item_sort" method="post" action="<mt:var name="mt_url">">
+    <input type="hidden" name="__mode" value="save" />
+    <input type="hidden" name="_type" value="contactformgroup" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="id" value="<mt:var name="id">" />
+    <input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+    <div id="group-settings">
+        <h3><span class="togglePlus"></span><__trans phrase="Form Settings"></h3>
+        <div class="group-setting-content">
+            <mtapp:setting id="name" required="1" label="<__trans phrase="Name">">
+                <input type="text" id="name" name="name" value="<mt:var name="name" escape="html">" class="text full-width" />
+            </mtapp:setting>
+            <mtapp:setting
+                id="set_period"
+                label="<__trans phrase="Set Period">"
+                show_hint="0">
+                <label style="color:#666"><input type="checkbox" name="set_period" id="set_period" value="1"<mt:if name="set_period" eq="1"> checked="checked"</mt:if> /> <__trans phrase="Set the publishing period"></label>
+                <br /><label for="publishing_on_date" style="color:#666" id="publishing_period">&nbsp;&nbsp;( <__trans phrase="Publishing period"></label>
+                <input type="text" name="publishing_on_date" id="publishing_on_date" style="width:7em;" class="start-date text-date" value="<mt:var name="publishing_on_date" escape="html">" />
+                <input type="text" name="publishing_on_time" id="publishing_on_time" style="width:5.5em;" class="start-time" value="<mt:var name="publishing_on_time" escape="html">" />
+                -
+                <input type="text" name="period_on_date" id="period_on_date" style="width:7em;" class="end-date text-date" value="<mt:var name="period_on_date" escape="html">" />
+                <input type="text" name="period_on_time" id="period_on_time" style="width:5.5em;" class="end-time" value="<mt:var name="period_on_time" escape="html">" />
+                )
+            <input type="hidden" name="set_period" value="2" />
+            </mtapp:setting>
+            <mtapp:setting
+                id="set_limit"
+                label="<__trans phrase="Set Limit">"
+                show_hint="0">
+                <label style="color:#666"><input type="checkbox" name="set_limit" id="set_limit" value="1"<mt:if name="set_limit" eq="1"> checked="checked"</mt:if> /> <__trans phrase="Set the post limit"></label>
+                <label style="color:#666" id="post_limit">&nbsp;&nbsp;( <__trans phrase="Post Limit">
+                <input type="text" name="post_limit" id="post_limit" style="width:5.5em;" value="<mt:var name="post_limit" escape="html">" />
+                )</label>
+            <input type="hidden" name="set_limit" value="2" />
+            </mtapp:setting>
+            <mtapp:setting
+                id="status"
+                label="<__trans phrase="Status">"
+                show_hint="0">
+            <select name="status" id="status">
+            <option value="1"<mt:if name="status" eq="1"> selected="selected"</mt:if>><__trans phrase="Draft"></option>
+            <option value="3"<mt:if name="status" eq="3"> selected="selected"</mt:if>><__trans phrase="Review"></option>
+            <option value="2"<mt:if name="status" eq="2"> selected="selected"</mt:if>><__trans phrase="Publishing"></option>
+            <option value="4"<mt:if name="status" eq="4"> selected="selected"</mt:if>><__trans phrase="Scheduled"></option>
+            <option value="5"<mt:if name="status" eq="5"> selected="selected"</mt:if>><__trans phrase="Ended"></option>
+            </select>
+            </mtapp:setting>
+            <mtapp:setting id="cms_tmpl" label="<__trans phrase="Template">">
+            <select name="cms_tmpl" id="cms_tmpl">
+            <option value=""><__trans phrase="Select One..."></option>
+            <mt:loop name="tmpl_loop">
+            <mt:if name="tmpl_type" ne="email">
+                <option<mt:if name="cms_tmpl" eq="$tmpl_id"> selected="selected"</mt:if> value="<mt:var name="tmpl_id" escape="html">">[<mt:var name="tmpl_type" escape="html">] <mt:var name="tmpl_name" escape="html"> (<mt:if name="weblog_name"><mt:var name="weblog_name" escape="html"><mt:else><__trans phrase="System"></mt:else></mt:if>)</option>
+            </mt:if>
+            </mt:loop>
+            </select>
+            </mtapp:setting>
+        <mt:ignore>
+            <mtapp:setting id="confirm_tmpl" label="<__trans phrase="Template">">
+            <select name="confirm_tmpl" id="confirm_tmpl">
+            <option value=""><__trans phrase="Select One..."></option>
+            <mt:loop name="tmpl_loop">
+            <mt:if name="tmpl_type" ne="email">
+                <option<mt:if name="confirm_tmpl" eq="$tmpl_id"> selected="selected"</mt:if> value="<mt:var name="tmpl_id" escape="html">">[<mt:var name="tmpl_type" escape="html">] <mt:var name="tmpl_name" escape="html"> (<mt:if name="weblog_name"><mt:var name="weblog_name" escape="html"><mt:else><__trans phrase="System"></mt:else></mt:if>)</option>
+            </mt:if>
+            </mt:loop>
+            </select> (<__trans phrase="Confirm Screen">)
+            </mtapp:setting>
+            <mtapp:setting id="submit_tmpl" label="<__trans phrase="Template">">
+            <select name="submit_tmpl" id="submit_tmpl">
+            <option value=""><__trans phrase="Select One..."></option>
+            <mt:loop name="tmpl_loop">
+            <mt:if name="tmpl_type" ne="email">
+                <option<mt:if name="submit_tmpl" eq="$tmpl_id"> selected="selected"</mt:if> value="<mt:var name="tmpl_id" escape="html">">[<mt:var name="tmpl_type" escape="html">] <mt:var name="tmpl_name" escape="html"> (<mt:if name="weblog_name"><mt:var name="weblog_name" escape="html"><mt:else><__trans phrase="System"></mt:else></mt:if>)</option>
+            </mt:if>
+            </mt:loop>
+            </select> (<__trans phrase="Submit Screen">)
+            </mtapp:setting>
+        </mt:ignore>
+            <mtapp:setting id="return_url" label="<__trans phrase="Return URL">">
+                <input type="text" id="return_url" name="return_url" value="<mt:var name="return_url" escape="html">" class="text full-width" />
+            </mtapp:setting>
+            <mtapp:setting id="requires_login" label="<__trans phrase="Login">">
+                <label><input type="checkbox" id="requires_login" name="requires_login" value="1"<mt:if name="requires_login"> checked="checked"</mt:if> />
+                <__trans phrase="Requires Login"></label>
+                <input type="hidden" name="requires_login" value="0" />
+            </mtapp:setting>
+            <mtapp:setting id="single_post" label="<__trans phrase="Limit">">
+                <label><input type="checkbox" id="single_post" name="single_post" value="1"<mt:if name="single_post"> checked="checked"</mt:if> />
+                <__trans phrase="Limited to one copy per person posts"></label>
+                <input type="hidden" name="single_post" value="0" />
+            </mtapp:setting>
+            <mtapp:setting id="not_save" label="<__trans phrase="Save">">
+                <label><input type="checkbox" id="not_save" name="not_save" value="1"<mt:if name="not_save"> checked="checked"</mt:if> />
+                <__trans phrase="Does not save the data into the database"></label>
+                <input type="hidden" name="not_save" value="0" />
+            </mtapp:setting>
+        </div>
+        <h3><span class="toggleMinus"></span><__trans phrase="Form Messages"></h3>
+        <div class="group-setting-content">
+            <mtapp:setting id="information_message" label="<__trans phrase="Information Message">"
+                hint="<__trans phrase="Message at Input Screen"><br />(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="information_message" name="information_message" class="text full-width"><mt:var name="information_message" escape="html"></textarea>
+            </mtapp:setting>
+            <mtapp:setting id="message" label="<__trans phrase="Completion Message">"
+                hint="(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="message" name="message" class="text full-width"><mt:var name="message" escape="html"></textarea>
+            </mtapp:setting>
+            <mtapp:setting id="confirm_message" label="<__trans phrase="Confirm Message">"
+                hint="(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="confirm_message" name="confirm_message" class="text full-width"><mt:var name="confirm_message" escape="html"></textarea>
+            </mtapp:setting>
+            <mtapp:setting id="error_message" label="<__trans phrase="Error Message">"
+                hint="(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="error_message" name="error_message" class="text full-width"><mt:var name="error_message" escape="html"></textarea>
+            </mtapp:setting>
+            <mtapp:setting id="closed_message" label="<__trans phrase="Closed Message">"
+                hint="(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="closed_message" name="closed_message" class="text full-width"><mt:var name="closed_message" escape="html"></textarea>
+            </mtapp:setting>
+            <mtapp:setting id="preopen_message" label="<__trans phrase="Pre Open Message">"
+                hint="(<__trans phrase="You may use MTML tags.">)" show_hint="1">
+                <textarea id="preopen_message" name="preopen_message" class="text full-width"><mt:var name="preopen_message" escape="html"></textarea>
+            </mtapp:setting>
+        </div>
+
+        <h3><span class="toggleMinus"></span><__trans phrase="Notification"></h3>
+        <div class="group-setting-content">
+            <mtapp:setting id="mail_admin" label="<__trans phrase="Notification">">
+                <label><input onclick="__toggle_template(this,'mail_admin_tmpl-span')" type="checkbox"<mt:if name="mail_admin"> checked="checked"</mt:if> id="mail_admin" name="mail_admin" value="1" />
+                <__trans phrase="Send Notification"></label>
+                <input type="hidden" name="mail_admin" value="0" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span id="mail_admin_tmpl-span"<mt:unless name="mail_admin"> style="display:none"</mt:unless>>
+                <label>( <__trans phrase="Template"> : <select name="mail_admin_tmpl" id="mail_admin_tmpl">
+                <option value=""><__trans phrase="Select One..."></option>
+                <mt:loop name="tmpl_loop">
+                <mt:if name="tmpl_type" ne="individual"><mt:if name="tmpl_type" ne="page"><mt:if name="tmpl_type" ne="archive">
+                    <option<mt:if name="mail_admin_tmpl" eq="$tmpl_id"> selected="selected"</mt:if> value="<mt:var name="tmpl_id" escape="html">">[<mt:var name="tmpl_type" escape="html">] <mt:var name="tmpl_name" escape="html"> (<mt:if name="weblog_name"><mt:var name="weblog_name" escape="html"><mt:else><__trans phrase="System"></mt:else></mt:if>)</option>
+                </mt:if></mt:if></mt:if>
+                </mt:loop>
+                </select> )</label>
+            </span>
+            </mtapp:setting>
+
+            <mtapp:setting id="send_mailto" label="<__trans phrase="Send Mail to">">
+                <input type="text" id="send_mailto" name="send_mailto" value="<mt:var name="send_mailto" escape="html">" class="text full-width" />
+            </mtapp:setting>
+            <mtapp:setting
+                id="notify_subject"
+                label="<__trans phrase="Notify Subject">"
+                hint="<__trans phrase="You may use MTML tags.">"
+                show_hint="1">
+                <input type="text" id="notify_subject" name="notify_subject" value="<mt:var name="notify_subject" escape="html">" class="text full-width" />
+            </mtapp:setting>
+            <mt:unless name="mail_admin">
+            <script type="text/javascript">
+                getByID( 'send_mailto-field' ).style.display = "none";
+                getByID( 'notify_subject-field' ).style.display = "none";
+            </script>
+            </mt:unless>
+
+            <hr />
+
+            <mtapp:setting id="mail_sender" label="<__trans phrase="Mail to Seder">">
+                <label><input onclick="__toggle_template(this,'mail_sender_tmpl-span')" type="checkbox"<mt:if name="mail_sender"> checked="checked"</mt:if> id="mail_sender" name="mail_sender" value="1" />
+                <__trans phrase="Send mail to Seder"></label>
+                <input type="hidden" name="mail_sender" value="0" />
+                &nbsp;
+            <span id="mail_sender_tmpl-span"<mt:unless name="mail_sender"> style="display:none"</mt:unless>>
+                <label>( <__trans phrase="Template"> :
+                <select name="mail_sender_tmpl" id="mail_sender_tmpl">
+                <option value=""><__trans phrase="Select One..."></option>
+                <mt:loop name="tmpl_loop">
+                <mt:if name="tmpl_type" ne="individual"><mt:if name="tmpl_type" ne="page"><mt:if name="tmpl_type" ne="archive">
+                    <option<mt:if name="mail_sender_tmpl" eq="$tmpl_id"> selected="selected"</mt:if> value="<mt:var name="tmpl_id" escape="html">">[<mt:var name="tmpl_type" escape="html">] <mt:var name="tmpl_name" escape="html"> (<mt:if name="weblog_name"><mt:var name="weblog_name" escape="html"><mt:else><__trans phrase="System"></mt:else></mt:if>)</option>
+                </mt:if></mt:if></mt:if>
+                </mt:loop>
+                </select> )</label>
+            </span>
+            </mtapp:setting>
+            <mtapp:setting
+                id="sender_subject"
+                label="<__trans phrase="Notify Subject">"
+                hint="<__trans phrase="You may use MTML tags.">"
+                show_hint="1">
+                <input type="text" id="sender_subject" name="sender_subject" value="<mt:var name="sender_subject" escape="html">" class="text full-width" />
+            </mtapp:setting>
+            <mt:unless name="mail_sender">
+            <script type="text/javascript">
+                getByID( 'sender_subject-field' ).style.display = "none";
+            </script>
+            </mt:unless>
+        </div>
+    </div>
+    <div class="actions-bar actions-bar-bottom settings-actions-bar">
+        <button
+            type="submit"
+            accesskey="s"
+            title="<__trans phrase="Save"> (s)"
+            class="save action primary-button primary button"
+            onclick="return check_item();"><__trans phrase="Save"></button>
+    </div>
+</form>
+<mt:include name="include/footer.tmpl">
+</__trans_section>

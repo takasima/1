@@ -1,0 +1,14 @@
+<__trans_section component="community">
+<$mt:Var name="body_class" value="mt-profile-post"$>
+<$mt:Var name="hide_sidebar" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Create Entry"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">"$>
+
+<h1 id="page-title" class="asset-name"><$mt:Var name="page_title"$></h1>
+
+<$mt:Include module="<__trans phrase="Entry Form">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

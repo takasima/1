@@ -1,0 +1,87 @@
+<$MTBlogID setvar="blog_id"$>
+<MTSetVarBlock name="script_url"><$MTCGIPath$><$MTMembersScript$></MTSetVarBlock>
+<!DOCTYPE HTML>
+<html lang="<$MTBlogLanguage$>" dir="ltr">
+    <head>
+        <meta charset="<$MTPublishCharset$>">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title><__trans phrase="Sign In"> | <mt:blogname escape="html"></title>
+        <link href="<$MTLink template="<__trans phrase="SP-Stylesheet(import.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+        <link href="<$MTLink template="<__trans phrase="SP-Stylesheet(login.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+        <script src="<$MTLink template="JavaScript(jquery.js)"$>"></script>
+        <script src="<$MTLink template="JavaScript"$>"></script>
+        <script src="<$MTLink template="<__trans phrase="SP-JavaScript(main.js)">"$>"></script>
+    </head>
+    <body>
+<header id="top" class="clearfix">
+    <p id="site_title"><mt:blogname escape="html"></p>
+</header>
+
+<h1 id="page_title"><a href="#global_nav"><__trans phrase="Sign In"></a></h1>
+
+<div id="contents">
+    <section>
+        <div class="panel">
+            <div class="login_panel">
+                <MTIf name="logged_out">
+                    <MTIf name="delegate_auth">
+                            <MTSetVarBlock name="msg"><__trans phrase="Your Movable Type session has ended."></MTSetVarBlock>
+                        <MTElse>
+                            <MTSetVarBlock name="msg"><__trans phrase="Your Movable Type session has ended. If you wish to sign in again, you can do so below."></MTSetVarBlock>
+                        </MTElse>
+                    </MTIf>
+                    <MTElse>
+                        <MTIf name="login_again">
+                            <MTSetVarBlock name="msg"><__trans phrase="Your Movable Type session has ended. Please sign in again to continue this action."></MTSetVarBlock>
+                            <MTElse>
+                                <MTIf name="error">
+                                    <MTSetVarBlock name="msg"><$MTGetVar name="error"$></MTSetVarBlock>
+                                </MTIf>
+                            </MTElse>
+                        </MTIf>
+                    </MTElse>
+                </MTIf>
+                <MTIf name="msg">
+                <div class="msg msg-error"><$MTGetVar name="msg"$></div>
+                </MTIf>
+
+                <form class="login_form" method="post" action="<$MTGetVar name="script_url"$>">
+                    <MTLoop name="query_params">
+                    <input type="hidden" name="<MTGetVar name="name" escape="html">" value="<MTGetVar name="value" escape="html">">
+                    </MTLoop>
+                    <input type="hidden" name="return_url" value="<$MTCurrentArchiveURL$>">
+                    <input type="hidden" name="blog_id" value="<MTGetVar name="blog_id" escape="html">">
+                    <p>
+                        <label for="username"><__trans phrase="Username"></label>
+                        <span class="post_input">
+                            <input type="text" name="username" id="username" value="">
+                        </span>
+                    </p>
+                    <p>
+                        <label for="password"><__trans phrase="Password"></label>
+                        <span class="post_input">
+                            <input type="password" name="password" id="password">
+                        </span>
+                    </p>
+                    <p>
+                        <span class="post_input_etc">
+                            <label><input type="checkbox" name="remember" value="1"> <__trans phrase="Remember me?"></label>
+                        </span>
+                    </p>
+                    <p class="post_submit">
+                        <input type="image" src="<$MTBlogURL escape="html"$>common/images/login_btn_login_01.gif" alt="<__trans phrase="Sign In">">
+                    </p>
+                </form>
+                <p class="notes">
+                <a href="<$MTGetVar name="script_url"$>?__mode=start_recover&amp;blog_id=<$MTGetVar name="blog_id"$>"><__trans phrase="Forgot your password?"></a><br>
+                <__trans phrase="Not a member? <a href="[_1]">Sign Up</a>!" params="<mt:var name="script_url">?__mode=signup&amp;blog_id=<mt:var name="blog_id">">
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+<footer>
+    <p><small>Copyright &copy; <$MTDate format="%Y"$></small></p>
+</footer>
+</body>
+</html>

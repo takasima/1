@@ -1,0 +1,48 @@
+name: Backup Configration
+id: backupConfig
+key: backupconfig
+version: 2.1
+author_name: Alfasado Inc.
+author_link: 'http://alfasado.net/'
+description: <__trans phrase='Buckup SQL dump &amp; document root on periodic.'>
+
+l10n_class: BackupConfig::L10N
+system_config_template: backupconfig_config.tmpl
+
+settings:
+    backup_sql:
+        default: 1
+    backup_doc:
+        default: 1
+    sqldump:
+        default: /usr/bin/mysqldump
+    sqlopt:
+        default: --lock-tables --compact --add-drop-table
+    oracle_nls_lang:
+        default: JAPANESE_JAPAN.AL32UTF8
+    sql_file:
+        default: '/tmp/<mt:date format="%Y%m%d%H%M%S">.sql'
+    archive_file:
+        default: '/tmp/<mt:date format="%Y%m%d%H%M%S">.zip'
+    backup_root:
+        default: /var/www/html/
+    exclude:
+        default: \/mt\/,\/\.
+    sql2zip:
+        default: 1
+    last_backup:
+        default:
+    update_backup:
+        default: 1
+    bk_use_ftp:
+        default: 0
+    bk_up2server:
+        default:
+    bk_ftpcwd:
+        default:
+    bk_user_id:
+        default:
+    bk_ftppassword:
+        default:
+    bk_remove_at_ftp:
+        default:

@@ -1,0 +1,41 @@
+<$mt:BlogID setvar="blog_id"$>
+<$mt:setvar name="login_page" value="1"$>
+<mt:SetVarBlock name="page_title">アカウントを編集する</mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<$mt:Include module="ヘッダー(携帯用)"$>
+
+<mt:if name="error">
+	<span style="color:red"><$mt:var name="error"$></span>
+	<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+<form method="post" action="<mt:var name="script_url">" utn="utn">
+	<input type="hidden" name="magic_token" value="<$mt:var name="magic_token"$>" />
+	<input type="hidden" name="__mode" value="profile" />
+	<input type="hidden" name="type" value="save" />
+	<input type="hidden" name="author_id" value="<mt:authorid>" />
+	<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+	<input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
+	<input type="hidden" name="sessid" value="<mt:var name="sessid" escape="html">" />
+	表示名<span style="color:red">[必須]</span><br />
+		<input type="text" name="nickname" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authordisplayname escape="html">" /><br />
+	電子メール<span style="color:red">[必須]</span><br />
+		<input type="text" name="email" id="email" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authoremail escape="html">" /><br />
+		<mt:if name="email_error"><br /><span style="color:red">(不正な値です)</span></mt:if>
+	携帯メール<span style="color:red">[必須]</span><br />
+		<input type="text" name="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authormobileemail escape="html">" /><br />
+		<mt:if name="mobile_error"><br /><span style="color:red">(不正な値です)</span></mt:if>
+	秘密のフレーズ<br />
+		<input type="text" name="mail_token" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authormobiletoken escape="html">" /><br />
+		<mt:if name="token_error"><br /><span style="color:red">(不正な値です)</span></mt:if>
+	パスワードの再設定<br />
+		<input name="password" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+		<mt:if name="passwd_error"><br /><span style="color:red">(不正な値です)</span></mt:if>
+	パスワード再入力<br />
+		<input name="pass_verify" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+		<div align="center" style="margin-top:0.3em;"><input type="submit" value="保存" /></div>
+    <MTIfPlugin component="MailMagazine">
+    メールマガジンの購読<br />
+        <input name="mail_subscription"<mt:if name="mail_subscription"> checked="checked"</mt:if> type="checkbox" /> 購読する<br />
+    </MTIfPlugin>
+</form>
+<$mt:Include module="フッター(携帯用)"$>

@@ -1,0 +1,11 @@
+<mtapp:widget id="recently_scored" class="recently-scored-widget" label="<__trans phrase="Recently Scored">" can_close="1">
+    <mt:if var="has_scored_entries">
+        <ul class="recent-favorites-list pkg">
+            <mt:entries>
+                <li class="icon-left-wide icon-success"><a href="<mt:entrypermalink escape="html">"><mt:entrytitle escape="html"></a></li>
+            </mt:entries>
+        </ul>
+    <mt:else>
+        <p class="zero-state"><__trans phrase="There are no recently favorited entries."></p>
+    </mt:if>
+</mtapp:widget>

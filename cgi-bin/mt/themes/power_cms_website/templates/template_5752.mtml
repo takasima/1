@@ -1,0 +1,193 @@
+<MTSetVars>
+page_title=<$MTPageTitle$>
+description=<$MTPageExcerpt strip_linefeeds="1" escape="html"$>
+keywords=<$MTPageKeywords escape="html"$>
+website_id=<$MTWebsiteID$>
+website_url=<$MTWebsiteURL$>
+website_name=<$MTWebsiteName$>
+</MTSetVars>
+<MTSetVarBlock name="html_head" append="1">
+<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(top.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+</MTSetVarBlock>
+<$MTInclude module="<__trans phrase="SP-HTML Header">"$>
+<$MTInclude module="<__trans phrase="SP-Header">"$>
+    <section>
+<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
+        <MTPageIfTagged tag="@function">
+            <$MTPageBody mteval="1"$>
+            <$MTSetVar name="special_content" value="1"$>
+        </MTPageIfTagged>
+        <MTPageIfTagged tag="@sitemap">
+        <div id="single_contents">
+            <$MTPageBody mteval="1"$>
+            <div id="sitemap_list">
+                <ul>
+                    <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a>
+                        <MTPages>
+                            <MTPagesHeader><ul></MTPagesHeader>
+                            <li><a href="<$MTPagePermalink escape="html"$>"><$MTPageTitle escape="html"$></a></li>
+                            <MTPagesFooter></ul></MTPagesFooter>
+                        </MTPages>
+                        <ul>
+                        <MTBlogs include_blogs="children">
+                            <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a>
+                                <MTPages>
+                                    <MTPagesHeader><ul></MTPagesHeader>
+                                    <li><a href="<$MTPagePermalink escape="html"$>"><$MTPageTitle escape="html"$></a></li>
+                                    <MTPagesFooter></ul></MTPagesFooter>
+                                </MTPages>
+                            </li>
+                        </MTBlogs>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <$MTSetVar name="special_content" value="1"$>
+        </MTPageIfTagged>
+        <MTPageIfTagged tag="@contact">
+        </section>
+        <section>
+            <$MTContactFormSelector$>
+        <$MTSetVar name="special_content" value="1"$>
+        </MTPageIfTagged>
+        <MTUnless name="special_content">
+            <div class="webpage">
+                <$MTGetVar name="entry_body"$>
+            </div>
+                <MTIfPingsActive>
+        <h2><__trans phrase="Trackbacks"></h2>
+        <div class="panel">
+                <div class="blog_entries clf" id="trackbacks">
+                    <div class="blog_entries_body clf">
+                        <MTIfPingsAccepted>
+                        <div class="trackbacks-info">
+                            <p><__trans phrase="Trackback">URL: <$MTEntryTrackbackLink escape="html"$></p>
+                        </div>
+                        </MTIfPingsAccepted>
+                        <MTPings>
+                            <MTPingsHeader>
+                            <div class="trackbacks-content">
+                            </MTPingsHeader>
+                                <div class="trackback" id="ping-<$MTPingID$>">
+                                    <div class="inner">
+                                        <div class="trackback-header">
+                                            <div class="asset-meta">
+                                                <$MTPingBlogName escape="html"$> - <a href="<$MTPingURL escape="html"$>"><$MTPingTitle escape="html"$></a> (<a href="#ping-<$MTPingID$>"><$MTPingDate$></a>)
+                                            </div>
+                                        </div>
+                                        <div class="trackback-content">
+                                            <p>
+                                                <__trans phrase="[_1] <a href="[_2]">Read More</a>" params="<$mt:PingExcerpt escape="html"$>%%<$mt:PingURL escape="html"$>">
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <MTPingsFooter>
+                            </div>
+                            </MTPingsFooter>
+                        </MTPings>
+                    </div>
+                </div>
+        </div>
+                </MTIfPingsActive>
+                <MTIfCommentsActive>
+        <h2><__trans phrase="Comments"></h2>
+        <div class="panel">
+                <div class="blog_entries clf" id="comments">
+                    <div class="blog_entries_body clf">
+                        <MTComments>
+                            <MTCommentsHeader>
+                                <div id="comments-content" class="comments-content">
+                                    </MTCommentsHeader>
+                                    <div id="comment-<$MTCommentID$>" class="comment<MTIfCommentParent> comment-reply</MTIfCommentParent><MTIfCommenterIsEntryAuthor> entry-author-comment</MTIfCommenterIsEntryAuthor>">
+                                        <div class="inner">
+                                            <div class="comment-header">
+                                                <div class="asset-meta">
+                                                    <span class="byline">
+                                                        <$MTCommentAuthorIdentity$>
+                                    <MTIfCommentParent>
+                                                        <__trans phrase="[_1] replied to <a href="[_2]">comment from [_3]</a>" params="<span class="vcard author"><$mt:CommentAuthorLink$></span>%%<mt:CommentParent><$mt:CommentLink$></mt:CommentParent>%%<mt:CommentParent><$mt:CommentAuthor$></mt:CommentParent>">
+                                    <MTElse>
+                                                        <span class="vcard author"><$MTCommentAuthorLink$></span>
+                                    </MTIfCommentParent>
+                                                        | <a href="<$MTCommentLink$>"><abbr class="published" title="<$MTCommentDate format_name="iso8601"$>"><$MTCommentDate$></abbr></a>
+                                    <MTIfCommentsAccepted>
+                                                        | <$MTCommentReplyToLink$>
+                                    </MTIfCommentsAccepted>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="comment-content">
+                                                <$MTCommentBody$>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <MTCommentsFooter>
+                                </div>
+                            </MTCommentsFooter>
+                        </MTComments>
+                        <MTIfCommentsAccepted>
+                        <div class="comments-open" id="comments-open">
+                            <h3><__trans phrase="Leave a comment"></h3>
+                            <div class="comments-open-content">
+                                <div id="comment-greeting"></div>
+                                <form method="post" action="<$MTCGIPath$><$MTCommentScript$>" name="comments_form" id="comments-form" onsubmit="return mtCommentOnSubmit(this)">
+                                    <input type="hidden" name="static" value="1" />
+                                    <input type="hidden" name="entry_id" value="<$MTEntryID$>" />
+                                    <input type="hidden" name="__lang" value="<$MTBlogLanguage$>" />
+                                    <input type="hidden" name="parent_id" value="<$MTCommentParentID escape="html"$>" id="comment-parent-id" />
+                                    <input type="hidden" name="armor" value="1" />
+                                    <input type="hidden" name="preview" value="" />
+                                    <input type="hidden" name="sid" value="" />
+                                    <div id="comments-open-data">
+                                        <div id="comment-form-name">
+                                            <label for="comment-author"><__trans phrase="Name"></label>
+                                            <input id="comment-author" name="author" size="30" value="" onfocus="mtCommentFormOnFocus()" />
+                                        </div>
+                                        <div id="comment-form-email">
+                                            <label for="comment-email"><__trans phrase="Email Address"></label>
+                                            <input id="comment-email" name="email" size="30" value="" onfocus="mtCommentFormOnFocus()" />
+                                        </div>
+                                        <div id="comment-form-url">
+                                            <label for="comment-url"><__trans phrase="URL"></label>
+                                            <input id="comment-url" name="url" size="30" value="" onfocus="mtCommentFormOnFocus()" />
+                                        </div>
+                                        <div id="comment-form-remember-me">
+                                            <input type="checkbox" id="comment-bake-cookie" name="bakecookie" onclick="mtRememberMeOnClick(this)" value="1" accesskey="r" />
+                                            <label for="comment-bake-cookie"><__trans phrase="Remember personal info?"></label>
+                                        </div>
+                                    </div>
+                                    <div id="comment-form-reply" style="display:none">
+                                        <input type="checkbox" id="comment-reply" name="comment_reply" value="" onclick="mtSetCommentParentID()" />
+                                        <label for="comment-reply" id="comment-reply-label"></label>
+                                    </div>
+                                    <div id="comments-open-text">
+                                        <label for="comment-text"><__trans phrase="Comments">
+                                        <MTIfAllowCommentHTML><__trans phrase="(You may use HTML tags for style)"></MTIfAllowCommentHTML></label>
+                                        <textarea id="comment-text" name="text" rows="15" cols="50" onfocus="mtCommentFormOnFocus()"></textarea>
+                                    </div>
+                                    <div id="comments-open-captcha"></div>
+                                    <div id="comments-open-footer">
+                                        <input type="submit" accesskey="v" name="preview_button" id="comment-preview" value="<__trans phrase="Preview">" onclick="this.form.preview.value='1';" />
+                                        <input type="submit" accesskey="s" name="post" id="comment-submit" value="<__trans phrase="Submit">" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                        <!--
+                        mtAttachEvent("load", mtEntryOnLoad);
+                        mtAttachEvent("unload", mtEntryOnUnload);
+                        //-->
+                        </script>
+                        </MTIfCommentsAccepted>
+                    </div>
+                </div>
+        </div>
+                </MTIfCommentsActive>
+        </MTUnless>
+<mtml tag="/mt:SetVarBlock">
+<mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
+    </section>
+<$MTInclude module="<__trans phrase="SP-Footer">"$>

@@ -1,0 +1,13 @@
+<MTBuildRecurs>
+<MTIfUserAgent wants="keitai" trim="1">
+<$MTInclude module="<__trans phrase="Mobile-Comment Response">"$>
+<MTElse>
+    <MTIfUserAgent wants="SmartPhone">
+<$MTInclude module="<__trans phrase="SP-Comment Response">"$>
+    <MTElse>
+<$MTInclude module="<__trans phrase="PC-Comment Response">"$>
+    </MTElse>
+    </MTIfUserAgent>
+</MTElse>
+</MTIfUserAgent>
+</MTBuildRecurs>

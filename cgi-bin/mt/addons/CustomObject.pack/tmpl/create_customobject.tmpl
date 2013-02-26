@@ -1,0 +1,219 @@
+<__trans_section component="CustomObject">
+<mt:setvarblock name="page_title"><__trans phrase="Create Object"></mt:setvarblock>
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+fieldset textarea { height:240px }
+.field input.full-width { width:400px }
+.field input.harf-width { width:100px }
+</style>
+<script type="text/javascript" src="<mt:var name="static_uri">addons/CustomObject.pack/js/create_customobject.js">"></script>
+<script type="text/javascript">
+function validation () {
+}
+</script>
+</mt:setvarblock>
+<mt:setvar name="position_actions_bottom" value="1">
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved">
+        <mtapp:statusmsg
+           id="saved"
+            class="success">
+            <__trans phrase="New Plugin created successfully.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="confirm_message">
+        <mtapp:statusmsg
+           id="saved"
+            class="success">
+            <__trans phrase="Are you sure you want to create this Plugin?">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="error">
+        <mtapp:statusmsg
+            id="generic-error"
+            class="error">
+            <mt:var name="error">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+<mt:setvartemplate name="action_buttons">
+<mt:if name="confirm_ok">
+    <button
+        type="submit"
+        accesskey="s"
+        title="<__trans phrase="Create Plugin!">"
+        class="save action primary-button primary button"
+        ><__trans phrase="Create"></button>
+<mt:else>
+    <button
+        type="submit"
+        accesskey="s"
+        class="save action primary-button primary button"
+        ><__trans phrase="Confirm"></button>
+</mt:else>
+</mt:if>
+</mt:setvartemplate>
+<mt:setvarblock name="related_content">
+    <mtapp:PageActions>
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">">
+    <input type="hidden" name="__mode" id="this_mode" value="create_customobject" />
+    <mt:if name="action_mode" eq="confirm">
+        <mt:if name="error">
+                <input type="hidden" name="action_name" value="confirm" />
+            <mt:else>
+                <mt:setvar name="confirm_ok" value="1">
+                <input type="hidden" name="action_name" value="submit" />
+            </mt:else>
+        </mt:if>
+    <mt:else>
+        <input type="hidden" name="action_name" value="confirm" />
+    </mt:if>
+    <input type="hidden" name="action_name" value="confirm" />
+    <input type="hidden" name="return_args" id="this_return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+<mt:if name="position_actions_top">
+    <mt:include name="include/actions_bar.tmpl" bar_position="top" hide_pager="1">
+</mt:if>
+<fieldset>
+    <MTIgnore><h3><mt:var name="page_title"></h3></MTIgnore>
+    <mtapp:setting
+        id="plugin_id"
+        label="<__trans phrase="ID">"
+        hint="<__trans phrase="Alphabet only(example:'Book').">"
+        required="1"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="plugin_id" escape="html">
+        <input type="hidden" name="plugin_id" id="plugin_id" value="<mt:var name="plugin_id" escape="html">" />
+    <mt:else>
+        <input type="text" name="plugin_id" id="plugin_id" class="harf-width" value="<mt:var name="plugin_id" escape="html">" />
+        <mt:if name="plugin_id_invalid">&nbsp; <__trans phrase="ID is Alphabet only(example:'Book')."></mt:if>
+        <mt:if name="plugin_id_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="plugin_version"
+        label="<__trans phrase="Version">"
+        required="1"
+        hint="<__trans phrase="Numerical or Floating point(example:'1.0').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="plugin_version" escape="html">
+        <input type="hidden" name="plugin_version" id="plugin_version" value="<mt:var name="plugin_version" escape="html">" />
+    <mt:else>
+        <input type="text" name="plugin_version" id="plugin_version" class="harf-width" value="<mt:unless name="request.action_name">1.0<mt:else><mt:var name="plugin_version" escape="html"></mt:unless>" />
+        <mt:if name="plugin_version_invalid">&nbsp; <__trans phrase="Numerical or Floating point(example:'1.0')."></mt:if>
+        <mt:if name="plugin_version_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="ja"
+        required="1"
+        label="<__trans phrase="Japanese Name">"
+        hint="<__trans phrase="Japanese Name(example:'Book').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="ja" escape="html">
+        <input type="hidden" name="ja" id="ja" value="<mt:var name="ja" escape="html">" />
+    <mt:else>
+        <input type="text" name="ja" id="ja" class="harf-width" value="<mt:var name="ja" escape="html">" />
+        <mt:if name="ja_invalid">&nbsp; <__trans phrase="Japanese Name(example:'Book')."></mt:if>
+        <mt:if name="ja_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+<MTIgnore>
+    <mtapp:setting
+        id="class"
+        label="<__trans phrase="Class Type">"
+        required="1"
+        hint="<__trans phrase="Lowercase Alphabet only(example:'book').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="class" escape="html">
+        <input type="hidden" name="class" id="class" value="<mt:var name="class" escape="html">" />
+    <mt:else>
+        <input type="text" name="class" id="class" class="harf-width" value="<mt:var name="class" escape="html">" />
+        <mt:if name="class_invalid">&nbsp; <__trans phrase="Lowercase Alphabet only(example:'book')."></mt:if>
+        <mt:if name="class_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+</MTIgnore>
+    <mtapp:setting
+        id="plural"
+        label="<__trans phrase="Label(Plural)">"
+        required="1"
+        hint="<__trans phrase="Alphabet only(example:'Books').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="plural" escape="html">
+        <input type="hidden" name="plural" id="plural" value="<mt:var name="plural" escape="html">" />
+    <mt:else>
+        <input type="text" name="plural" id="plural" class="harf-width" value="<mt:var name="plural" escape="html">" />
+        <mt:if name="plural_invalid">&nbsp; <__trans phrase="Alphabet only(example:'Books')."></mt:if>
+        <mt:if name="plural_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="description"
+        label="<__trans phrase="Description">"
+        required="1"
+        hint="<__trans phrase="Description in English(example:'Create and Manage Book.').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="description" escape="html">
+        <input type="hidden" name="description" id="description" value="<mt:var name="description" escape="html">" />
+    <mt:else>
+        <input type="text" name="description" id="description" class="full-width" value="<mt:var name="description" escape="html">" />
+        <mt:if name="description_empty"><br /><__trans phrase="This field is required."></mt:if>
+        <mt:if name="description_invalid"><br /><__trans phrase="Some characters are not available."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="description_ja"
+        label="<__trans phrase="Japanese Description">"
+        required="1"
+        hint="<__trans phrase="Description in Japanese(example:'Create and Manage Book.').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="description_ja" escape="html">
+        <input type="hidden" name="description_ja" id="description_ja" value="<mt:var name="description_ja" escape="html">" />
+    <mt:else>
+        <input type="text" name="description_ja" id="description_ja" class="full-width" value="<mt:var name="description_ja" escape="html">" />
+        <mt:if name="description_ja_empty"><br /><__trans phrase="This field is required."></mt:if>
+        <mt:if name="description_ja_invalid"><br /><__trans phrase="Some characters are not available."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="menu_order"
+        label="<__trans phrase="Menu Order">"
+        required="1"
+        hint="<__trans phrase="Numerical only(example:'500').">"
+        show_hint="1">
+    <mt:if name="confirm_message">
+        <mt:var name="menu_order" escape="html">
+        <input type="hidden" name="menu_order" id="menu_order" value="<mt:var name="menu_order" escape="html">" />
+    <mt:else>
+        <input type="text" name="menu_order" id="menu_order" class="harf-width" value="<mt:unless name="request.action_name">500<mt:else><mt:var name="menu_order" escape="html"></mt:unless>" />
+        <mt:if name="menu_order_empty">&nbsp;<__trans phrase="This field is required."></mt:if>
+    </mt:else>
+    </mt:if>
+    </mtapp:setting>
+</fieldset>
+
+<mt:if name="position_actions_bottom">
+    <mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+</mt:if>
+</form>
+<mt:include name="include/footer.tmpl">
+</__trans_section>

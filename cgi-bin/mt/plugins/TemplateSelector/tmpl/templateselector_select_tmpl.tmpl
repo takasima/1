@@ -1,0 +1,75 @@
+<__trans_section component="TemplateSelector">
+<mt:if name="type_class" eq="entry">
+    <mt:setvarblock name="page_title"><__trans phrase="Select a Template and New Entry"></mt:setvarblock>
+    <mt:setvarblock name="page_summary"><__trans phrase="Select a Entry Template."></mt:setvarblock>
+<mt:else>
+    <mt:setvarblock name="page_title"><__trans phrase="Select a Template and New Page"></mt:setvarblock>
+    <mt:setvarblock name="page_summary"><__trans phrase="Select a Page Template."></mt:setvarblock>
+</mt:if>
+<mt:include name="dialog/header.tmpl">
+<form method="get" action="<mt:var name="script_url">" target="_parent">
+    <input type="hidden" name="__mode" value="view" />
+    <input type="hidden" name="_type" value="<mt:var name="type_class">" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="is_selector" value="1" />
+    <mt:if name="parent_entry_id">
+        <input type="hidden" name="parent_entry_id" value="<$mt:var name="parent_entry_id" escape="html"$>" />
+    </mt:if>
+
+    <mt:unless name="template_loop">
+        <mt:setvarblock name="page_summary"><__trans phrase="No template for select."></mt:setvarblock>
+    </mt:unless>
+    <mtapp:setting
+        id="bar"
+        label_class="top-label"
+        label="<$mt:var name="page_summary"$>">
+    </mtapp:setting>
+
+    <mt:if name="template_loop">
+    <div style="overflow:scroll;width:100%;height:230px;text-align:center;background-color:#FFF;">
+        <div style="background-color:#FFF;">
+        <mt:loop name="template_loop">
+            <div style="width:186px;height:200px;float:left;text-align:center;padding-top:14px;background-color:#FFF;margin:0px 0px 10px 0px;">
+                <p>
+                    <label for="template_<$mt:var name="template_id" escape="html"$>">
+                        <img src="<$mt:var name="thumbnail_url"$>" width="160" height="160" alt="Template Image" />
+                    </label>
+                </p>
+                <p>
+                    <input type="radio" name="template_module_id"
+                        value="<$mt:var name="template_id" escape="html"$>"
+                        id="template_<$mt:var name="template_id" escape="html"$>"
+                        <mt:if name="counter" eq="1">checked="checked"</mt:if> />
+                    <label for="template_<$mt:var name="template_id" escape="html"$>">
+                        <$mt:var name="template_name" escape="html"$>
+                    </label>
+                </p>
+            </div>
+        </mt:loop>
+        </div>
+    </div>
+    </mt:if>
+
+    <br style="clear:both" />
+
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+    <mt:if name="template_loop">
+            <button
+                type="submit"
+                accesskey="s"
+                title="<__trans phrase="Continue">"
+                class="action primary button"
+                ><__trans phrase="Continue"></button>
+    </mt:if>
+            <button
+                type="submit"
+                accesskey="x"
+                title="<__trans phrase="Cancel (x)">"
+                class="action button cancel mt-close-dialog"
+                ><__trans phrase="Cancel"></button>
+        </div>
+    </div>
+</form>
+<mt:include name="dialog/footer.tmpl">
+</__trans_section>

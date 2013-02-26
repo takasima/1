@@ -1,0 +1,24 @@
+<MTIgnore>Login check</MTIgnore>
+<mtml tag="mt:BlogIsMembersOnly" params='setvar="is_members_site"'>
+<mtml tag="mt:If" params='name="is_members_site"'>
+<mtml tag="mt:SetVar" params='name="requires_login" value="1"'>
+<mtml tag="mt:IfLogin">
+<mtml tag="mt:IfUserHasPermission" params='permission="view"'>
+<mtml tag="mt:SetVar" params='name="requires_login" value="0"'>
+<mtml tag="/mt:IfUserHasPermission">
+<mtml tag="/mt:IfLogin">
+<mtml tag="/mt:If">
+<mtml tag="mt:If" params='name="requires_login"'>
+<mtml tag="mt:Include" params='module="<__trans phrase="Mobile-Login">"'>
+<mtml tag="mt:else">
+<mtml tag="mt:for" params='add_session_for_mobile="1"'>
+<MTFor regex_replace='/^[ \n\r\t\f]*(?:\r\n|[\r\n]|\z)/mg',''>
+<MTSetVarBlock name="common_path"><$MTBlogURL$>common/</MTsetVarBlock>
+<$MTInclude module="<__trans phrase="Mobile-Header">"$>
+<$MTVar name="contents"$>
+<$MTInclude module="<__trans phrase="Mobile-Footer">"$>
+</MTFor>
+<mtml tag="/mt:for">
+<mtml tag="/mt:else">
+<mtml tag="/mt:If">
+<MTIgnore>/Login check</MTIgnore>

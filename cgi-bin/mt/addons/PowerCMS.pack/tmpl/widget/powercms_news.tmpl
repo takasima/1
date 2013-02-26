@@ -1,0 +1,24 @@
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+.news-widget #powercms-news-widget-tabs {
+    margin: 0 -10px 15px;
+}
+</style>
+<script type="text/javascript">
+jQuery(function() {
+    jQuery('#powercms_news-form').tabs();
+});
+</script>
+</mt:setvarblock>
+<mtapp:widget class="widget news-widget" tabbed="1" label="PowerCMS <__trans phrase="News">" can_close="1">
+    <ul id="powercms-news-widget-tabs" class="tabs">
+        <li id="powercms-news-tab" class="tab"><a href="#powercms-news-panel"><span><__trans phrase="PowerCMS"></span></a></li>
+    </ul>
+    <div id="powercms-news-panel">
+        <mt:if name="news_html">
+            <$mt:var name="news_html"$>
+        <mt:else>
+            <p><__trans phrase="No PowerCMS news available."></p>
+        </mt:if>
+    </div>
+</mtapp:widget>

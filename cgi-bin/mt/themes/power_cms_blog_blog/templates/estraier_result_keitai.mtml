@@ -1,0 +1,122 @@
+<MTBlogParentWebsite>
+<$MTWebsiteID setvar="site_id"$>
+<$MTWebsiteURL setvar="site_url"$>
+<$MTWebsiteName setvar="site_name"$>
+<$MTWebsiteRelativeURL setvar="site_path"$>
+</MTBlogParentWebsite>
+
+<$MTBlogRelativeURL setvar="blog_path"$>
+<$MTVar name="blog_path" cat="common/" setvar="common_path"$>
+
+<MTSetVarBlock name="title"><__trans phrase="Search Results"></MTSetVarBlock>
+<mt:for add_session_for_mobile="1" external_link_for_mobile="1">
+<$MTInclude module="<__trans phrase="Mobile-Header">"$>
+
+<div style="text-align:center">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<span style="font-size:x-large;color:#212121"><$MTVar name="site_name" encode_html="1"$></span><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+
+<MTEstraierMeta>
+    <div>
+        <span style="font-size:small;"><mt:if name="__query__"><__trans phrase="Results matching &ldquo;[_1]&rdquo;" params="<$mt:var name="__query__" escape="html"$>"><mt:else><__trans phrase="Search Results"></mt:else></mt:if></span>
+    </div>
+    <div>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+    <form action="<$MTCGIRelativeURL$><$MTEstraierScript$>" method="get" name="search_estraier">
+        <p>
+            <span style="font-size:small;">
+            <input type="text" name="query" style="width:280px" value="<$mt:var name="__query__" escape="html"$>" />
+            <input type="submit" value=" <__trans phrase="Search"> " style="width:70px" />
+            <input type="hidden" name="limit" value="<$mt:var name="__limit__" escape="html"$>" />
+            <input type="hidden" name="offset" value="1" />
+            <input type="hidden" name="blog_id" value="<$MTBlogID$>" />
+            <mt:setvarblock name="search_params"><$MTCGIRelativeURL$><$MTEstraierScript$>?blog_id=<$MTBlogID$>&amp;limit=<$mt:var name="__limit__" escape="html"$>&amp;query=<$mt:var name="__query__" escape="html" escape="url"$>&amp;<MTEstraierTarget>&amp;target=<$mt:var name="__target__" escape="html"$></MTEstraierTarget><MTEstraierSuffix>&amp;suffix=<$mt:var name="__suffix__" escape="html"$></MTEstraierSuffix>&amp;offset=</mt:setvarblock>
+            </span>
+        </p>
+        <p>
+            <span style="font-size:small;">
+            <__trans phrase="Target">:<br />
+            <MTMultiblog include_blogs="all">
+                <span style="display:inline;white-space:nowrap;"><label><input type="checkbox" name="target" value="<$MTBlogID$>"<MTEstraierTarget><MTIf tag="MTBlogID" eq="$__target__"> checked="checked"</MTIf></MTEstraierTarget> /> <$MTBlogName escape="html"$></label></span>
+            </MTMultiblog>
+            </span>
+        </p>
+        <p>
+            <span style="font-size:small;">
+            <__trans phrase="Extension">:<br />
+            <label><input type="checkbox" name="suffix" value="html"<MTEstraierSuffix><MTIf name="__suffix__" eq="html"> checked="checked"</MTIf></MTEstraierSuffix> /> html</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="pdf"<MTEstraierSuffix><MTIf name="__suffix__" eq="pdf"> checked="checked"</MTIf></MTEstraierSuffix> /> pdf</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="xls"<MTEstraierSuffix><MTIf name="__suffix__" eq="xls"> checked="checked"</MTIf></MTEstraierSuffix> /> xls</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="doc"<MTEstraierSuffix><MTIf name="__suffix__" eq="doc"> checked="checked"</MTIf></MTEstraierSuffix> /> doc</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="ppt"<MTEstraierSuffix><MTIf name="__suffix__" eq="ppt"> checked="checked"</MTIf></MTEstraierSuffix> /> ppt</label>
+            </span>
+        </p>
+    </form>
+    </div>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</MTEstraierMeta>
+<MTEstraierResults wwidth="120" hwidth="3" awidth="60">
+    <MTEstResultHeader>
+        <span style="font-size:small;">
+            <MTIfEstResultMatch>
+                <__trans phrase="[_1] results ([_2]-[_3])" params="<$MTEstResultCount$>%%<$mt:var name="__start__"$>%%<$mt:var name="__last__"$>">
+                <MTElse><__trans phrase="No results found for &ldquo;[_1]&rdquo;." params="<$mt:var name="__query__" escape="html"$>"></MTElse>
+            </MTIfEstResultMatch>
+        </span>
+        <MTIfEstResultMatch>
+        <div>
+        </MTIfEstResultMatch>
+    </MTEstResultHeader>
+    <MTIfEstResultMatch>
+        <$MTEstResultTitle setvar="result_title"$>
+        <MTUnless name="result_title">
+            <$MTEstResultURL remove_html="1" regex_replace="/.*\//","" setvar="result_title"$>
+        </MTUnless>
+            <div style="padding-bottom:0.3em;border-bottom:1px dotted #484848;margin-bottom:0.3em;">
+                <span style="font-size:small;"><a href="<MTEstResultURL>"><$MTVar name="result_title"$></a><br /></span>
+                <span style="font-size:x-small;"><MTEstResultDate>: <MTEstResultExcerpt remove_html="1"></span>
+            </div>
+    </MTIfEstResultMatch>
+    <MTEstResultFooter>
+        <MTIfEstResultMatch>
+        <div>
+            <MTEstResultPager>
+                <MTEstResultPagerHeader>
+                    <div style="text-align:center;">
+                    <span style="font-size:small;">
+                    <MTIfEstResultPrev>
+                        <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_on.gif" alt="" width="8" height="12">
+                        <a href="<$mt:var name="search_params"$><mt:var name="__prevoffset__">"><__trans phrase="Previous"></a>
+                        <MTElse>
+                        <img src="<$MTVar name="common_path" encode_html="1"$>images/prev_off.gif" alt="" width="8" height="12">
+                        <__trans phrase="Previous">
+                        </MTElse>
+                    </MTIfEstResultPrev>
+                </MTEstResultPagerHeader>
+                <MTIGnore>
+                <mt:if name="__current__"><li class="index"><span><mt:var name="__counter__"></span></li>
+                <mt:else><li class="index"><a href="<$mt:var name="search_params"$><mt:var name="__offset__">"><mt:var name="__counter__"></a></li></mt:else></mt:if>
+                </MTIgnore>
+                <MTEstResultPagerFooter>
+                    <MTIfEstResultNext>
+                        <a href="<$mt:var name="search_params"$><mt:var name="__nextoffset__">"><__trans phrase="Next"></a>
+                        <img src="<$MTVar name="common_path" encode_html="1"$>images/next_on.gif" alt="" width="8" height="12">
+                        <MTElse>
+                        <__trans phrase="Next">
+                        <img src="<$MTVar name="common_path" encode_html="1"$>images/next_off.gif" alt="" width="8" height="12">
+                        </MTElse>
+                    </MTIfEstResultNext>
+                    </span>
+                    </div>
+                </MTEstResultPagerFooter>
+            </MTEstResultPager>
+        </div>
+        </MTIfEstResultMatch>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+    </MTEstResultFooter>
+</MTEstraierResults>
+
+<$MTInclude module="<__trans phrase="Mobile-Footer">"$>
+</mt:for>

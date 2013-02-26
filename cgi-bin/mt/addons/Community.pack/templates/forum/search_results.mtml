@@ -1,0 +1,176 @@
+<__trans_section component="community">
+<mt:SetVarBlock name="page_title"><__trans phrase="Search Results"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<mt:Ignore><!-- Below Javascript adds ajax search capability --></mt:Ignore>
+<mt:SetVarBlock name="html_head" append="1">
+<script type="text/javascript">
+/* <![CDATA[ */
+var user = <$mt:UserSessionState$>;
+<mt:IfMoreResults>
+function getResults(page) {
+    page = parseInt(page);
+    if (timer) window.clearTimeout(timer);
+    var xh = mtGetXmlHttp();
+    if (!xh) return false;
+    var res = results[page];
+    if (!res) return;
+    var url = res['next_url'];
+    if (!url) return;
+
+    xh.open('GET', url + '&format=js', true);
+    xh.onreadystatechange = function() {
+        if ( xh.readyState == 4 ) {
+            if ( xh.status && ( xh.status != 200 ) ) {
+                // error - ignore
+            } else {
+                try {
+                    var page_results = eval("(" + xh.responseText + ")");
+                    if ( page_results['error'] == null )
+                        results[page + 1] = page_results['result'];
+                } catch (e) {
+                }
+            }
+        }
+    };
+    xh.send(null);
+}
+
+function swapContent(direction) {
+    if ( direction == undefined ) direction = 1;
+    var page_span = document.getElementById('current-page');
+    if (!page_span) return true;
+    var next_page = direction + parseInt(page_span.innerHTML);
+    var res = results[next_page];
+    if (!res) return true;
+    var content = res['content'];
+    if (!content) return true;
+    var div = document.getElementById('search-results');
+    if (!div) return true;
+    div.innerHTML = content;
+    timer = window.setTimeout("getResults(" + next_page + ")", 1*1000);
+    window.scroll(0, 0);
+    return false;
+}
+<mt:Else><mt:IfPreviousResults>
+function swapContent(direction) {
+	return true;
+}</mt:IfPreviousResults>
+</mt:IfMoreResults>
+/* ]]> */
+</script>
+</mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">" body_class="mt-search-results"$>
+
+<mt:SetVarTemplate id="search_results" name="search_results">  
+    <mt:SearchResults>
+        <mt:SearchResultsHeader>
+<div id="search-results">
+    <span id="current-page" class="hidden"><$mt:CurrentPage$></span>
+    <h1 id="page-title" class="search-results-header">
+        <mt:IfStraightSearch>
+        <__trans phrase="Topics matching &ldquo;[_1]&rdquo;" params="<$mt:SearchString$>">
+        </mt:IfStraightSearch>
+        <mt:IfTagSearch>
+        <__trans phrase="Topics tagged &ldquo;[_1]&rdquo;" params="<$mt:SearchString$>">
+        </mt:IfTagSearch>
+    </h1>
+    <table id="entry-table">
+        <thead>
+            <tr>
+                <th class="title"><__trans phrase="Topics"></th>
+                <th class="last-comment"><__trans phrase="Last Reply"></th>
+            </tr>
+        </thead>
+        <tbody>
+        </mt:SearchResultsHeader>
+            <tr>
+                <td class="title">
+                    <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36"$>
+                    <div class="entry entry-asset">
+                        <div class="entry-title"><a href="<$mt:EntryPermalink$>"><$mt:EntryTitle$></a><mt:Unless name="category_archive"> <span class="category-name"><mt:EntryCategories><a href="<$mt:CategoryArchiveLink$>" rel="tag" title="<$mt:CategoryDescription escape="html"$>"><$mt:CategoryLabel$></a></mt:EntryCategories></span></mt:Unless></div>
+                        <div class="asset-meta">
+                            <span class="byline"><__trans phrase="By [_1] on [_2]" params='<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:EntryAuthorID$>"><$mt:EntryAuthorDisplayName encode_html="1"$></a></span>%%<abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>'></span>
+                        </div>
+                    </div>
+                </td>
+                <td class="last-comment">
+                    <mt:Comments lastn="1">
+                    <mt:SetVarBlock name="comment_author_link">
+                    <mt:If tag="CommenterID">
+<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:CommenterID$>"><$mt:CommenterName$></a></span>
+                    <mt:Else>
+<span class="vcard author"><$mt:CommenterName$></span>
+                    </mt:If>
+                    </mt:SetVarBlock>
+                    <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36" userpic_type="commenter"$>
+                    <div class="asset-meta">
+                        <a href="<$mt:EntryPermalink$>#comment-<$mt:CommentID$>" title="<__trans phrase="Permalink to this Reply">"><abbr title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%b %e, %Y"$></abbr></a>
+                        <div class="byline"><__trans phrase="By [_1]" params='<$mt:Var name="comment_author_link"$>'></div>
+                    </div>
+                    <mt:Else>
+                        <mt:IfCommentsAccepted>
+                        <a class="icon-comment" href="<$mt:EntryPermalink$>#comment"><__trans phrase="Reply"></a>
+                        <mt:Else>
+                        <span class="comments-closed"><__trans phrase="Closed"></a>
+                        </mt:IfCommentsAccepted>
+                    </mt:Comments>
+                </td>
+            </tr>
+        <mt:SearchResultsFooter>
+        </tbody>
+    </table>
+    <div class="autopagerize_insert_before"></div>
+        <mt:Ignore>Used with the ajax search capability of the new search class</mt:Ignore>
+    <div class="content-nav">
+        <span class="results-previous-link"><mt:IfPreviousResults><a href="<$mt:PreviousLink$>" rel="prev" onclick="return swapContent(-1);">&laquo; <__trans phrase="Previous"></a><mt:else>&laquo; <__trans phrase="Previous"></mt:IfPreviousResults></span>&nbsp;&nbsp;<mt:PagerBlock><mt:IfCurrentPage><strong id="results-current-page"><$mt:Var name="__value__"$></strong><mt:Else><a href="<$mt:PagerLink$>"><$mt:Var name="__value__"$></a></mt:IfCurrentPage><mt:Unless name="__last__">&nbsp;</mt:Unless></mt:PagerBlock>&nbsp;&nbsp;<span class="results-previous-link"><mt:IfMoreResults><a href="<$mt:NextLink$>" rel="next" onclick="return swapContent();"><__trans phrase="Next"> &raquo;</a><mt:else><__trans phrase="Next"> &raquo;</mt:IfMoreResults></span>
+    </div>
+</div>
+        </mt:SearchResultsFooter>
+    </mt:SearchResults>
+</mt:SetVarTemplate>
+<$mt:Var name="search_results"$>
+
+<mt:NoSearchResults>
+<h1 id="page-title" class="search-results-header">
+    <mt:IfStraightSearch>
+    <__trans phrase="Results matching &ldquo;[_1]&rdquo;" params="<$mt:SearchString$>">
+    </mt:IfStraightSearch>
+    <mt:IfTagSearch>
+    <__trans phrase="Results tagged &ldquo;[_1]&rdquo;" params="<$mt:SearchString$>">
+    </mt:IfTagSearch>
+</h1>
+<p><__trans phrase="No results found for &ldquo;[_1]&rdquo;." params="<$mt:SearchString$>"></p>
+</mt:NoSearchResults>
+
+<mt:NoSearch>
+<h1 id="page-title" class="search-results-header"><__trans phrase="Instructions"></h1>
+<p><__trans phrase="By default, this search engine looks for all words in any order. To search for an exact phrase, enclose the phrase in quotes:"></p>
+<blockquote>
+    <p><code>"<__trans phrase="movable type">"</code></p>
+</blockquote>
+<p><__trans phrase="The search engine also supports AND, OR, and NOT keywords to specify boolean expressions:"></p>
+<blockquote>
+    <p><code><__trans phrase="personal OR publishing"></code></p>
+    <p><code><__trans phrase="publishing NOT personal"></code></p>
+</blockquote>
+</mt:NoSearch>
+
+<mt:Ignore>Used with the ajax search capability of the new search class</mt:Ignore>
+<mt:IfMoreResults>
+<script type="text/javascript">
+<!--
+var div = document.getElementById('search-results');
+var results = {
+    '<$mt:CurrentPage$>': {
+        'content': div.innerHTML,
+        'next_url': '<$mt:NextLink$>'
+    }
+};
+var timer = window.setTimeout("getResults(" + <$mt:CurrentPage$> + ")", 1*1000);
+//-->
+</script>
+</mt:IfMoreResults>
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

@@ -1,0 +1,71 @@
+<mt:setvarblock name="html_head" append="1">
+    <link rel="stylesheet" href="<mt:var name="static_uri">addons/Community.pack/css/dashboard.css" type="text/css" media="screen" charset="utf-8" />
+
+    <mt:if name="stat_url">
+<script type="text/javascript">
+    var slider_variable = '<__trans_section component="community"><__trans phrase="Registrations" escape="js"></__trans_section>';
+    var slider_variable_singular = '<__trans phrase="Author" escape="js">';
+    var file_name = '<mt:var name="stat_url" escape="js">';
+
+    var registrationsSlider = new FlashTag("<mt:var name="static_uri">flash/date_slider_open.swf?date_range="+date_range+"&file_name="+file_name+"&box_color="+box_color+"&bar_color="+bar_color+"&line_color="+line_color+"&slider_variable="+slider_variable+"&slider_variable_singular="+slider_variable_singular+"&lang=<mt:var name="language_tag">&static_path="+escape(StaticURI+"flash"), 540, 122);
+    registrationsSlider.setFlashvars("lcId=" + lcId);
+    registrationsSlider.setFlashvars("flashSource=http://www.measuremap.com/developer/slider/&contentLicense=http://creativecommons.org/licenses/by/2.0/");
+</script>
+    </mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="tabs" append="1">
+        <li id="registration-tab" class="tab <mt:if name="tab" eq="registration">selected-tab</mt:if>" mt:tab="registration" mt:command="select-tab" onclick="blogStatsTabSelect('registration')"><a href="javascript:void(0)"><span><__trans_section component="community"><__trans phrase="Registrations"></__trans_section></span></a></li>
+</mt:setvarblock>
+
+<mt:setvarblock name="active_stats_panel_updates" append="1">
+    if (activeStatsPanel == 'registration') {
+        str = trans("You have [quant,_1,registration,registrations] from [_2]", total_count, clean_range);
+    }
+</mt:setvarblock>
+
+<div id="registration-panel" class="blog-stats-widget-panel <mt:unless name="tab" eq="registration">hidden</mt:unless>" mt:tab-content="registration">
+    <mt:if name="stat_url">
+    <script type="text/javascript">
+    <!--
+    registrationsSlider.write(document);
+    // -->
+    </script>
+
+    <div class="stats-summary" id="stats-summary-registration">&nbsp;</div>
+    </mt:if>
+
+    <h4 class="tab-panel-header"><__trans_section component="community"><__trans phrase="Recent Registrations"></__trans_section></h4>
+
+<mt:loop name="recent_registrations">
+    <div id="author-<mt:var name="id">" class="author content author-<mt:if name="__odd__">odd odd<mt:else>even even</mt:if> author-auth-type-<mt:var name="auth_type" lower_case="1" escape="html">">
+        <div class="user-pic picture small">
+            <a href="<$MTCGIPath$><$MTCommunityScript$>?__mode=view&amp;id=<$mt:var name="id"$>">
+    <mt:if var="author_userpic_url">
+                <img src="<mt:var name="author_userpic_url" escape="html">" width="<mt:var name="author_userpic_width">" height="<mt:var name="author_userpic_height">" alt="<$mt:var name="nickname" escape="html"$>" />
+    <mt:else>
+                <img src="<$MTStaticWebPath$>images/default-userpic-50.jpg" width="<mt:var name="author_userpic_width">" height="<mt:var name="author_userpic_height">" alt="<__trans phrase="default userpic">" />
+    </mt:if>
+            </a>
+        </div>
+        <h4>
+    <mt:if name="auth_icon_url">
+            <img src="<mt:var name="auth_icon_url">" height="16" width="16" alt="" border="0" class="auth-icon" />
+    </mt:if>
+            <a href="<$MTCGIPath$><$MTCommunityScript$>?__mode=view&amp;id=<$mt:var name="id"$>"><mt:var name="nickname" escape="html"></a>
+        </h4>
+        <ul class="authrt-meta meta">
+            <li class="username"><mt:var name="name" escape="html"></li>
+        </ul>
+    <mt:if name="has_edit_access">
+        <mt:if name="blog_id">
+            <a href="<mt:var name="script_url">?__mode=view&amp;_type=<mt:if name="type" eq="1">author<mt:else>commenter&amp;blog_id=<mt:var name="blog_id"></mt:if>&amp;id=<mt:var name="id">"><__trans phrase="Edit"></a>
+        <mt:else>
+            <mt:if name="type" eq="1">
+            <a href="<mt:var name="script_url">?__mode=view&amp;_type=author&amp;id=<mt:var name="id">"><__trans phrase="Edit"></a>
+            </mt:if>
+        </mt:if>
+    </mt:if>
+        </div>
+    </mt:loop>
+</div>

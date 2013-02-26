@@ -1,0 +1,113 @@
+<__trans_section component="PowerCMS">
+<style type="text/css">
+    .medium-header {
+        margin-bottom: 20px;
+        padding-left: 5px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #ccc;
+        font-size: 110%;
+    }
+    .small-header {
+        margin-bottom: 15px;
+        padding-left: 5px;
+        padding-bottom: 4px;
+        border-bottom: 1px dotted #ccc;
+        font-size: 105%;
+    }
+</style>
+<h2 class="medium-header"><__trans phrase="Rebuild Trigger"></h2>
+<mtapp:setting
+    id="rebuildtrigger"
+    label="<__trans phrase="Trigger">">
+<div><__trans phrase="You can write YAML format. Example:"></div>
+<pre class="text full-width">
+Trigger1:
+    params:
+        - __mode=cfg_prefs
+        - _type=blog
+        - saved=1
+    template_id:
+        - 1
+        - 2
+Trigger2:
+    params:
+        - __mode=list_entry
+        - is_power_edit=1
+        - saved=1
+    blog_id: &lt;mt:BlogId&gt;
+</pre>
+<ul>
+<li><textarea rows="10" id="rebuildtrigger" class="text full-width" name="rebuildtrigger"><mt:var name="rebuildtrigger" escape="html"></textarea>
+</li>
+</ul>
+</mtapp:setting>
+<h2 class="medium-header"><__trans phrase="Field Label Setting"></h2>
+<mtapp:setting
+    id="title"
+    label="<__trans phrase="Title">">
+    <input type="text" value="<mt:var name="title" escape="html">" name="title" id="title" />
+</mtapp:setting>
+<mtapp:setting
+    id="text"
+    label="<__trans phrase="Body">">
+    <input type="text" value="<mt:var name="text" escape="html">" name="text" id="text" />
+</mtapp:setting>
+<mtapp:setting
+    id="extended"
+    label="<__trans phrase="Extended">">
+    <input type="text" value="<mt:var name="extended" escape="html">" name="extended" id="extended" />
+</mtapp:setting>
+<mtapp:setting
+    id="excerpt"
+    label="<__trans phrase="Excerpt">">
+    <input type="text" value="<mt:var name="excerpt" escape="html">" name="excerpt" id="excerpt" />
+</mtapp:setting>
+<mtapp:setting
+    id="keywords"
+    label="<__trans phrase="Keywords">">
+    <input type="text" value="<mt:var name="keywords" escape="html">" name="keywords" id="keywords" />
+</mtapp:setting>
+<mtapp:setting
+    id="tags"
+    label="<__trans phrase="Tags">">
+    <input type="text" value="<mt:var name="tags" escape="html">" name="tags" id="tags" />
+</mtapp:setting>
+<mtapp:setting
+    id="basename"
+    label="<__trans phrase="Basename">">
+    <input type="text" value="<mt:var name="basename" escape="html">" name="basename" id="basename" />
+</mtapp:setting>
+<mtapp:setting
+    id="comments"
+    label="<__trans phrase="Comments">">
+    <input type="text" value="<mt:var name="comments" escape="html">" name="comments" id="comments" />
+</mtapp:setting>
+<mtapp:setting
+    id="trackbacks"
+    label="<__trans phrase="Trackbacks">">
+    <input type="text" value="<mt:var name="trackbacks" escape="html">" name="trackbacks" id="trackbacks" />
+</mtapp:setting>
+<mtapp:setting
+    id="category"
+    label="<__trans phrase="Category">">
+    <input type="text" value="<mt:var name="category" escape="html">" name="category" id="category" />
+</mtapp:setting>
+<h2 class="medium-header"><__trans phrase="W3C Markup Validation Setting"></h2>
+<mtapp:setting
+    id="use_validation"
+    label="<__trans phrase="Use Markup Validation">">
+    <label><input type="checkbox" name="use_validation" id="use_validation" value="1" <mt:if name="use_validation">checked="checked"</mt:if> /> <__trans phrase="Use"></label>
+</mtapp:setting>
+<mtapp:setting
+    id="posturl"
+    label="<__trans phrase="Url of W3C Markup Validation Service">">
+    <input type="text" value="<mt:var name="posturl" escape="HTML">" name="posturl" id="posturl" />
+</mtapp:setting>
+<h2 class="medium-header"><__trans phrase="Memo"></h2>
+<mtapp:setting
+    id="memo"
+    label_class="top-label">
+    <textarea rows="10" id="memo" class="text full" name="memo"><mt:var name="memo" escape="html"></textarea>
+    <p class="hint"><__trans phrase="This is free space to memo. This is never used."></p>
+</mtapp:setting>
+</__trans_section>

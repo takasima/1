@@ -1,0 +1,9 @@
+<$MTInclude identifier="members_htaccess"$>
+
+RewriteEngine On
+# for DoCoMo and au
+RewriteCond %{HTTP_USER_AGENT} ^(DoCoMo/|KDDI-)
+RewriteRule ^(.+\.)png$ <$MTBlogURL$>mobile/$1jpg [L,NC]
+# for SoftBank
+RewriteCond %{HTTP_USER_AGENT} ^(SoftBank|Vodafone)/
+RewriteRule ^(.+\.)gif$ <$MTBlogURL$>mobile/$1png [L,NC]

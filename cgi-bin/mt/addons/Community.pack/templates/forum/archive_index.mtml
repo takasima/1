@@ -1,0 +1,34 @@
+<__trans_section component="community">
+<mt:SetVarBlock name="page_title"><__trans phrase="Archives"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">" body_class="mt-archive-index"$>
+
+<$mt:Include module="<__trans phrase="Content Header">" content_header_class="archive-title"$>
+
+<mt:TopLevelCategories>
+<div class="archive">
+    <h2 class="primary-category"><$mt:CategoryLabel$></h2>
+    <mt:SubCategories>
+        <mt:if tag="CategoryCount">
+    <h3 class="archive-header"><a href="<$mt:CategoryArchiveLink$>"><$mt:CategoryLabel$></a></h3>
+    <div class="archive-content">
+        <mt:ArchiveList archive_type="Category-Monthly" sort_order="descend">
+            <mt:ArchiveListHeader>
+        <ul>
+            </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveDate format="%B %Y"$> (<$mt:ArchiveCount$>)</a></li>
+            <mt:ArchiveListFooter>
+        </ul>
+            </mt:ArchiveListFooter>
+        </mt:ArchiveList>
+    </div>
+        </mt:if>
+    </mt:SubCategories>
+</div>
+</mt:TopLevelCategories>
+
+<$mt:Include module="<__trans phrase="Content Navigation">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

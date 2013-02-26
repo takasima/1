@@ -1,0 +1,58 @@
+id:   CustomGroupConfig
+key:  customgroupconfig
+name: Custom Group Config
+version: 1.1
+schema_version: 0.15
+author_name: Alfasado Inc.
+author_link: 'http://alfasado.net/'
+
+object_types:
+    author:
+        can_manage_objectgroup: 'boolean meta'
+    # Backward compatibility
+    sortgroup: 'ItemSort::SortGroup'
+    sortnum:   'ItemSort::SortNum'
+    itemorder: 'ItemGroup::ItemOrder'
+    itemgroup: 'ItemGroup::ItemGroup'
+convert_tools: 
+    upgrade_group: $customgroupconfig::CustomGroupConfig::Tools::upgrade_group
+tags:
+    block:
+        ItemGroupEntries: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_entries
+        ItemGroupEntriesHeader: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_header
+        ItemGroupEntriesFooter: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_footer
+        ItemGroupCategories: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_categories
+        ItemGroupCategoriesHeader: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_header
+        ItemGroupCategoriesFooter: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_footer
+        ItemGroupBlogs: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_blogs
+        ItemGroupBlogsHeader: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_header
+        ItemGroupBlogsFooter: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_footer
+
+        ItemGroupEntryPrevious: $customgroup::CustomGroup::Tags::_hdlr_object_previous
+        ItemGroupEntryNext: $customgroup::CustomGroup::Tags::_hdlr_object_next
+        ItemGroupCategoryPrevious: $customgroup::CustomGroup::Tags::_hdlr_object_previous
+        ItemGroupCategoryNext: $customgroup::CustomGroup::Tags::_hdlr_object_next
+        ItemGroupBlogPrevious: $customgroup::CustomGroup::Tags::_hdlr_object_previous
+        ItemGroupBlogNext: $customgroup::CustomGroup::Tags::_hdlr_object_next
+
+        # EntryItemGroups: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_entry_item_groups
+        # EntryItemGroupsHeader: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_header
+        # EntryItemGroupsFooter: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_footer
+
+    function:
+        CategoryClass: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_category_class
+        ItemGroupEntriesCount: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_entries_count
+        # ItemGroupName: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_name
+        # ItemGroupSortNum: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_sort_num
+        # GroupEntryLink: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_group_entry_link
+        ItemGroupCategoriesCount: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_categories_count
+        ItemGroupBlogsCount: $customgroupconfig::CustomGroupConfig::Tags::_hdlr_item_group_blogs_count
+backup_instructions:
+    sortgroup:
+        skip: 1
+    sortnum:
+        skip: 1
+    itemorder:
+        skip: 1
+    itemgroup:
+        skip: 1

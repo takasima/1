@@ -1,0 +1,103 @@
+<__trans_section component="community">
+<mt:SetVarBlock name="page_title"><__trans phrase="Archives"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">" body_class="mt-archive-index"$>
+
+<h1 id="page-title" class="archive-title"><$mt:Var name="page_title"$></h1>
+
+<mt:IfArchiveTypeEnabled archive_type="Monthly">
+<div class="archive-monthly archive-date-based archive">
+    <mt:ArchiveList archive_type="Monthly">
+        <mt:ArchiveListHeader>
+    <h2 class="archive-header"><__trans phrase="Monthly Archives"></h2>
+    <div class="archive-content">
+        <ul>
+        </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveTitle$></a></li>
+        <mt:ArchiveListFooter>
+        </ul>
+    </div>
+        </mt:ArchiveListFooter>
+    </mt:ArchiveList>
+</div>
+</mt:IfArchiveTypeEnabled>
+
+<mt:IfArchiveTypeEnabled archive_type="Category">
+<div class="archive-category archive">
+    <h2 class="archive-header"><__trans phrase="Categories"></h2>
+    <div class="archive-content">
+    <mt:TopLevelCategories>
+        <mt:SubCatIsFirst>
+        <ul>
+        </mt:SubCatIsFirst>
+        <mt:If tag="CategoryCount">
+            <li><a href="<$mt:CategoryArchiveLink$>" rel="tag" title="<$mt:CategoryDescription escape="html"$>"><$mt:CategoryLabel$></a>
+        <mt:Else>
+            <li><$mt:CategoryLabel$>
+        </mt:If>
+        <$mt:SubCatsRecurse$>
+            </li>
+        <mt:SubCatIsLast>
+        </ul>
+        </mt:SubCatIsLast>
+    </mt:TopLevelCategories>
+    </div>
+</div>
+</mt:IfArchiveTypeEnabled>
+
+<mt:IfArchiveTypeEnabled archive_type="Category-Monthly">
+<div class="archive-category-monthly archive">
+    <mt:ArchiveList archive_type="Category-Monthly">
+        <mt:ArchiveListHeader>
+    <h2 class="archive-header"><__trans phrase="Category Monthly Archives"></h2>
+    <div class="archive-content">
+        <ul>
+        </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveTitle$></a></li>
+        <mt:ArchiveListFooter>
+        </ul>
+    </div>
+        </mt:ArchiveListFooter>
+    </mt:ArchiveList>
+</div>
+</mt:IfArchiveTypeEnabled>
+
+<mt:IfArchiveTypeEnabled archive_type="Author">
+<div class="archive-author archive">
+    <mt:ArchiveList archive_type="Author">
+        <mt:ArchiveListHeader>
+    <h2 class="archive-header"><__trans phrase="Author Archives"></h2>
+    <div class="archive-content">
+        <ul>
+        </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveTitle$></a></li>
+        <mt:ArchiveListFooter>
+        </ul>
+    </div>
+        </mt:ArchiveListFooter>
+    </mt:ArchiveList>
+</div>
+</mt:IfArchiveTypeEnabled>
+
+<mt:IfArchiveTypeEnabled archive_type="Author-Monthly">
+<div class="archive-author-monthly archive">
+    <mt:ArchiveList archive_type="Author-Monthly">
+        <mt:ArchiveListHeader>
+    <h2 class="archive-header"><__trans phrase="Author Monthly Archives"></h2>
+    <div class="archive-content">
+        <ul>
+        </mt:ArchiveListHeader>
+            <li><a href="<$mt:ArchiveLink$>"><$mt:ArchiveTitle$></a></li>
+        <mt:ArchiveListFooter>
+        </ul>
+    </div>
+        </mt:ArchiveListFooter>
+    </mt:ArchiveList>
+</div>
+</mt:IfArchiveTypeEnabled>
+
+<$mt:Include module="<__trans phrase="Content Navigation">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

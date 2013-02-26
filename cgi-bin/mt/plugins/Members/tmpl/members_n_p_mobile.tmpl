@@ -1,0 +1,41 @@
+<__trans_section component="Members">
+<$mt:BlogID setvar="blog_id"$>
+<$mt:setvar name="login_page" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Change Password"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<$mt:Include module="<__trans_section component="PowerCMSTemplateSet"><__trans phrase="Header(Mobile)"></__trans_section>"$>
+
+<mt:if name="error">
+<span style="color:red"><mt:var name="error"></span>
+<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+
+<mt:if name="msg">
+<span style="color:red"><mt:var name="msg"></span>
+<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+
+<form class="login_form" method="post" action="<$MTGetVar name="script_url"$>">
+    <input type="hidden" name="__mode" value="new_pw" />
+    <input type="hidden" name="token" value="<mt:var name="token" escape="html">" />
+    <input type="hidden" name="email" value="<mt:var name="email" escape="html">" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id" escape="html">" />
+    <p>
+        <label for="password"><__trans phrase="New Password"></label>
+        <span class="post_input">
+            <input type="password" name="password" id="password" value="" />
+        </span>
+    </p>
+    <p>
+        <label for="password_again"><__trans phrase="Confirm New Password"></label>
+        <span class="post_input">
+            <input type="password" name="password_again" id="password_again" value="" />
+        </span>
+    </p>
+    <p class="post_submit2">
+        <input type="submit" value="<__trans phrase="Change">" />
+    </p>
+</form>
+
+<$mt:Include module="<__trans_section component="PowerCMSTemplateSet"><__trans phrase="Footer(Mobile)"></__trans_section>"$>
+</__trans_section>

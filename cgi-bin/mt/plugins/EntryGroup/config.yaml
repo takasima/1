@@ -1,0 +1,190 @@
+id  : EntryGroup
+key : entrygroup
+name: Entry Group
+version: 1.2
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+description: '<__trans phrase="Entries Grouping and Sorting Interface.">'
+l10n_class: EntryGroup::L10N
+blog_config_template: group_config.tmpl
+
+# TODO / New Install or Backword Compatible(Category Sync)
+
+config_settings:
+    EntryGroupFieldScope:
+        default: blog
+    PageGroupFieldScope:
+        default: blog
+    EntryPageGroupFieldScope:
+        default: blog
+settings:
+    default_module_entrygroup:
+    default_module_pagegroup:
+    default_module_entrypagegroup:
+    sync_entrygroup_category:
+    add_item:
+    add_position:
+custom_groups:
+    entrygroup:
+        id: EntryGroup
+        component: EntryGroup
+        name: Entry Group
+        name_plural: Entry Groups
+        field_order: 2020
+        field_name: Entry Group
+        edit_permission: $entrygroup::EntryGroup::EntryGroup::edit_permission
+        filter_class: entry
+        stash: entry
+    pagegroup:
+        id: PageGroup
+        component: EntryGroup
+        name: Page Group
+        name_plural: Page Groups
+        field_order: 2023
+        field_name: Page Group
+        edit_permission: $entrygroup::EntryGroup::PageGroup::edit_permission
+        filter_class: page
+        stash: entry
+    entrypagegroup:
+        id: EntryPageGroup
+        component: EntryGroup
+        name: Entry / Page Group
+        name_plural: Entry / Page Groups
+        field_order: 2024
+        field_name: Entry/Page Group
+        edit_permission: $entrygroup::EntryGroup::EntryPageGroup::edit_permission
+        filter_class:
+            - entry
+            - page
+        stash: entry
+listing_screens:
+    entrygroup:
+        object_label: Entry Group
+        primary: name
+        default_sort_key: name
+        condition: $customgroup::CustomGroup::Plugin::_group_permission
+        view:
+            - website
+            - blog
+            - system
+    pagegroup:
+        object_label: Page Group
+        primary: name
+        default_sort_key: name
+        condition: $customgroup::CustomGroup::Plugin::_group_permission
+        view:
+            - website
+            - blog
+            - system
+    entrypagegroup:
+        object_label: Entry / Page Group
+        primary: name
+        default_sort_key: name
+        condition: $customgroup::CustomGroup::Plugin::_group_permission
+        view:
+            - website
+            - blog
+            - system
+system_filters:
+    entrygroup: $customgroup::CustomGroup::Listing::system_filters
+    pagegroup: $customgroup::CustomGroup::Listing::system_filters
+    entrypagegroup: $customgroup::CustomGroup::Listing::system_filters
+list_properties:
+    entrygroup: $customgroup::CustomGroup::Listing::list_props
+    pagegroup: $customgroup::CustomGroup::Listing::list_props
+    entrypagegroup: $customgroup::CustomGroup::Listing::list_props
+list_actions:
+    entrygroup: $customgroup::CustomGroup::Listing::list_actions
+    pagegroup: $customgroup::CustomGroup::Listing::list_actions
+    entrypagegroup: $customgroup::CustomGroup::Listing::list_actions
+# customfield_types: $customgroup::CustomGroup::Field::_customfield_types
+permissions:
+    blog.manage_entrygroup:
+        label: Manage Entry Group
+        group: blog_admin
+        order: 1200
+    blog.manage_pagegroup:
+        label: Manage Page Group
+        group: blog_admin
+        order: 1201
+    blog.manage_entrypagegroup:
+        label: Manage Entry / Page Group
+        group: blog_admin
+        order: 1202
+object_types:
+    entrygroup: EntryGroup::EntryGroup
+    pagegroup: EntryGroup::PageGroup
+    entrypagegroup: EntryGroup::EntryPageGroup
+applications:
+    cms:
+        menus:
+            entry:list_entrygroup:
+                label: Manage Groups
+                mode: list
+                args:
+                    _type: entrygroup
+                    blog_id: 0
+                order: 400
+                view:
+                    - website
+                    - blog
+                    - system
+                condition: $entrygroup::EntryGroup::EntryGroup::permission
+            entry:create_entrygroup:
+                label: Create Group
+                mode: view
+                args:
+                    _type: entrygroup
+                order: 500
+                condition: $entrygroup::EntryGroup::EntryGroup::permission
+                view:
+                    - website
+                    - blog
+            page:list_pagegroup:
+                label: Manage Groups
+                mode: list
+                args:
+                    _type: pagegroup
+                    blog_id: 0
+                order: 400
+                view:
+                    - website
+                    - blog
+                    - system
+                condition: $entrygroup::EntryGroup::PageGroup::permission
+            page:create_pagegroup:
+                label: Create Group
+                mode: view
+                args:
+                    _type: pagegroup
+                order: 500
+                condition: $entrygroup::EntryGroup::PageGroup::permission
+                view:
+                    - website
+                    - blog
+            objectgroup:entrypagegroup:
+                label: Entry / Page Group
+                mode: list
+                args:
+                    _type: entrypagegroup
+                    blog_id: 0
+                order: 400
+                view:
+                    - website
+                    - blog
+                    - system
+                condition: $entrygroup::EntryGroup::EntryPageGroup::permission
+        content_actions:
+            entrypagegroup:
+                create_entrypagegroup:
+                    class: icon-create
+                    label: Create New
+                    mode: view
+                    args:
+                        _type: entrypagegroup
+                    condition: $entrygroup::EntryGroup::EntryPageGroup::permission
+callbacks:
+    cms_pre_save.category: $entrygroup::EntryGroup::EntryPageGroup::cms_pre_save_category
+    cms_pre_load_filtered_list.entrygroup: $customgroup::CustomGroup::Listing::_cms_pre_load_filtered_list
+    cms_pre_load_filtered_list.pagegroup: $customgroup::CustomGroup::Listing::_cms_pre_load_filtered_list
+    cms_pre_load_filtered_list.entrypagegroup: $customgroup::CustomGroup::Listing::_cms_pre_load_filtered_list

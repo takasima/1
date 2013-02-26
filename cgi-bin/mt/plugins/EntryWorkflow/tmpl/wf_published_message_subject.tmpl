@@ -1,0 +1,7 @@
+<__trans_section component="EntryWorkflow">
+<mt:if name="entry_class" eq='page'>
+<__trans phrase="([_1]) Published Page '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>">
+<mt:else>
+<__trans phrase="([_1]) Published Entry '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>">
+</mt:else>
+</mt:if>

@@ -1,0 +1,72 @@
+<$mt:BlogID setvar="blog_id"$>
+<$mt:setvar name="login_page" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Create an account"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<$mt:Include module="<__trans phrase="Mobile-Login Header">"$>
+
+<mt:if name="error">
+	<mt:if name="exist_error">
+		<span style="color:red"><__trans phrase="That user name has already been used"></span>
+		<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+		<mt:else>
+		<span style="color:red"><__trans phrase="Saving failed."></span>
+		<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+		</mt:else>
+	</mt:if>
+</mt:if>
+<mt:if name="saved">
+	<__trans phrase="Thanks for signing up">
+	<mt:unless name="registered"><br />
+		<__trans phrase="To complete the registration process you must first confirm your account. An email has been sent to [_1]." params="<mt:var name="send_email" escape="html">">
+	</mt:unless>
+	<mt:else>
+		<mt:if name="regist">
+			<mt:if name="registration_failed">
+				<__trans phrase="You have attempted to use a feature that you do not have permission to access. If you believe you are seeing this message in error contact your system administrator.">
+				<mt:else>
+				<__trans phrase="Thanks for the confirmation. This account has been disabled. Please wait for a while until it is approved by the administrator.">
+				</mt:else>
+			</mt:if>
+			<mt:else>
+				<form method="post" action="<mt:var name="script_url">" utn="utn">
+					<__trans phrase="Username"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input type="text" name="username" id="username" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="username" escape="html">" /><br />
+					<__trans phrase="Display Name"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input type="text" name="nickname" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="nickname" escape="html">" /><br />
+					<__trans phrase="Email Address"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input type="text" name="email" id="email" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="email" escape="html">" /><br />
+					<__trans phrase="Moblie E-mail"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input type="text" name="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:var name="mobile_address" escape="html">" /><br />
+					<__trans phrase="Secret Token"><br />
+						<input type="text" name="mail_token" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+					<__trans phrase="Initial Password"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input name="password" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+					<__trans phrase="Password Confirm"><span style="color:red">[<__trans phrase="Required">]</span><br />
+						<input name="pass_verify" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+                    <MTIfPlugin component="MailMagazine">
+					<__trans phrase="Mail Subscription"><br />
+						<input name="mail_subscription" type="checkbox" /> <__trans phrase="Subscribe"><br />
+                    </MTIfPlugin>
+					<mt:setvarblock name="blog_selector">
+						<select name="blog_id">
+							<mt:blogs>
+								<mt:blogid setvar="this_id">
+								<option value="<mt:blogid>" <mt:if name="this_id" eq="$blog_id">selected="selected"</mt:if>><mt:blogname></option>
+							</mt:blogs>
+						</select>
+					</mt:setvarblock>
+					<mt:if name="blog_id">
+						<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+						<mt:else>
+							<mt:var name="blog_selector">
+						</mt:else>
+					</mt:if>
+					<input type="hidden" name="__mode" value="do_signup" />
+					<hr />
+					<div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Create an account">" /></div>
+				</form>
+			</mt:else>
+		</mt:if>
+	</mt:else>
+</mt:if>
+<$mt:Include module="<__trans phrase="Mobile-Login Footer">"$>

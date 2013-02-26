@@ -1,0 +1,36 @@
+    <mtapp:setting
+        id="draftpath"
+        label="<__trans phrase="Path to draft">">
+    <ul>
+    <li><label>&lt;<__trans phrase="Site Root">&gt; : <input type="text" name="draftpath" id="draftpath" value="<mt:var name="draftpath" escape="html">" style="width:230px;" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="gatherlang"
+        label="<__trans phrase="Default language">">
+    <ul>
+    <li><label><input type="text" name="gatherlang" id="gatherlang" value="<mt:var name="gatherlang" escape="html">" style="width:470px;" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="target_files"
+        label="<__trans phrase="Target file extentions">">
+    <ul>
+    <li><label><input type="text" name="target_files" id="target_files" value="<mt:var name="target_files" escape="html">" style="width:470px;" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="realtime_update"
+        label="<__trans phrase="Realtime update">">
+    <ul>
+    <li><label><input type="checkbox" name="realtime_update" id="realtime_update"
+    <mt:if name="realtime_update"> checked="checked"</mt:if> value="1" /> <__trans phrase="Realtime update indexes"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="default_res_limit"
+        label="<__trans phrase="Default pager limit">">
+    <ul>
+    <li><label><input type="text" name="default_res_limit" id="default_res_limit" value="<mt:var name="default_res_limit" escape="html">" style="width:170px;" /></label></li>
+    </ul>
+    </mtapp:setting>

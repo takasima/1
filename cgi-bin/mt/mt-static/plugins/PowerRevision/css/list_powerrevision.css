@@ -1,0 +1,12 @@
+.col.head.object_status,
+.col.head.revision_status,
+.col.head.recover {
+    width: 4em;
+    text-align:center;
+}
+
+td.col.object_status,
+td.col.revision_status,
+td.col.recover {
+    text-align:center;
+}

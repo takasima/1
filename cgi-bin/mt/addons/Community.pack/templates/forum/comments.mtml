@@ -1,0 +1,45 @@
+<__trans_section component="community">
+<mt:IfCommentsActive>
+<div id="comments" class="comments">
+    <mt:If name="comment_preview">
+    <$mt:Include module="<__trans phrase="Comment Form">"$>
+    </mt:If>
+    <mt:Comments>
+        <mt:CommentsHeader>
+    <div class="comments-header">
+        <h2><$mt:EntryCommentCount singular="<__trans phrase="1 Reply">" plural="<__trans phrase="# Replies">" none="<__trans phrase="No Replies">"$></h2>
+    <mt:IfCommentsAccepted>
+        <span class="separator">|</span>
+        <a href="#comments-open"><__trans phrase="Add a Reply"></a>
+    </mt:IfCommentsAccepted>
+    </div>
+    <ul class="comments-content">
+        </mt:CommentsHeader>
+        <mt:IfCommentParent>
+            <mt:Else>
+        <li>
+            <$mt:Include module="<__trans phrase="Comment Detail">"$>
+            <mt:CommentReplies>
+                <mt:CommentsHeader>
+            <ul>
+                </mt:CommentsHeader>
+                <li>
+                    <$mt:Include module="<__trans phrase="Comment Detail">"$>
+                    <$mt:CommentRepliesRecurse$>
+                </li>
+                <mt:CommentsFooter>
+            </ul>
+                </mt:CommentsFooter>
+            </mt:CommentReplies>
+        </li>
+        </mt:IfCommentParent>
+        <mt:CommentsFooter>
+    </ul>
+        </mt:CommentsFooter>
+    </mt:Comments>
+    <mt:Unless name="comment_preview">
+    <$mt:Include module="<__trans phrase="Comment Form">"$>
+    </mt:Unless>
+</div>
+</mt:IfCommentsActive>
+</__trans_section>

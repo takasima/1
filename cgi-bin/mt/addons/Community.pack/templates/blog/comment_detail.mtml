@@ -1,0 +1,36 @@
+<div class="comment<mt:If name="__last__"> last</mt:If>"<mt:IfArchiveTypeEnabled archive_type="Individual"> id="comment-<$mt:CommentID$>"</mt:IfArchiveTypeEnabled>>
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+                <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36" userpic_type="commenter"$>
+                <span class="byline">
+                    <$mt:CommentAuthorIdentity$>
+<mt:setvarblock name="comment_author_link">
+<mt:If tag="CommenterID">
+                        <span class="vcard author">
+                                <a href="<$mt:CGIPath$><$mt:CommunityScript$>?__mode=view&amp;blog_id=<$mt:BlogID encode_html="1"$>&amp;id=<$mt:CommenterID$>"><$mt:CommenterName$></a>
+                        </span>
+<mt:Else>
+                        <span class="vcard author"><$mt:CommenterName$></span>
+</mt:If>
+</mt:setvarblock>
+<mt:IfCommentParent>
+                    <__trans phrase="[_1] replied to <a href="[_2]">comment from [_3]</a>" params="<$mt:var name="comment_author_link"$>%%<mt:CommentParent><$mt:CommentLink$></mt:CommentParent>%%<mt:CommentParent><$mt:CommentAuthor$></mt:CommentParent>">
+<mt:Else>
+                    <$mt:var name="comment_author_link"$>
+</mt:IfCommentParent>
+                    <span class="separator">|</span> <a href="<$mt:CommentLink$>"><abbr class="published" title="<$mt:CommentDate format_name="iso8601"$>"><$mt:CommentDate$></abbr></a>
+<mt:Unless name="comment">
+    <mt:IfCommentsAccepted>
+                    <span class="separator">|</span> <$mt:CommentReplyToLink$>
+    </mt:IfCommentsAccepted>
+</mt:Unless>
+                </span>
+            </div>
+        </div>
+        <div class="comment-content">
+            <$mt:CommentBody$>
+        </div>
+    </div>
+</div>
+

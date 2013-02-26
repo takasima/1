@@ -1,0 +1,91 @@
+<MTSetVarBlock name="emoji_img_base"><$MT:StaticWebPath$>plugins/KeitaiLib/images/<$MTKeitaiEmoticonSize$>/</MTSetVarBlock>
+<mt:for add_session_for_mobile="1" external_link_for_mobile="1">
+<MTBlogParentWebsite>
+<$MTWebsiteID setvar="site_id"$>
+<$MTWebsiteURL setvar="site_url"$>
+<$MTWebsiteName setvar="site_name"$>
+<$MTWebsiteRelativeURL setvar="site_path"$>
+</MTBlogParentWebsite>
+
+<$MTBlogRelativeURL setvar="blog_path"$>
+<$MTVar name="blog_path" cat="common/" setvar="common_path"$>
+
+<MTIncludeBlock module="<__trans phrase="Mobile-contetns">">
+
+<div style="text-align:center">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<span style="font-size:x-large;color:#212121"><$MTVar name="site_name" encode_html="1"$></span><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<MTIfBlog>
+<div style="background-color:#E7E7E7;text-align:left;padding:5px;font-weight:bold">
+<img src="<$MTVar name="common_path" encode_html="1"$>images/header_1.gif" alt="header_1" width="16" height="16" /> <$MTBlogName encode_html="1"$>
+</div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</MTIfBlog>
+</div>
+
+<div style="font-size:small;padding:0 5px">
+
+<$MTGetVar name="entries"$>
+<$MTGetVar name="pager"$>
+
+<$MTSetVar name="category_jump" function="undef"$>
+<MTSetVarBlock name="category_jump">
+<MTIfArchiveTypeEnabled archive_type="Category">
+<MTTopLevelCategories setvar="_tlc">
+<MTIf tag="CategoryCount">
+<option<MTIf> selected="selected"</MTIf> value="<$MTCategoryArchiveLink encode_html="1"$>"><$MTCategoryLabel encode_html="1"$></option>
+<$MTTemplateNote SubCatsRecurse$>
+</MTIf>
+</MTTopLevelCategories>
+<MTIf name="_tlc" like="/\S/">
+<div>
+Categories<br />
+<form action="<MTBlogURL>mobile/redirect.php" method="post">
+<select name="url" style="width:150px">
+<$MTVar name="_tlc"$>
+</select>
+<input type="submit" value="<__trans phrase="Go">" />
+</form>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+</div>
+</MTIf>
+</MTIfArchiveTypeEnabled>
+<MTIfArchiveTypeEnabled archive_type="Monthly">
+<MTArchiveList archive_type="Monthly">
+<MTArchiveListHeader>
+<div>
+Archive<br />
+<form action="<MTBlogURL>mobile/redirect.php" method="post">
+<select name="url" style="width:150px">
+</MTArchiveListHeader>
+<option<MTIf> selected="selected"</MTIf> value="<$MTArchiveLink encode_html="1"$>"><__trans phrase="[_1] ([_2])" params="<$MTArchiveTitle escape="html"$>%%<$mt:ArchiveCount$>"></option>
+<MTArchiveListFooter>
+</select>
+<input type="submit" value="<__trans phrase="Go">" />
+</form>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+</div>
+</MTArchiveListFooter>
+</MTArchiveList>
+</MTIfArchiveTypeEnabled>
+</MTSetVarBlock>
+<MTIf name="category_jump" like="/\S/">
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<div style="margin-left:15px">
+<$MTVar name="category_jump"$>
+</div>
+</MTIf>
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+</div>
+
+</MTIncludeBlock>
+</mt:for>

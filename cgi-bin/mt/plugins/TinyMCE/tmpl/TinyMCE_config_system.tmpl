@@ -1,0 +1,57 @@
+<mtapp:setting
+    id="editor_style_css"
+    label="editor_style.css:">
+    <input type="text" id="editor_style_css" name="editor_style_css" value="<mt:var name="editor_style_css" escape="html">" class="text full" />
+</mtapp:setting>
+<mtapp:setting
+    id="editor_plugins"
+    label="plugins:">
+    <textarea id="editor_plugins" name="editor_plugins" class="text full low"><mt:var name="editor_plugins" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons1"
+    label="advanced_buttons1:">
+    <textarea id="theme_advanced_buttons1" name="theme_advanced_buttons1" class="text full low"><mt:var name="theme_advanced_buttons1" escape="html"></textarea>
+    <div class="hint"><__trans phrase="&quot;emoji&quot; is enabled when &quot;KeitaiLib plugin&quot; is used"></div>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons2"
+    label="advanced_buttons2:">
+    <textarea id="theme_advanced_buttons2" name="theme_advanced_buttons2" class="text full low"><mt:var name="theme_advanced_buttons2" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons3"
+    label="advanced_buttons3:">
+    <textarea id="theme_advanced_buttons3" name="theme_advanced_buttons3" class="text full low"><mt:var name="theme_advanced_buttons3" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons4"
+    label="advanced_buttons4:">
+    <textarea id="theme_advanced_buttons4" name="theme_advanced_buttons4" class="text full low"><mt:var name="theme_advanced_buttons4" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="theme_advanced_buttons5"
+    label="advanced_buttons5:">
+    <textarea id="theme_advanced_buttons5" name="theme_advanced_buttons5" class="text full low"><mt:var name="theme_advanced_buttons5" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="editor_skin"
+    label="<__trans phrase="Skin">">
+    <input type="checkbox" id="editor_skin" name="editor_skin" value="1"<mt:if name="editor_skin"> checked="checked"</mt:if> style="vertical-align:middle" />
+    <label for="editor_skin"><__trans phrase="Enable"></label>
+</mtapp:setting>
+<mt:ignore>
+<mtapp:setting
+    id="editor_toolbar_position"
+    label="<__trans phrase="Toolbar position">">
+    <li><input type="radio" name="editor_toolbar_position" value="1"<mt:if name="editor_toolbar_position" eq="1"> checked="checked"</mt:if> style="vertical-align:middle" /> <__trans phrase="Fix header"></li>
+    <li><input type="radio" name="editor_toolbar_position" value="0"<mt:if name="editor_toolbar_position" eq="0"> checked="checked"</mt:if> style="vertical-align:middle" /> <__trans phrase="Default"></li>
+    <p><__trans phrase="Internet Explorer 6 &quot;Fix header&quot; does not apply."></p>
+</mtapp:setting>
+</mt:ignore>
+<mtapp:setting
+    id="editor_advanced_setting"
+    label="<__trans phrase="Advanced Setting">">
+    <textarea id="editor_advanced_setting" name="editor_advanced_setting" class="text full high"><mt:var name="editor_advanced_setting" escape="html"></textarea>
+    <div class="hint"><__trans phrase="e.g">) tinymce_editor.init['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4';</div>
+</mtapp:setting>

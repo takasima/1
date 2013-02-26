@@ -1,0 +1,88 @@
+<mt:if name="redirect">
+    <html>
+        <script type="text/javascript">
+            window.parent.location.replace('<mt:var name="redirect" escape="html" escape="js">');
+        </script>
+<mt:else>
+    <mt:setvarblock name="page_title">
+        <mt:if name="type" eq="page">
+            <__trans phrase="Select Website or Blog">
+        <mt:else>
+            <__trans phrase="Select Blog">
+        </mt:if>
+    </mt:setvarblock>
+    <mt:setvarblock name="html_head" append="1">
+        <style type="text/css">
+            label { display:block; width:100% }
+            .website { width: 150px; }
+            .blog { width: auto; }
+        </style>
+        <script type="text/javascript">
+            jQuery(function(jQuery) {
+                jQuery('.selector input[type="radio"]').change(function(){
+                    jQuery('.selector tbody tr').removeClass('selected');
+                    jQuery(this).parents('tr').addClass('selected');
+                    jQuery('.primary').removeClass('disabled').removeAttr('disabled');
+                });
+            });
+        </script>
+    </mt:setvarblock>
+    <mt:include name="dialog/header.tmpl">
+    <mt:if name="tmpl_loop">
+        <form method="get" action="<mt:var name="script_url">" target="_parent">
+            <input type="hidden" name="__mode" value="view" />
+            <input type="hidden" name="_type" value="<mt:var name="type">" />
+
+        <mt:setvarblock name="table_header">
+            <tr>
+                <th style="padding: 7px;" class="col head blog panel-label"><mt:if name="type" eq="page"><__trans phrase="Website"> / </mt:if><__trans phrase="Blog"></th>
+            </tr>
+        </mt:setvarblock>
+        
+            <div class="selector listing list-multi">
+                <table class="list-heading legacy listing-table compact">
+                    <thead><$mt:var name="table_header"$></thead>
+                    <tfoot><$mt:var name="table_header"$></tfoot>
+                    <tbody>
+                        <mt:loop name="tmpl_loop">
+                        <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:else></mt:if>" id="cell-<mt:var name="id" escape="html">">
+                            <td class="col"><label id="label-<mt:var name="id" escape="html">"><input type="radio" name="blog_id" value="<mt:var name="id" escape="html">" /> 
+                            <mt:if name="type" eq="page"><mt:if name="parent_id"><mt:Websites site_ids="$parent_id"><$mt:WebsiteName encode_html="1"$></mt:Websites> / </mt:if></mt:if><mt:var name="name" escape="html"></label></td>
+                        </tr>
+                        </mt:loop>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions-bar">
+                <div class="actions-bar-inner pkg actions">
+                    <button
+                        type="submit"
+                        accesskey="s"
+                        title="<__trans phrase="Continue">"
+                        class="action primary button disabled"
+                        disabled="disabled"
+                        ><__trans phrase="Continue"></button>
+                    <button
+                        type="submit"
+                        accesskey="x"
+                        class="action button mt-close-dialog cancel"
+                        title="<__trans phrase="Cancel (x)">"
+                        ><__trans phrase="Cancel"></button>
+                </div>
+            </div>
+        </form>
+    <mt:else>
+        <__trans phrase="No websites or blogs can be selected">
+        <div class="actions-bar">
+            <div class="actions-bar-inner pkg actions">
+                <button
+                    type="submit"
+                    accesskey="x"
+                    class="action button mt-close-dialog cancel"
+                    title="<__trans phrase="Cancel (x)">"
+                    ><__trans phrase="Cancel"></button>
+            </div>
+        </div>
+    </mt:if>
+    <mt:include name="dialog/footer.tmpl">
+</mt:if>

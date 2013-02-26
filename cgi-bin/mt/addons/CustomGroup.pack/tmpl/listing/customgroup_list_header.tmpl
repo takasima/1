@@ -1,0 +1,16 @@
+<mt:var name="request._type" setvar="component">
+<$MTGetObjectChildLabel setvar="class_label"$>
+<mt:setvarblock name="system_msg" append="1">
+    <div id="msg-container">
+    <mt:if name="request.saved_deleted">
+        <mtapp:statusmsg
+            id="saved-deleted"
+            class="success"
+            rebuild="$rebuild">
+        <__trans_section component="CustomGroup">
+        <__trans phrase="The [_1] Group has been deleted from the database." params="<mt:var name="class_label" escape="html">">
+        </__trans_section>
+        </mtapp:statusmsg>
+    </mt:if>
+    </div>
+</mt:setvarblock>

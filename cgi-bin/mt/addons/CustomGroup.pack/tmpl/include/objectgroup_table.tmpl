@@ -1,0 +1,96 @@
+<__trans_section component="CustomGroup">
+<mt:setvarblock name="list_id"><mt:var name="object_type">-listing</mt:setvarblock>
+<mt:if name="blog_id"><mt:var name="blog_view" value="1"></mt:if>
+
+<mt:setvarblock name="table_header">
+    <tr>
+        <th class="col head cb" style="padding:7px;width:21px">
+    <mt:unless name="dialog_view">
+        <input type="checkbox" name="id-head" value="all" class="select" /></th>
+    </mt:unless>
+        <th class="col head name" style="padding:7px;"><__trans phrase="Name"> (<__trans phrase="Object Count">)</th>
+    <mt:unless name="dialog_view">
+        <th class="col head settings" style="padding:7px;width:200px;"><__trans phrase="Settings"></th>
+    </mt:unless>
+        <th class="col head author_name" style="padding:7px;width:70px"><__trans phrase="Author"></th>
+        <mt:if name="scope_type" ne="blog">
+        <th class="col head blog_name" style="padding:7px;"><__trans phrase="Blog"></th>
+        </mt:if>
+        <MTIgnore><th class="created_on"><__trans phrase="Created on"></th></MTIgnore>
+        <th class="col head modified_on" style="padding:7px;"><__trans phrase="Modified on"></th>
+    </tr>
+</mt:setvarblock>
+
+<mtapp:listing id="$list_id">
+    <mt:if __first__>
+            <thead><mt:var name="table_header"></thead>
+            <tfoot><mt:var name="table_header"></tfoot>
+            <tbody>
+    </mt:if>
+                <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+                    <td class="col cb">
+                        <mt:if name="dialog_view">
+                            <input type="radio" name="id" value="<mt:var name="id" escape="html">" class="select" />
+                        <mt:else>
+                            <mt:if name="can_edit"><input type="checkbox" name="id" value="<mt:var name="id" escape="html">" class="select" /></mt:if>
+                        </mt:else>
+                        </mt:if>
+                    </td>
+                    <td class="col name">
+                    <input type="hidden" id="name-<mt:var name="id" escape="html">" value="<mt:var name="name" escape="html">" />
+                    <mt:if name="can_edit"><a <mt:if name="dialog_view">target="_blank"</mt:if> href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="blog_id">&amp;id=<mt:var name="id">&amp;_type=<mt:var name="component" escape="url">"></mt:if>
+                        <mt:if name="name"><mt:var name="name" escape="html"><mt:else>...</mt:else></mt:if> (<mt:var name="count">)
+                    <mt:if name="can_edit"></a></mt:if>
+                    </td>
+                <mt:unless name="dialog_view">
+                    <td class="col additem">
+                        <mt:if name="additem">
+                        <__trans phrase="Add new"> (<mt:if name="addposition"><__trans phrase="Add last"><mt:else><__trans phrase="Add first"></mt:else></mt:if>)
+                        <mt:if name="addfilterclass">
+                        <mt:var name="filter" value="1">
+                        <__trans phrase="Type is">
+                        <mt:if name="addfilterclass" eq="image">'<__trans phrase="Image">'</mt:if>
+                        <mt:if name="addfilterclass" eq="video">'<__trans phrase="Video">'</mt:if>
+                        <mt:if name="addfilterclass" eq="audio">'<__trans phrase="Audio">'</mt:if>
+                        <mt:if name="addfilterclass" eq="file">'<__trans phrase="File">'</mt:if>
+                        <mt:if name="addfilterclass" eq="entry">'<__trans phrase="Entry">'</mt:if>
+                        <mt:if name="addfilterclass" eq="page">'<__trans phrase="Page">'</mt:if>
+                        <mt:if name="addfilterclass" eq="category">'<__trans phrase="Category">'</mt:if>
+                        <mt:if name="addfilterclass" eq="folder">'<__trans phrase="Folder">'</mt:if>
+                        <mt:if name="addfilterclass" eq="website">'<__trans phrase="Website">'</mt:if>
+                        <mt:if name="addfilterclass" eq="blog">'<__trans phrase="Blog">'</mt:if>
+                        </mt:if>
+                        <mt:if name="addfiltertag">
+                        <mt:if name="filter">
+                        ,
+                        </mt:if>
+                        <mt:var name="filter" value="1">
+                        <__trans phrase="Tag is">
+                        '<mt:var name="addfiltertag" escape="html">'
+                        </mt:if>
+                        <mt:if name="addfilter_blog_id">
+                        <mt:if name="filter">
+                        ,
+                        </mt:if>
+                        <__trans phrase="Website/Blog is">
+                        '<mt:var name="filter_blogname" escape="html">'
+                        </mt:if>
+                        <mt:else><__trans phrase="None"></mt:else>
+                        </mt:if>
+                    </td>
+                </mt:unless>
+                    <td class="col author_name"><a href="<mt:var name="mt_url">?__mode=list_objectgroup&amp;_type=<mt:var name="component" escape="url">&amp;blog_id=<mt:var name="screen_blog_id"><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;customgroup_select=1&amp;dialog=1</mt:if>&amp;filter=author_id&amp;filter_val=<mt:var name="author_id">"><mt:var name="author_name" escape="html"></td>
+                    <mt:if name="scope_type" ne="blog">
+                    <td class="col blog_name"><a href="<mt:var name="mt_url">?__mode=list_objectgroup&amp;_type=<mt:var name="component" escape="url">&amp;blog_id=<mt:var name="weblog_id"><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;customgroup_select=1&amp;dialog=1</mt:if>"><mt:var name="weblog_name" escape="html"></a></td>
+                    </mt:if>
+                    <MTIgnore><td class="col created_on"><mt:var name="created_on"></td></MTIgnore>
+                    <td class="col modified_on"><mt:var name="modified_on"></td>
+                </tr>
+    <mt:if __last__>
+            </tbody>
+    </mt:if>
+</mtapp:listing>
+<mt:if name="dialog_view">
+<mt:include name="include/js_attachfield_single.tmpl">
+</mt:if>
+</__trans_section>

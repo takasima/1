@@ -1,0 +1,14 @@
+@uri=<$MTEntryPermalink$>
+@title=<$MTEntryTitle is_draft="1"$>
+@cdate=<$MTEntryDate format="%Y-%m-%dT%H:%M:%S"$><$MTBlogTimezone$>
+@mdate=<$MTEntryModifiedDate format="%Y-%m-%dT%H:%M:%S"$><$MTBlogTimezone$>
+@suffix=html
+@blog_id=<$MTBlogID$>
+@entry_id=<$MTEntryID$><MTIf tag="EntryCategory">
+parent=<$MTEntryCategory is_draft="1"$>
+<MTIfArchiveTypeEnabled type="Category">parentUrl=<$MTEntryLink type="Category"$></MTIfArchiveTypeEnabled></MTIf>
+
+<$MTEntryTitle is_draft="1"$>
+<$MTEntryBody is_draft="1"$>
+<$MTEntryMore is_draft="1"$>
+<$MTEntryKeywords is_draft="1"$>

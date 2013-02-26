@@ -1,0 +1,58 @@
+<mt:unless name="json">
+<$mt:setvar name="screen_type" value="dialog-screen"$>
+<mt:include name="dialog/header.tmpl">
+
+<script type="text/javascript" src="<mt:var name="static_uri">js/tc/client.js"></script>
+<script type="text/javascript" src="<mt:var name="static_uri">js/dialog.js"></script>
+
+<script type="text/javascript">
+<!--
+var dialog;
+
+function returnGroupSelection(ok) {
+    if (ok) {
+        var frm = document.forms['groups'];
+        var added = dialog.panels[0].selectionList.items();
+        for (var i = 0; i < added.length; i++)
+            added[i] = added[i].replace(/\D+/g, '');
+        frm.elements['ids'].value = added.join(',');
+        frm.submit();
+    } else {
+        closeDialog();
+    }
+}
+
+function init() {
+    dialog = new Dialog.MultiPanel("select-group");
+    var groupPanel = new ListingPanel("group");
+    groupPanel.pager.setState(<mt:var name="pager_json">);
+    dialog.setPanels([groupPanel]);
+    dialog.open({}, returnGroupSelection);
+}
+
+TC.attachLoadEvent( init );
+//-->
+</script>
+
+<form action="<mt:var name="script_url">" name="groups" method="post" target="_top">
+<input type="hidden" name="__mode" value="add_group" />
+<input type="hidden" name="ids" value="" />
+<input type="hidden" name="author_id" value="<mt:var name="edit_author_id" escape="html">" />
+<input type="hidden" name="magic_token" value="<mt:var name="magic_token" escape="html">" />
+<input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
+</form>
+
+<div class="modal_width" id="select-group-dialog">
+
+<mt:if name="MISSING_GROUP">
+<h2><span class="weblog-title-highlight"><__trans phrase="You need to create some groups."></span></h2>
+<__trans phrase="Before you can do this, you need to create some groups. <a href="javascript:void(0);" onclick="closeDialog('[_1]');">Click here</a> to create a group." params="<mt:var name="script_url">?__mode=view&amp;_type=group">
+</mt:if>
+
+</mt:unless><mt:unless name="MISSING_GROUP">
+<mt:include name="include/listing_panel.tmpl">
+</mt:unless><mt:unless name="JSON">
+</div><!-- /modal_width#dialog-select-group -->
+
+<mt:include name="dialog/footer.tmpl">
+</mt:unless>

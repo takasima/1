@@ -1,0 +1,14 @@
+<__trans phrase="This email is notifications about new content on [_1] by [_2]." params="<$mt:var name="blog_name"$>%%<$mt:var name="author_name"$>">
+
+<mt:if name="entry_class" eq 'page'><__trans phrase="Access to Page"><mt:else><__trans phrase="Access to Entry"></mt:else></mt:if>:
+<<$mt:var name="entry_permalink"$>>
+------------------------------------------------------------------------
+
+<__trans phrase="Title"> : <$mt:var name="entry_title"$>
+<__trans phrase="Status"> : <__trans phrase="Published">
+<__trans phrase="Date"> : <$mt:date$>
+
+------------------------------------------------------------------------
+
+<__trans phrase="Sender">: <$mt:var name="author_nickname"$> <mailto:<$mt:var name="author_email"$>>
+</__trans_section>

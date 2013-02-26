@@ -1,0 +1,95 @@
+#!/usr/bin/perl
+package MT::Tool::ImportAuthorsFromCSV;
+use strict;
+use warnings;
+use File::Spec;
+use FindBin;
+use File::Copy;
+use File::Temp qw/tempfile/;
+use lib map File::Spec->catdir($FindBin::Bin, File::Spec->updir, $_), qw/lib extlib/;
+use base qw( MT::Tool );
+
+sub usage { '[]' }
+
+sub help {
+    return q {
+        Import users from CSV files.
+
+        --sleep <integer>
+                      Optional: default => 0
+        --debug <integer>
+                      Optional: default => 0
+
+    };
+}
+
+my ( $sleep, $debug );
+
+sub options {
+    return (
+        'sleep=s'   => \$sleep,
+        'debug=s'   => \$debug,
+    );
+}
+
+sub main {
+    my $class = shift;
+    my ( $verbose ) = $class->SUPER::main( @_ );
+    
+    my $app = MT->instance;
+    
+    my $dir = $app->config->AuthorsCSVImportPath;
+    unless ( $dir && -d $dir ) {
+        die "Please set AuthorsCSVImportPath to mt-config.cgi";
+    }
+    
+    print "AuthorsCSVImportPath: $dir\n" if $debug;
+    
+    my @files = ();
+    opendir DH, $dir or die "$dir:$!";
+    while ( my $file = readdir DH ) {
+    	next if $file =~ /^\.{1,2}$/;
+        next unless $file =~ /\.csv$/;
+        push @files, $file;
+    }
+    closedir DH;
+    
+    require ImportExportObject::Util;
+    require MT::Util;
+    my $ts = MT::Util::epoch2ts( undef, time );
+    
+    my $tmp_dir = $app->config( 'TempDir' );
+    $tmp_dir = $app->config( 'TmpDir' ) unless $tmp_dir;
+    die "Can't open TempDir." unless $tmp_dir && -d $tmp_dir;
+    
+    foreach my $file ( sort @files ) {
+        my $path = File::Spec->catfile( $dir, $file );
+    	print "import from $path\n" if $debug;
+        my $new_path = "$path.bak$ts";
+        
+        print "move $path to $new_path\n" if $debug;
+        move $path, $new_path or die $!;
+        
+        my ( $tmp_fh, $tmp_path ) = tempfile(DIR => $tmp_dir, SUFFIX => '.csv');
+        close $tmp_fh;
+        
+        print "create temporary file $tmp_path\n" if $debug;
+        copy $new_path, $tmp_path or die $!;
+        
+        print "start import\n" if $debug;
+        ImportExportObject::Util::import_author_from_csv( $tmp_path );
+        print "finished import\n" if $debug;
+        
+        print "remove temporary file $tmp_path\n" if $debug;
+        unlink $tmp_path;
+        
+        if ( $sleep ) {
+            sleep $sleep;
+        }
+    }
+    
+    
+    1;
+}
+
+__PACKAGE__->main() unless caller;

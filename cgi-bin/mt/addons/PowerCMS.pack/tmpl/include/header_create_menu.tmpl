@@ -1,0 +1,45 @@
+<mt:if name="powercms_create_menu">
+	<mt:setvarblock name="create_menus">
+	<li id="powercms-create-menu" class="extended_menu">
+		<a href="javascript:void(0);" class="extended_menu_a"><__trans phrase="Create New"></a>
+		<ul class="extended_menu_ul">
+		<mt:loop name="powercms_create_menu">
+			<li class="main <mt:var name="menu_class">">
+				<mt:setvarblock name="create_menu_label"><mt:if name="menu_class" eq="page"><__trans phrase="Page"><mt:else><__trans phrase="Entry"></mt:if></mt:setvarblock>
+				<mt:if name="menu_link_url">
+				<a class="trigger" href="<mt:var name="menu_link_url">">
+					<mt:var name="create_menu_label">
+				</a>
+				<mt:else><mt:ignore>has sub menus</mt:ignore>
+					<span class="trigger"><mt:var name="create_menu_label"></span>
+					<ul>
+					<mt:loop name="sub_menus">
+						<li>
+							<a href="<mt:var name="sub_link_url">"<mt:if name="is_dialog"> class="mt-open-dialog"</mt:if>>
+								<mt:var name="sub_label">
+							</a>
+						</li>
+					</mt:loop>
+					</ul>
+				</mt:if>
+			</li>
+		</mt:loop>
+		</ul>
+	</li>
+	</mt:setvarblock>
+</mt:if>
+<$mt:var name="create_menus" strip_linefeeds="1" regex_replace="/\t/g",""$>
+
+<script type="text/javascript">
+jQuery(function($) {
+    $('.extended_menu').hover(
+        function() { $(this).addClass('hover'); },
+        function() { $(this).removeClass('hover'); }
+    );
+    $('.extended_menu .main').hover(
+        function() { $(this).addClass('li_hover'); },
+        function() { $(this).removeClass('li_hover'); }
+    );
+});
+</script>
+

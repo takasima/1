@@ -1,0 +1,36 @@
+<__trans_section component="community">
+<mt:Unless name="profile_view">
+<div class="widget-category-groups widget">
+    <h3 class="widget-header"><__trans phrase="Forum Groups"></h3>
+    <div class="widget-content">
+    <mt:TopLevelCategories>
+        <mt:HasSubCategories>
+        <div class="primary-category">
+            <mt:If tag="CategoryCount">
+            <h3 class="category-label"><a href="<$mt:CategoryArchiveLink$>" rel="tag" title="<$mt:CategoryDescription escape="html"$>"><$mt:CategoryLabel$></a></h3>
+                <mt:Else>
+            <h3 class="category-label"><$mt:CategoryLabel$></h3>
+                </mt:Else>
+            </mt:If>
+        </div>
+        </mt:HasSubCategories>
+        <mt:HasParentCategory>
+        <div class="secondary-category<mt:If name="__last__"> last</mt:If>">
+            <mt:If tag="CategoryCount">
+            <h4 class="category-label"><a href="<$mt:CategoryArchiveLink$>" rel="tag" title="<$mt:CategoryDescription escape="html"$>"><$mt:CategoryLabel$></a></h4>
+            <div class="category-totals"><span class="entry-count icon-entry"><$mt:CategoryCount$></span> <span class="icon-comment"><$mt:CategoryCommentCount$></span></div>
+                <mt:Entries lastn="1">
+            <p class="last-entry"><__trans phrase="Last Topic: [_1] by [_2] on [_3]" params='<a href="<$mt:EntryPermalink$>"><$mt:EntryTitle$></a>%%<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:EntryAuthorID$>"><$mt:EntryAuthorDisplayName encode_html="1"$></a></span>%%<$mt:EntryDate format="%b %e, %Y"$>'></p>
+                </mt:Entries>
+            <mt:Else>
+            <h4 class="category-label"><$mt:CategoryLabel$></h4>
+            <p><__trans phrase="Be the first to <a href="[_1]">post a topic in this forum</a>" params="<$mt:Link template="entry_create"$>?<$mt:CategoryID$>"></p>
+            </mt:If>
+        </div>
+        </mt:HasParentCategory> 
+        <$mt:SubCatsRecurse$>
+    </mt:TopLevelCategories>
+    </div>
+</div>
+</mt:Unless>
+</__trans_section>

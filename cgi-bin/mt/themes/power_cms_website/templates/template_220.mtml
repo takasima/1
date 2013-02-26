@@ -1,0 +1,37 @@
+        <!-- [footer] -->
+        <div id="footer">
+            <ul id="footer_nav">
+<MTObjectGroupItems blog_id="$website_id" group="<__trans phrase="Footer menu">">
+    <MTIfObjectGroupItemIsEntry>
+        <$MTEntryPermalink setvar="item_link"$>
+        <$MTEntryTitle setvar="item_label"$>
+    </MTIfObjectGroupItemIsEntry>
+    <MTIfObjectGroupItemIsBlog>
+        <$MTBlogURL setvar="item_link"$>
+        <$MTBlogName setvar="item_label"$>
+    </MTIfObjectGroupItemIsBlog>
+    <MTIf name="__first__">
+    <MTIf name="item_link">
+                <li id="fn_home"><a href="<$MTGetVar name="item_link"$>"><__trans phrase="Home"></a></li>
+    </MTIf>
+    <MTElse>
+    <MTIf name="item_link">
+                <li><a href="<$MTGetVar name="item_link" escape="html"$>"><$MTGetVar name="item_label" escape="html"$></a></li>
+    </MTIf>
+    </MTIf>
+    <$MTSetVar name="item_link" value=""$>
+    <$MTSetVar name="item_label" value=""$>
+</MTObjectGroupItems>
+            </ul>
+            <p id="footer_copyright">Copyright &copy; <$MTDate format="%Y"$></p>
+        </div>
+        <!-- /[footer] -->
+    </div>
+    <!-- /[container] -->
+</body>
+</html>
+<MTIfDynamic><MTElse>
+<mtml tag="/mt:else">
+<mtml tag="/mt:If">
+<MTIgnore>/Login check</MTIgnore>
+</MTElse></MTIfDynamic>

@@ -1,0 +1,15 @@
+<td>
+    <mt:if name="user_id">
+        <mt:if name="is_administrator">
+            <a href="<mt:var name="script_url">?__mode=list_association&amp;author_id=<mt:var name="user_id" escape="html">" class="icon-right icon-user"><$mt:var name="user_name" escape="html"$></a>
+        <mt:else>
+            <span class="icon-right icon-user"><$mt:var name="user_name" escape="html"$></span>
+        </mt:if>
+    <mt:else>
+        <mt:if name="is_administrator">
+            <a href="<mt:var name="script_url">?__mode=list_association&amp;group_id=<mt:var name="group_id" escape="html">" class="icon-right-xwide icon-group"><$mt:var name="group_name" escape="html"$></a>
+        <mt:else>
+            <span class="icon-right icon-user"><$mt:var name="group_name" escape="html"$></span>
+        </mt:if>
+    </mt:if>
+</td>

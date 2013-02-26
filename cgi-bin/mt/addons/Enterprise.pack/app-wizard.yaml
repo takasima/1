@@ -1,0 +1,54 @@
+wizard_template: $enterprise::MT::Enterprise::Wizard::template_hdlr
+wizard_steps:
+    cfg_ldap_auth:
+        order: 400
+        handler: $enterprise::MT::Enterprise::Wizard::cfg_ldap_auth
+        params:
+            - authtype
+            - authurl
+            - binddn
+            - authpassword
+            - saslmechanism
+            - test_userid
+            - test_password
+    cfg_ldap_eum:
+        order: 401
+        handler: $enterprise::MT::Enterprise::Wizard::cfg_ldap_eum
+        condition: >
+            sub {
+                my ($app, $param) = @_;
+                return $param->{authtype} ? 1 : 0;
+            }
+        params:
+            - eum
+            - eum_freq
+            - eum_group_searchbase
+            - eum_group_filter
+    cfg_ldap_mapping:
+        order: 402
+        handler: $enterprise::MT::Enterprise::Wizard::cfg_ldap_mapping
+        condition: >
+            sub {
+                my ($app, $param) = @_;
+                return ($param->{authtype} && ($app->param('eum') || $param->{eum})) ? 1 : 0;
+            }
+        params:
+            - eum_user_id
+            - eum_user_email
+            - eum_user_fullname
+            - eum_user_member
+            - eum_group_id
+            - eum_group_name
+            - eum_group_fullname
+            - eum_group_member
+optional_packages:
+    Net::LDAP:
+        link: http://search.cpan.org/dist/perl-ldap
+        label: This module is required in order to use the LDAP Authentication.
+        version: 0.34
+    IO::Socket::SSL:
+        link: http://search.cpan.org/dist/IO-Socket-SSL
+        label: This module is required in order to use SSL/TLS connection with the LDAP Authentication.
+    Authen::SASL:
+        link: http://search.cpan.org/dist/Authen-SASL/
+        label: This module and its dependencies are required in order to use CRAM-MD5, DIGEST-MD5 or LOGIN as a SASL mechanism.

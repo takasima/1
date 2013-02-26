@@ -1,0 +1,52 @@
+<MTSetVars>
+page_title=<__trans phrase="Comment Response">
+</MTSetVars>
+
+<$MTInclude module="<__trans phrase="PC-HTML Header">"$>
+<$MTInclude module="<__trans phrase="PC-Header">"$>
+        <!-- [contents] -->
+        <div id="contents" class="clf">
+
+<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
+            <ul class="breadcrumb clf">
+                <li><a href="<MTBlogParentWebsite><$MTWebsiteURL escape="html"$></MTBlogParentWebsite>"><__trans phrase="Home"></a></li>
+                <li><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></li>
+                <MTParentCategories>
+                <li><a href="<$MTCategoryArchiveLink escape="html"$>"><$MTCategoryLabel escape="html"$></a></li>
+                </MTParentCategories>
+                <li class="last"><$MTEntryTitle escape="html"$></li>
+            </ul>
+            <div id="single_contents" class="web_page">
+                <div class="clf">
+                    <h2><$MTEntryTitle escape="html"$></h2>
+                    <div class="blog_entries_body clf">
+                        <MTIf name="comment_confirmation">
+                            <MTIgnore><!-- Success message when comment has been submitted --></MTIgnore>
+                            <$MTVar name="page_title" value="<__trans phrase="Confirmation...">"$>
+                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been submitted!"></p>"$>
+                        <MTElse name="comment_pending">
+                            <MTIgnore><!-- Pending message when comment is being held for review --></MTIgnore>
+                            <$MTVar name="page_title" value="<__trans phrase="Thank you for commenting.">"$>
+                            <$MTVar name="message" value="<p><__trans phrase="Your comment has been received and held for approval by the blog owner."></p>"$>
+                        <MTElse name="comment_error">
+                            <MTIgnore><!-- Error message when comment submission fails --></MTIgnore>
+                            <$MTVar name="page_title" value="<__trans phrase="Comment Submission Error">"$>
+                            <MTSetVarBlock name="message"><p><__trans phrase="Your comment submission failed for the following reasons: [_1]" params="<$mt:ErrorMessage$>"></p></MTSetVarBlock>
+                        </MTIf>
+                        <$MTVar name="message"$>
+                        <p>
+                        <mt:If name="comment_error">
+                            <__trans phrase="Return to <a href="[_1]">your comment</a>." params="javascript:history.back()">
+                        <mt:Else>
+                            <__trans phrase="Return to the <a href="[_1]">original entry</a>." params="<$mt:EntryLink$>">
+                        </mt:If>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+<mtml tag="/mt:SetVarBlock">
+<mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
+        </div>
+        <!-- /[contents] -->
+<$MTInclude module="<__trans phrase="PC-Footer">"$>

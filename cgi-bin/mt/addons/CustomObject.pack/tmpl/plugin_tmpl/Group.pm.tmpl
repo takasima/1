@@ -1,0 +1,26 @@
+package <mt:var name="plugin_id">::<mt:var name="plugin_id">Group;
+use strict;
+
+use base qw( CustomObject::CustomObjectGroup );
+
+__PACKAGE__->install_properties( {
+    class_type => '<mt:var name="class">group',
+    child_of => 'MT::Blog',
+} );
+
+sub child_class {
+    return '<mt:var name="class">';
+}
+
+sub default_module_mtml {
+    my $template = <<'MTML';
+<<mt:var name="tag_prefix"><mt:var name="plural"> group_id="$group_id">
+<<mt:var name="tag_prefix"><mt:var name="plural">Header><ul></<mt:var name="tag_prefix"><mt:var name="plural">Header>
+    <li><<mt:var name="tag_prefix"><mt:var name="plugin_id">Name escape="html"></a></li>
+<<mt:var name="tag_prefix"><mt:var name="plural">Footer></ul></<mt:var name="tag_prefix"><mt:var name="plural">Footer>
+</<mt:var name="tag_prefix"><mt:var name="plural">>
+MTML
+    return $template;
+}
+
+1;

@@ -1,0 +1,100 @@
+<MTSetVarBlock name="contents">
+<MTEstraierMeta>
+    <h2>
+        <mt:if name="__query__"><__trans phrase="Results matching &ldquo;[_1]&rdquo;" params="<$mt:var name="__query__" escape="html"$>"><mt:else><__trans phrase="Search Results"></mt:else></mt:if>
+    </h2>
+    <div class="panel">
+    <form action="<$MTCGIRelativeURL$><$MTEstraierScript$>" method="get" name="search_estraier">
+        <p>
+            <input type="text" name="query" style="width:280px" value="<$mt:var name="__query__" escape="html"$>" />
+            <input type="submit" value=" <__trans phrase="Search"> " style="width:70px" />
+            <input type="hidden" name="limit" value="<$mt:var name="__limit__" escape="html"$>" />
+            <input type="hidden" name="offset" value="1" />
+            <input type="hidden" name="blog_id" value="<$MTBlogID$>" />
+            <mt:setvarblock name="search_params"><$MTCGIRelativeURL$><$MTEstraierScript$>?blog_id=<$MTBlogID$>&amp;limit=<$mt:var name="__limit__" escape="html"$>&amp;query=<$mt:var name="__query__" escape="html" escape="url"$>&amp;<MTEstraierTarget>&amp;target=<$mt:var name="__target__" escape="html"$></MTEstraierTarget><MTEstraierSuffix>&amp;suffix=<$mt:var name="__suffix__" escape="html"$></MTEstraierSuffix>&amp;offset=</mt:setvarblock>
+        </p>
+        <p>
+            <__trans phrase="Target">:<br />
+            <MTMultiblog include_blogs="all">
+                <span style="display:inline;white-space:nowrap;"><label><input type="checkbox" name="target" value="<$MTBlogID$>"<MTEstraierTarget><MTIf tag="MTBlogID" eq="$__target__"> checked="checked"</MTIf></MTEstraierTarget> /> <$MTBlogName escape="html"$></label></span>
+            </MTMultiblog>
+        </p>
+        <p>
+            <__trans phrase="Extension">:<br />
+            <label><input type="checkbox" name="suffix" value="html"<MTEstraierSuffix><MTIf name="__suffix__" eq="html"> checked="checked"</MTIf></MTEstraierSuffix> /> html</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="pdf"<MTEstraierSuffix><MTIf name="__suffix__" eq="pdf"> checked="checked"</MTIf></MTEstraierSuffix> /> pdf</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="xls"<MTEstraierSuffix><MTIf name="__suffix__" eq="xls"> checked="checked"</MTIf></MTEstraierSuffix> /> xls</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="doc"<MTEstraierSuffix><MTIf name="__suffix__" eq="doc"> checked="checked"</MTIf></MTEstraierSuffix> /> doc</label>&nbsp;&nbsp;
+            <label><input type="checkbox" name="suffix" value="ppt"<MTEstraierSuffix><MTIf name="__suffix__" eq="ppt"> checked="checked"</MTIf></MTEstraierSuffix> /> ppt</label>
+        </p>
+    </form>
+    </div>
+</MTEstraierMeta>
+<MTEstraierResults wwidth="120" hwidth="3" awidth="60">
+    <MTEstResultHeader>
+        <h2>
+            <MTIfEstResultMatch>
+                <__trans phrase="[_1] results ([_2]-[_3])" params="<$MTEstResultCount$>%%<$mt:var name="__start__"$>%%<$mt:var name="__last__"$>">
+                <MTElse><__trans phrase="No results found for &ldquo;[_1]&rdquo;." params="<$mt:var name="__query__" escape="html"$>"></MTElse>
+            </MTIfEstResultMatch>
+        </h2>
+        <MTIfEstResultMatch>
+        <div class="panel">
+        <div class="alt-search-results">
+        <dl class="search_result">
+        </MTIfEstResultMatch>
+    </MTEstResultHeader>
+    <MTIfEstResultMatch>
+        <$MTEstResultTitle setvar="result_title"$>
+        <MTUnless name="result_title">
+            <$MTEstResultURL remove_html="1" regex_replace="/.*\//","" setvar="result_title"$>
+        </MTUnless>
+                <dt><strong><a href="<MTEstResultURL>"><$MTVar name="result_title"$></a></strong></dt>
+                <dd><MTEstResultDate>: <MTEstResultExcerpt remove_html="1"></dd>
+    </MTIfEstResultMatch>
+    <MTEstResultFooter>
+        <MTIfEstResultMatch>
+        </dl>
+        </div>
+            <MTEstResultPager>
+                <MTEstResultPagerHeader>
+                    <ul class="pager">
+                    <MTIfEstResultPrev>
+                        <li class="prev"><a href="<$mt:var name="search_params"$><mt:var name="__prevoffset__">"><__trans phrase="Previous"></a></li>
+                        <MTElse>
+                        <li class="prev"><span><__trans phrase="Previous"></span></li>
+                        </MTElse>
+                    </MTIfEstResultPrev>
+                </MTEstResultPagerHeader>
+                <mt:if name="__current__"><li class="index"><span><mt:var name="__counter__"></span></li>
+                <mt:else><li class="index"><a href="<$mt:var name="search_params"$><mt:var name="__offset__">"><mt:var name="__counter__"></a></li></mt:else></mt:if>
+                <MTEstResultPagerFooter>
+                    <MTIfEstResultNext>
+                        <li class="next"><a href="<$mt:var name="search_params"$><mt:var name="__nextoffset__">"><__trans phrase="Next"></a></li>
+                        <MTElse>
+                        <li class="next"><span><__trans phrase="Next"></span></li>
+                        </MTElse>
+                    </MTIfEstResultNext>
+                    </ul>
+                </MTEstResultPagerFooter>
+            </MTEstResultPager>
+        </div>
+        </MTIfEstResultMatch>
+    </MTEstResultFooter>
+</MTEstraierResults>
+</MTSetVarBlock>
+
+<MTSetVars>
+page_title=<__trans phrase="Search Results">
+website_id=<$MTWebsiteID$>
+website_url=<$MTWebsiteURL$>
+website_name=<$MTWebsiteName$>
+</MTSetVars>
+<MTSetVarBlock name="html_head" append="1">
+</MTSetVarBlock>
+<$MTInclude module="<__trans phrase="SP-HTML Header">"$>
+<$MTInclude module="<__trans phrase="SP-Header">"$>
+    <section>
+        <$MTVar name="contents"$>
+    </section>
+<$MTInclude module="<__trans phrase="SP-Footer">"$>

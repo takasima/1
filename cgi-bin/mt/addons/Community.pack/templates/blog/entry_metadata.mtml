@@ -1,0 +1,21 @@
+<__trans_section component="community">
+<div class="asset-meta">
+    <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36"$>
+    <span class="byline">
+<mt:If tag="EntryAuthorDisplayName">
+        <__trans phrase="By [_1] on [_2]" params='<span class="vcard author"><a href="<$mt:Var name="profile_view_url"$><$mt:EntryAuthorID$>"><$mt:EntryAuthorDisplayName encode_html="1"$></a></span>%%<abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>'>
+<mt:Else>
+        <abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>
+</mt:If>
+    </span>
+<mt:Unless name="hide_counts" eq="1">
+    <mt:IfCommentsActive><a href="<$mt:EntryPermalink$>#comments" class="entry-meta-comments" title="<$mt:EntryCommentCount singular="<__trans phrase="1 Comment">" plural="<__trans phrase="# Comments">"$>"><$mt:EntryCommentCount$></a></mt:IfCommentsActive>
+    <mt:IfPingsActive><a href="<$mt:EntryPermalink$>#trackbacks" class="entry-meta-trackbacks" title="<$mt:EntryTrackbackCount singular="<__trans phrase="1 TrackBack">" plural="<__trans phrase="# TrackBacks">"$>"><$mt:EntryTrackbackCount$></a></mt:IfPingsActive>
+    <a href="javascript:void(0)" onclick="return mtScore(<$mt:EntryID$>)" id="scoring-id-<$mt:EntryID$>" class="scoring">
+        <span id="scoring-vote-<$mt:EntryID$>" class="scoring-vote"><__trans phrase="Vote"></span>
+        <span id="scoring-score-<$mt:EntryID$>" class="scoring-score"><$mt:EntryScore namespace="community_pack_recommend" singular="1" plural="#" none="0"$></span>
+        <span id="scoring-score-label-<$mt:EntryID$>" class="scoring-score-label"><$mt:EntryScore namespace="community_pack_recommend" singular="<__trans phrase="Vote">" plural="<__trans phrase="Votes">" none="<__trans phrase="Votes">"$></span>
+    </a>
+</mt:Unless>
+</div>
+</__trans_section>

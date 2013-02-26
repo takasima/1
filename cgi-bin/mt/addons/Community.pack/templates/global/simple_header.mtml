@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title><$mt:Var name="title" encode_html="1"$></title>
+<mt:SetVarBlock name="html_head" prepend="1">
+<mt:If name="mt_debug">
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/reset.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/chromeless.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/form.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/listing.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/messaging.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/utilities.css?v=<$mt:Var name="mt_version_id" escape="url"$>" type="text/css" />
+<mt:Else>
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>css/simple.css?v=<$mt:Var name="mt_version" escape="url"$>" type="text/css" />
+</mt:If>
+    <link rel="stylesheet" href="<$mt:var name="static_uri"$>addons/Commercial.pack/styles-customfields.css" type="text/css" media="screen" title="CustomFields Stylesheet" charset="utf-8" />
+    <!--[if lte IE 7]>
+    <link rel="stylesheet" href="<$mt:var name="static_uri"$>css/hacks/ie.css?v=<mt:var name="mt_version_id" escape="url">" type="text/css" />
+    <![endif]-->
+    <!--[if lte IE 6]>
+    <link rel="stylesheet" href="<$mt:var name="static_uri"$>css/hacks/ie6.css?v=<mt:var name="mt_version_id" escape="url">" type="text/css" />
+    <![endif]-->
+<mt:If name="local_lang_id">
+    <mt:If name="local_lang_id" ne="en-us">
+    <link rel="stylesheet" href="<$mt:Var name="static_uri"$>styles_<$mt:Var name="local_lang_id"$>.css?v=<$mt:Var name="mt_version" escape="url"$>" />
+    </mt:If>
+</mt:If>
+    <script type="text/javascript" src="<$mt:Var name="static_uri"$>js/common/Core.js?v=<$mt:Var name="mt_version" escape="url"$>"></script>
+    <script type="text/javascript" src="<$mt:Var name="static_uri"$>js/tc.js?v=<$mt:Var name="mt_version" escape="url"$>"></script>
+    <script type="text/javascript" src="<$mt:Var name="static_uri"$>jquery/jquery.js?v=<$mt:Var name="mt_version" escape="url"$>"></script>
+</mt:SetVarBlock>
+<$mt:Var name="html_head"$>
+<script type="text/javascript" src="<$mt:Var name="static_uri"$>mt.js?v=<$mt:Var name="mt_version" escape="url"$>"></script>
+<script language="javascript" type="text/javascript">
+<!--
+function showByID(id) {
+    var el = getByID(id);
+    if (el) el.style.display = "block";
+}
+function hideByID(id) {
+    var el = getByID(id);
+    if (el) el.style.display = "none";
+}
+// -->
+</script>
+<$mt:Var name="js_include"$>
+</head>
+
+<body <mt:if name="screen_id">id="<$mt:var name="screen_id"$>" </mt:if>class="chromeless<mt:if name="error_page"> chromeless-wide</mt:if><mt:if name="screen_type" eq="popup-screen"> chromeless-wide</mt:if><mt:if name="screen_class"> <mt:var name="screen_class"></mt:if>">
+    <div id="container">
+        <div id="brand"><img alt="Movable Type" src="<mt:var name="static_uri">images/chromeless/mt_logo.png" /></div>
+        <div id="nav">
+<mt:If name="wizard_steps">
+    <mt:Unless name="complete">
+        <mt:If name="step" ne="pre_start">
+    <mt:Loop name="wizard_steps">
+            <mt:Unless name="__last__">
+        <div class="step<mt:If name="active">_active</mt:If>"></div>
+            </mt:Unless>
+    </mt:Loop>
+        </mt:If>
+    </mt:Unless>
+</mt:If>
+        </div>
+        <h1 id="page-title" class="asset-name"><$mt:Var name="page_title"$></h1>

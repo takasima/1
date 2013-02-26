@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use File::Spec;
+use FindBin;
+use lib map File::Spec->catdir($FindBin::Bin, File::Spec->updir, $_), qw/lib extlib/;
+use MT;
+use MT::Object;
+my $mt     = MT->new() or die MT->errstr;
+my $driver = MT->config('ObjectDriver');
+exit 1 if $driver ne 'DBI::mysql';
+my $model  = MT->registry('object_types');
+my $done   = 0;
+my $handle = MT::Object->driver->rw_handle;
+for my $model (grep !/\.|^file$/, keys %$model) {
+    my $class = MT->model($model);
+    next unless $class;
+    my $table = "mt_$model";
+    my @tables = ($table);
+    push @tables, "${table}_meta" if $class->has_meta;
+    push @tables, "${table}_rev"  if $class->isa('MT::Revisable');
+    for $table (@tables) {
+        my $sql = "OPTIMIZE TABLE `$table`";
+        if ($handle->do($sql)) {
+            $done ||= 1;
+        }
+    }
+}
+MT->log('MySQL optimized successfully.') if $done;

@@ -1,0 +1,144 @@
+h1#page-title {
+    position: absolute;
+    top: 8px;
+    font-size: 112%;
+    font-weight: bold;
+    color: #FFFFFF;
+    z-index: 1000;
+    line-height: 16px;
+}
+
+#brand span.tips {
+    display: none;
+}
+
+/*------------------------*/
+#header {
+    height: 64px;
+}
+
+#brand {
+    height: 32px;
+}
+
+#brand a {
+    top: 0px;
+}
+
+#utility-nav {
+    top: 7px;
+}
+
+#menu-bar {
+    height: 32px;
+}
+
+.scope {
+    height: 32px;
+}
+
+.scope-label {
+    height: 32px;
+    line-height: 32px;
+}
+
+.scope-selector {
+    top: 32px;
+}
+
+
+#menu-bar-nav {
+    top: 4px;
+}
+
+/*------------------------*/
+
+#menu-bar-nav {
+    width: 50% !important;
+}
+        
+#menu-bar-nav .toggle-link-wrapper {
+    position: relative;
+    top: 1px;
+    height: 24px;
+    float: right;
+    margin: 0px 8px 0px 0px;
+}
+
+#menu-bar-nav .toggle-link-wrapper .toggle-link {
+    padding: 0px 25px 0px 0.5em;
+    color: #2B2B2B;
+    border: 1px solid #c0c6c9;
+    background-color: #f3f3f3;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f3f3f3), to(#dcdddd));
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #dcdddd 100%);
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    text-decoration: none;
+    line-height: 20px;
+    text-shadow: none;
+    box-shadow: 1px 1px 2px #666;
+    -webkit-box-shadow: 1px 1px 2px #666;
+    -moz-box-shadow: 1px 1px 2px #666;
+}
+
+#menu-bar-nav .toggle-link-wrapper .toggle-button {
+    width: 20px;
+    height: 22px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -moz-border-radius :0 3px 3px 0;
+}
+
+.display-options-detail {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+#menu-bar-nav #object-nav-wrapper {
+    position: relative;
+    top: 1px;
+    height: 24px;
+    float: right;
+    margin: 0px 8px 0px 0px;
+    width: 90px;
+}
+
+#menu-bar-nav #object-nav-wrapper .object-nav li a,
+#menu-bar-nav #object-nav-wrapper .object-nav li span {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    line-height: 22px;
+}
+
+/*------------------------*/
+
+.msg {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.display-options {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    display: inline;
+}
+
+.display-options-detail {
+    width: 280px;
+    margin: 0px;
+    position: absolute;
+    box-shadow:0 5px 8px #9ea1a3;
+    -webkit-box-shadow:0 5px 8px #9ea1a3;
+    -moz-box-shadow:0 5px 8px #9ea1a3;
+    background-color: #FFF;
+    z-index: 550;
+}
+
+#menu-bar {
+    z-index: 500;
+}
+
+#menu-bar-nav .toggle-link-wrapper {
+    z-index: 600;
+}

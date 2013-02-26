@@ -1,0 +1,55 @@
+<mtapp:widget
+   label="<__trans phrase="Recent Submissions">"
+   id="recent_submissions"
+   class="recent-submissions-widget object-list-widget"
+   can_close="1">
+<mt:if var="has_submitted_entries">
+  <mt:entries>
+  <div id="submitted-entry-<mt:entryid>" class="entry content entry-<mt:if name="__odd__">odd odd</mt:if> entry-status-<mt:entrystatus lower_case="1">">
+    <div class="entry-inner">
+      <div class="entry-title">
+        <h4>
+        <mt:if tag="entrytitle">
+          <a href="<mt:var name="script_url">?__mode=view&amp;_type=entry&amp;id=<mt:entryid>&amp;blog_id=<mt:blogid>"><mt:entrytitle escape="html"></a>
+        <mt:else>
+          <__trans phrase="No Title"> (<a href="<mt:var name="script_url">?__mode=view&amp;_type=entry&amp;id=<mt:entryid>&amp;blog_id=<mt:blogid>">id:<mt:entryid></a>)
+        </mt:if>
+        </h4>
+      </div>
+      <div class="entry-content">
+        <p><mt:entryexcerpt escape="html"></p>
+      </div>
+      <div class="entry-meta meta">
+      <mt:if tag="entryauthordisplayname">
+        <mt:setvarblock name="entry_author"><mt:entryauthorlink show_email="0"></mt:setvarblock>
+      <mt:else>
+        <mt:setvarblock name="entry_author"><mt:entryauthorusername escape="html"></mt:setvarblock>
+      </mt:if>
+      <mt:if tag="parentcategory">
+        <__trans phrase="Posted by [_1] [_2] in [_3]" params="<mt:var name="entry_author">%%<mt:entrydate relative="1">%%<mt:parentcategory><mt:if name="editable"><a href="<mt:var name="script_url">?__mode=list&amp;_type=entry&amp;blog_id=<mt:blogid>&amp;filter=category_id&amp;filter_val=<mt:categoryid>"><mt:categorylabel escape="html"></a><mt:else><mtcategorylabel escape="html"></mt:if></mt:parentcategory>">
+      <mt:else>
+        <__trans phrase="Posted by [_1] [_2]" params="<mt:var name="entry_author">%%<mt:entrydate relative="1">">
+      </mt:if>
+      <mt:entryiftagged>
+        <__trans phrase="Tagged: [_1]" params="<mt:entrytags glue=", "><a href="<mt:var name="script_url">?__mode=list_entries<mt:if tag="blogid">&amp;blog_id=<mt:blogid></mt:if>&amp;filter=exacttag&amp;filter_val=<mt:tagname escape="url">" rel="tag"><mt:tagname escape="html"></a></mt:entrytags>">
+      </mt:entryiftagged>
+      </div>
+    </div>
+  </div>
+  <mt:else>
+    <mtapp:statusmsg
+       id="zero-state"
+       class="info zero-state"
+       can_close="0">
+      <__trans phrase="No entries available.">
+    </mtapp:statusmsg>
+  </MTEntries>
+<mt:else>
+  <mtapp:statusmsg
+     id="zero-state"
+     class="info zero-state"
+     can_close="0">
+    <__trans phrase="No entries available.">
+  </mtapp:statusmsg>
+</mt:if>
+</mtapp:widget>

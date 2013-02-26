@@ -1,0 +1,51 @@
+<mt:setvar name="page_title" value="<__trans phrase="Custom Fields">">
+<mt:setvar name="position_actions_bottom" value="1">
+<mt:setvarblock name="system_msg">
+    <mt:if name="error">
+        <mtapp:statusmsg
+            id="generic-error"
+            class="error">
+            <mt:var name="error">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="saved">
+        <mtapp:statusmsg
+            id="saved"
+            class="success"
+            rebuild="all">
+            <__trans phrase="Data have been saved to custom fields.">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+<MTSetVarBlock name="content_nav">
+    <mt:include name="include/cfg_content_nav.tmpl">
+</MTSetVarBlock>
+<mt:include name="include/header.tmpl">
+
+<form name="cfg_form" method="post" action="<mt:var name="script_url">">
+<input type="hidden" name="id" value="<mt:var name="id">" />
+<input type="hidden" name="__mode" value="save_cfg_customfields" />
+<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+<input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
+<input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+<mt:ignore id="placeholder1"></mt:ignore>
+
+<mt:setvarblock name="action_buttons">
+    <button
+        type="submit"
+        accesskey="s"
+        title="<__trans phrase="Save changes to blog (s)">"
+        class="save action primary button"
+        ><__trans phrase="Save Changes"></button>
+</mt:setvarblock>
+
+<mt:if name="field_exists">
+<mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1" settings_bar="1">
+<mt:else>
+<p><__trans phrase="No custom fileds could be found. <a href="[_1]">Create a field</a> now." params="<$mt:var name="mt_url"$>?__mode=view&amp;_type=field"></p>
+</mt:if>
+
+</form>
+
+<mt:include name="include/footer.tmpl">

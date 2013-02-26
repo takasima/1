@@ -1,0 +1,47 @@
+package LinkChecker::L10N::ja;
+use strict;
+use base qw/LinkChecker::L10N/;
+
+our %Lexicon = (
+    'Do link check after rebuilt.' => '再構築後にリンクチェックを行います。',
+    'No error found.' => 'エラーは検出されませんでした。',
+    'Log file was not found.' => 'ログファイルがありません。',
+    'Check [_1] files ([_2] links). ' => '[_1]ファイル中の[_2]個のリンクをチェックしました。',
+    '[_1] error found in [_2] files.' => '[_2]ファイル中に[_1]個のエラーを検出しました。',
+    '([_1] error found in a file.)' => '([_1]個のエラー)',
+    '(No error found in a file.)' => '(エラーなし)',
+    'Link check result' => 'リンクチェックの結果',
+    'Link Check' => 'リンクチェック',
+    'Report errors only' => 'エラーのみをレポートする',
+    'Report' => 'レポート',
+    'OK (dynamic)' => 'OK (ダイナミック)',
+    'Not Found.' => '見つかりません',
+    "Link check report has been build. '[_1]'" => "リンクチェックレポートを作成しました。'[_1]'",
+    'Movable Type Linkcheck Notification' => 'Movable Type リンクチェックレポートの通知',
+    'Linkcheck report has been build' => 'リンクチェックレポートが作成されました',
+    'To access linkcheck report, please click on or cut and paste the following URL into a web browser:' => '次のURLをクリックするか、コピーしてブラウザのアドレス欄に貼り付けてレポートにアクセスしてください。',
+    'Notify Link Check' => 'リンクチェック通知',
+    'Outside link' => '外部リンク',
+    'Inner link' => '内部リンク',
+    'Check outside links' => '外部リンクのチェックを行う',
+    'Check inner links' => '内部リンクのチェックを行う',
+    'Index file' => '/(スラッシュ)で終わるリンク',
+    'Do check by periodic task' => 'タスク実行時にリンクチェックを行う',
+    'Task' => 'タスク',
+    'Notify send to' => 'チェック完了時通知先',
+    'Document root (absolute path)' => 'ドキュメント・ルート(絶対パス)',
+    'Script alias (absolute path)' => 'スクリプト・エイリアス(絶対パス)',
+    'Script alias (relative path)' => 'スクリプト・エイリアス(操作パス)',
+    'Alias' => 'エイリアス',
+    'Exclude suffix' => '除外する拡張子',
+    'Temporary log' => '一時ログ',
+    'Do link check at rebuilt.' => '再構築後にリンクチェックを行う',
+    'Do link check.' => 'リンクチェックを実行',
+    'Do link check at next task.' => '次回のタスク実行時にリンクチェックを行う',
+    'Files for PowerCMS Directory unexists. Please make directory [_1], and give enough permission to write from web server.' => 'PowerCMS のためのファイル格納ディレクトリがありません。PowerCMS の各機能を活用するために、[_1] に PowerCMS が生成するファイルを保存するためのディレクトリを作成し、ウェブサーバーから書き込み可能な権限を与えてください。',
+    'PowerCMS directory was not found.' => 'リンクチェックを実行',
+    'Warning: Link check can be run on a single website or blog.' => 'リンクチェックは単一のウェブサイト/ブログを対象に実行可能です。',
+    'Warning: Link check to run across multiple websites/blogs can be done.' => '警告:再構築後のリンクチェックはウェブサイト/ブログをまたがって実行することはできません。',
+);
+
+1;

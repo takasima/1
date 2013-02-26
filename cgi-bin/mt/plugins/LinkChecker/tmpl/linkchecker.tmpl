@@ -1,0 +1,65 @@
+<mt:if name="build_report">
+    <$mt:var name="build_report"$>
+<mt:else>
+    <mt:if name="page_msg">
+        <mt:setvarblock name="system_msg">
+            <mtapp:statusmsg id="saved-changes" class="msg msg-success">
+                <$mt:var name="page_msg"$>
+            </mtapp:statusmsg>
+        </mt:setvarblock>
+    <mt:else name="error">
+        <mt:setvarblock name="system_msg">
+            <mtapp:statusmsg id="generic-error" class="error">
+                <$mt:var name="error"$>
+            </mtapp:statusmsg>
+        </mt:setvarblock>
+    <mt:else name="not_found_msg">
+        <mt:setvarblock name="system_msg">
+            <mtapp:statusmsg id="zero-state" class="info zero-state">
+                <$mt:var name="not_found_msg"$>
+            </mtapp:statusmsg>
+        </mt:setvarblock>
+        </mt:if>
+    <mt:setvarblock name="html_head">
+    <style type="text/css">
+    #report-listing-table table {
+        margin: 0px;
+        width: 100%;
+    }
+    #report-listing-table table * {
+        text-align: left;
+    }
+    
+    #report-listing-table table tr.even {
+        background-color: #FFF;
+    }
+    </style>
+    <script type="text/javascript">
+    jQuery('#report-listing-table table tr:even').addClass('even');
+    </script>
+    </mt:setvarblock>
+    <$mt:include name="include/header.tmpl"$>
+    <mt:if name="report">
+        <div id="main-content">
+            <div id="main-content-inner" class="inner pkg">
+                <div id="group-listing" class="listing">
+                    <table id="report-listing-table" class="legacy listing-table compact">
+                        <thead>
+                            <tr>
+                                <th class="col head" style="padding:7px;"><$mt:var name="result_label"$></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <mt:loop name="tmpl_loop">
+                            <tr class="<mt:if name="odd">odd<mt:else>even</mt:else></mt:if>">
+                                <td class="col" style="padding:7px;"><$mt:var name="url_report"$></td>
+                            </tr>
+                        </mt:loop>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </mt:if>
+</mt:if>
+<$mt:include name="include/footer.tmpl"$>

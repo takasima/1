@@ -1,0 +1,63 @@
+<__trans_section component="community">
+<mt:Entries limit="15" sort_by="modified_on" unique="1">
+    <mt:EntriesHeader>
+<table id="entry-table">
+    <thead>
+        <tr>
+            <th class="title"><__trans phrase="Recent Topics"></th>
+            <th class="comment-count"><__trans phrase="Replies"></th>
+            <th class="last-comment"><__trans phrase="Last Reply"></th>
+        </tr>
+    </thead>
+    <tbody>
+    </mt:EntriesHeader>
+        <tr>
+            <td class="title">
+                <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36"$>
+                <div class="entry entry-asset">
+                    <div class="entry-title"><a href="<$mt:EntryPermalink$>"><$mt:EntryTitle$></a><mt:Unless name="category_archive"> <span class="category-name"><mt:EntryCategories><a href="<$mt:CategoryArchiveLink$>" rel="tag" title="<$mt:CategoryDescription escape="html"$>"><$mt:CategoryLabel$></a></mt:EntryCategories></span></mt:Unless></div>
+                    <div class="asset-meta">
+                        <span class="byline"><__trans phrase="By [_1] on [_2]" params='<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:EntryAuthorID$>"><$mt:EntryAuthorDisplayName encode_html="1"$></a></span>%%<abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>'></span>
+                        <a href="javascript:void(0)" onclick="return mtScore(<$mt:EntryID$>)" id="scoring-id-<$mt:EntryID$>" class="scoring">
+                            <span id="scoring-vote-<$mt:EntryID$>" class="scoring-vote"><__trans phrase="Vote"></span>
+                            <span id="scoring-score-<$mt:EntryID$>" class="scoring-score"><$mt:EntryScore namespace="community_pack_recommend" singular="1" plural="#" none="0"$></span>
+                            <span id="scoring-score-label-<$mt:EntryID$>" class="scoring-score-label"><$mt:EntryScore namespace="community_pack_recommend" singular="<__trans phrase="Vote">" plural="<__trans phrase="Votes">" none="<__trans phrase="Votes">"$></span>
+                        </a>
+                    </div>
+                </div>
+            </td>
+            <td class="comment-count"><a href="<$mt:EntryPermalink$>#comments"><$mt:EntryCommentCount$></a></td>
+            <td class="last-comment">
+                <mt:Comments lastn="1" sort_order="descend">
+                <mt:SetVarBlock name="comment_author_link">
+                <mt:If tag="CommenterID">
+<span class="vcard author"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:CommenterID$>"><$mt:CommenterName$></a></span>
+                <mt:Else>
+<span class="vcard author"><$mt:CommenterName$></span>
+                </mt:If>
+                </mt:SetVarBlock>
+                <$mt:Include module="<__trans phrase="Userpic">" userpic_size="36" userpic_type="commenter"$>
+                <div class="asset-meta">
+                    <a href="<$mt:EntryPermalink$>#comment-<$mt:CommentID$>" title="<__trans phrase="Permalink to this Reply">"><abbr title="<$mt:CommentDate format_name="iso8601"$>"><$mt:CommentDate format="%b %e, %Y"$></abbr></a>
+                    <div class="byline"><__trans phrase="By [_1]" params='<$mt:Var name="comment_author_link"$>'></div>
+                </div>
+                <mt:Else>
+                    <mt:IfCommentsAccepted>
+                    <a class="icon-comment" href="<$mt:EntryPermalink$>#comment"><__trans phrase="Reply"></a>
+                    <mt:Else>
+                    <span class="comments-closed"><__trans phrase="Closed"></a>
+                    </mt:IfCommentsAccepted>
+                </mt:Comments>
+            </td>
+        </tr>
+    <mt:EntriesFooter>
+    </tbody>
+</table>
+    </mt:EntriesFooter>
+<mt:Else>
+    <mt:If tag="EntriesCount">
+    <mt:Else>
+        <p><a href="<$mt:Link template="entry_create"$><mt:If tag="CategoryLabel" default="">?<$mt:CategoryID$>;<$mt:CategoryLabel escape="url"$></mt:If>"><__trans phrase="Post the first topic in this forum."></a></p>
+    </mt:If>
+</mt:Entries>
+</__trans_section>

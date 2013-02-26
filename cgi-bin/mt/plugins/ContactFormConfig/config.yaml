@@ -1,0 +1,38 @@
+id:   ContactFormConfig
+key:  contactformconfig
+name: Contact Form Config
+version: 1.1
+schema_version: 1.03
+author_name: Alfasado Inc.
+author_link: 'http://alfasado.net/'
+description: <__trans phrase="Manage contact form configration.">
+l10n_class: ContactFormConfig::L10N
+system_config_template: contactform_config.tmpl
+callbacks:
+    MT::App::CMS::post_run: $contactformconfig::ContactFormConfig::Plugin::_post_run
+    MT::App::Upgrader::post_run: $contactformconfig::ContactFormConfig::Plugin::_post_run
+    # cms_post_save.blog: $contactformconfig::ContactFormConfig::Plugin::_create_new_blog
+    # cms_post_save.website: $contactformconfig::ContactFormConfig::Plugin::_create_new_blog
+upgrade_functions:
+    upgrade_functions_contactformconfig:
+        plugin: ContactFormConfig
+        code: $contactformconfig::ContactFormConfig::Upgrade::_upgrade_functions
+    upgrade_functions_contactformconfig_nv:
+        plugin: ContactFormConfig
+        version_limit: 1.02
+        code: $contactformconfig::ContactFormConfig::Upgrade::_upgrade_functions
+settings:
+    template_type_text:
+    template_type_textarea:
+    template_type_checkbox:
+    template_type_select:
+    template_type_radio:
+    template_type_checkbox-multiple:
+    template_type_select-multiple:
+    template_type_date:
+    template_type_date-and-time:
+    throttle:
+        Default: 10
+    default_period:
+        Default: 30
+

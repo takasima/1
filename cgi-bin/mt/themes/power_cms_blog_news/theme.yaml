@@ -1,0 +1,374 @@
+id: power_cms_blog_news
+label: 'PowerCMS Blog News'
+name: <__trans phrase="PowerCMS Blog News">
+version: 1.8
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+l10n_class: power_cms_blog_news::L10N
+thumbnail_file: blog-thumbnail.gif
+thumbnail_file_medium: blog-thumbnail-medium.gif
+thumbnail_file_small: blog-thumbnail-small.gif
+class: blog
+description: <__trans phrase="PowerCMS Template Set">
+elements:
+  blog_static_files:
+    component: ~
+    data:
+      - common
+      - images
+    importer: blog_static_files
+  template_set:
+    component: ~
+    data:
+      base_path: templates
+      label: 'exported_template set'
+      templates:
+        archive:
+          template_6375:
+            label: Entry Listing
+            pager: 1
+            mappings:
+              category:
+                archive_type: Category
+                file_template: '%-c/%i'
+                preferred: 1
+              monthly:
+                archive_type: Monthly
+                file_template: '%y/%m/%i'
+                preferred: 1
+        index:
+          feed_recent:
+            label: Feed - Recent Entries
+            outfile: atom.xml
+            rebuild_me: 1
+          javascript:
+            label: JavaScript
+            outfile: mt.js
+            rebuild_me: 1
+          main_index:
+            label: Main Index
+            outfile: index.html
+            rebuild_me: 1
+            pager: 1
+          template_6365:
+            label: Categories list
+            outfile: category_list.html
+            rebuild_me: 1
+          template_6370:
+            label: SP-Stylesheet(blog.css)
+            outfile: css/blog.css
+            rebuild_me: 1
+          template_6371:
+            label: Monthly list
+            outfile: monthly_list.html
+            rebuild_me: 1
+          template_6388:
+            label: Redirector
+            outfile: mobile/redirect.php
+            rebuild_me: 1
+####
+          template_323:
+            label: PC-Stylesheet(import.css)
+            outfile: common/css/import.css
+            rebuild_me: 1
+          template_324:
+            label: PC-Stylesheet(base.css)
+            outfile: common/css/base.css
+          template_325:
+            label: PC-Stylesheet(component.css)
+            outfile: common/css/component.css
+            rebuild_me: 1
+          template_326:
+            label: PC-JavaScript(main.js)
+            outfile: common/js/main.js
+            rebuild_me: 1
+          template_6335:
+            label: PC-Stylesheet(search.css)
+            outfile: search/css/search.css
+            rebuild_me: 1
+          template_5406:
+            label: SP-Stylesheet(base.css)
+            outfile: common/css/smartphone/base.css
+            rebuild_me: 1
+          template_5407:
+            label: SP-JavaScript(main.js)
+            outfile: common/js/smartphone/main.js
+            rebuild_me: 1
+          template_5408:
+            label: SP-Stylesheet(import.css)
+            outfile: common/css/smartphone/import.css
+            rebuild_me: 1
+          template_5409:
+            label: SP-Stylesheet(reset.css)
+            outfile: common/css/smartphone/reset.css
+            rebuild_me: 1
+          template_5753:
+            build_type: 3
+            label: Search Results
+            outfile: dynamic/search.html
+            rebuild_me: 1
+          dynamic_mtml_bootstrapper:
+            label: 'DynamicMTML Bootstrapper'
+            outfile: '.mtview.php'
+            rebuild_me: 1
+          htaccess:
+            label: 'DynamicMTML .htaccess'
+            outfile: '.htaccess'
+            rebuild_me: 1
+          members_login_css_pc:
+            label: PC-Stylesheet(login.css)
+            outfile: common/css/login.css
+            rebuild_me: 1
+          members_login_css_smartphone:
+            label: SP-Stylesheet(login.css)
+            outfile: common/css/smartphone/login.css
+            rebuild_me: 1
+          jquery:
+            label: JavaScript(jquery.js)
+            outfile: common/js/jquery.js
+            rebuild_me: 1
+####
+        individual:
+          entry:
+            label: Entry
+            mappings:
+              individual:
+                archive_type: Individual
+                file_template: archives/%-f
+                preferred: 1
+          template_6570:
+            label: Entry(Mobile-Comment form)
+            mappings:
+              individual:
+                archive_type: Individual
+                file_template: archives/%-F_form%x
+                preferred: 0
+          template_6573:
+            label: Entry(Mobile-Comments)
+            mappings:
+              individual:
+                archive_type: Individual
+                file_template: archives/%-F_comments%x
+                preferred: 0
+          template_8154:
+            label: Entry(Mobile-Trackbacks)
+            mappings:
+              individual:
+                archive_type: Individual
+                file_template: archives/%-F_trackbacks%x
+                preferred: 0
+          estraier_entry_draft:
+            label: Entry Draft
+            mappings:
+              individual:
+                archive_type: Individual
+                file_template: draft/entry_%E.est
+                preferred: 0
+        page:
+          template_16224:
+            label: Page
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-f'
+                preferred: 1
+          template_16228:
+            label: Page(Mobile-Comment form)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_form%x'
+                preferred: 0
+          template_16229:
+            label: Page(Mobile-Comments)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_comments%x'
+                preferred: 0
+          template_16230:
+            label: Page(Mobile-Trackbacks)
+            mappings:
+              page:
+                archive_type: Page
+                file_template: '%-c/%-F_trackbacks%x'
+                preferred: 0
+          estraier_page_draft:
+            label: Page Draft
+            mappings:
+              page:
+                archive_type: Page
+                file_template: 'draft/page_%E.est'
+                preferred: 0
+        module:
+          template_16225:
+            label: Mobile-Page
+          template_16226:
+            label: SP-Page
+          template_16227:
+            label: PC-Page
+          template_6323:
+            label: PC-Main Index
+          template_6324:
+            label: SP-Main Index
+          template_6325:
+            label: Mobile-Main Index
+          template_6326:
+            label: PC-Entry
+          template_6327:
+            label: Mobile-Entry
+          template_6328:
+            label: SP-Entry
+          template_6362:
+            label: PC-Breadcrumb
+          template_6368:
+            label: SP-Categories list
+          template_6374:
+            label: SP-Monthly list
+          template_6377:
+            label: Mobile-Entry Listing
+          template_6379:
+            label: SP-Entry Listing
+          template_6381:
+            label: PC-Entry Listing
+          template_6567:
+            label: SP-Comment Preview
+          template_6568:
+            label: SP-Comment Response
+          template_6569:
+            label: Mobile-Comment Response
+          template_7812:
+            label: Mobile-Comment Preview
+          template_8141:
+            label: PC-Comment Preview
+          template_8142:
+            label: PC-Comment Response
+####
+          template_6320:
+            label: PC-Search Results
+          template_6321:
+            label: SP-Search Results
+          template_6322:
+            label: Mobile-Search Results
+          estraier_result_pc:
+            label: PC-Estraier Results
+          estraier_result_smartphone:
+            label: SP-Estraier Results
+          estraier_result_keitai:
+            label: Mobile-Estraier Results
+          html_head:
+            label: PC-Header
+          template_220:
+            label: PC-Footer
+          template_5746:
+            label: PC-HTML Header
+          template_6356:
+            label: Mobile-contetns
+          template_6337:
+            label: Mobile-Header
+          template_6338:
+            label: Mobile-Footer
+          template_6332:
+            label: SP-Header
+          template_6333:
+            label: SP-Footer
+          template_6334:
+            label: SP-HTML Header
+          template_6339:
+            label: SP-Pager
+          template_6557:
+            label: PC-Dynamic Error
+          template_6558:
+            label: SP-Dynamic Error
+          template_6559:
+            label: Mobile-Dynamic Error
+          members_login_pc:
+            label: PC-Login
+          members_login_smartphone:
+            label: SP-Login
+          members_login_mobile_m:
+            label: Mobile-Login
+          members_login_header_mobile:
+            label: Mobile-Login Header
+          members_login_footer_mobile:
+            label: Mobile-Login Footer
+#          contactform_confirm:
+#            label: Form check
+####
+        system:
+          comment_listing:
+            label: Comment Listing
+          comment_preview:
+            label: Comment Preview
+          comment_response:
+            label: Comment Response
+          dynamic_error:
+            label: Dynamic Error
+          popup_image:
+            label: Popup Image
+          search_results:
+            label: Search Results
+          estraier_result:
+            label: Estraier Results
+#          extraform_author_mail:
+#            label: フォームエントリ作成者宛メール
+#          extraform_post_confirm:
+#            label: フォーム投稿確認画面
+#          extraform_user_mail:
+#            label: フォーム投稿者宛メール
+#          notification_published:
+#            label: 公開通知
+#          notification_sendback:
+#            label: 差し戻し通知
+#          notification_workflow:
+#            label: 承認依頼通知
+          wf_published_message:
+            label: Published notification
+            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Published Page '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Published Entry '[_2]' by '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
+          wf_message:
+            label: Workflow notification
+            subject: <__trans_section component="EntryWorkflow"><mt:if name="entry_class" eq="page"><__trans phrase="([_1]) Approval request Page '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"><mt:else><__trans phrase="([_1]) Approval request Entry '[_2]' from '[_3]'" params="<$mt:var name="blog_name"$>%%<$mt:var name="entry_title"$>%%<$mt:var name="author_nickname"$>"></mt:else></mt:if></__trans_section>
+####
+          members_login:
+            label: Member's Log in
+          members_login_mobile:
+            label: Member's Log in (Mobile)
+          members_s_c:
+            label: Member's Secedes
+          members_s_c_mobile:
+            label: Member's Secedes (Mobile)
+          members_signup:
+            label: Member's Sign Up
+          members_signup_mobile:
+            label: Member's Sign Up (Mobile)
+          members_redirector_mobile:
+            label: Member's Redirector (Mobile)
+          members_e_p:
+            label: Member's Edit Profile
+          members_e_p_mobile:
+            label: Member's Edit Profile (Mobile)
+          members_recover:
+            label: Member's Password Recovery
+          members_recover_mobile:
+            label: Member's Password Recovery (Mobile)
+          members_n_p:
+            label: Member's Change Password
+          members_n_p_mobile:
+            label: Member's Change Password (Mobile)
+          members_notify_u_c:
+            label: Member's Notify Confirm for User
+            subject: <__trans_section component="Members"><__trans phrase="Member's account confirmation on '[_1]'" params="<$mt:BlogName$>"></__trans_section>
+          members_notify_u_t:
+            label: Member's Notify Registered for User
+            subject: <__trans_section component="Members"><__trans phrase="Your account has been trusted for '[_1]'" params="<$mt:BlogName$>"></__trans_section>
+          members_notify_a_p:
+            label: Member's Notify Untrusted User for Admin
+            subject: <__trans_section component="Members"><__trans phrase="A new untrust user '[_1]' registered on '[_2]'" params="<$mt:AuthorName$>%%<$mt:BlogName$>"></__trans_section>
+          members_notify_a_s:
+            label: Member's Notify Registered User for Admin
+            subject: <__trans_section component="Members"><__trans phrase="A new user '[_1]' has successfully registered on '[_2]'" params='<$mt:AuthorName$>%%<$mt:BlogName$>'></__trans_section>
+          members_notify_recover:
+            label: Member's Notify Password Recovery
+            subject: <__trans_section component="Members"><__trans phrase="Member's Password Recovery"></__trans_section>
+####
+    importer: template_set

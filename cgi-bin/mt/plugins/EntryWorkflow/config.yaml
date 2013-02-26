@@ -1,0 +1,96 @@
+id  : EntryWorkflow
+key : entryworkflow
+name: EntryWorkflow
+version: 0.9
+schema_version: 0.035
+description: '<__trans phrase="Chenge entry author and send notification.">'
+l10n_class: EntryWorkflow::L10N
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+
+permissions:
+    blog.entry_approval:
+        label: Approve Entry
+        group: auth_pub
+        order: 1001
+    blog.page_approval:
+        label: Approve Page
+        group: auth_pub
+        order: 1002
+permission_checker:
+    edit_entry:
+        entryworkflow: $entryworkflow::EntryWorkflow::Util::can_edit_entry
+object_types:
+    entry:
+        creator_id: integer
+        approver_ids: string(25)
+        owner_id: integer
+    permission:
+        categories: string(255)
+applications:
+    cms:
+        methods:
+            wf_redirect: $entryworkflow::EntryWorkflow::CMS::_mode_wf_redirect
+            preview: $entryworkflow::EntryWorkflow::CMS::_mode_preview
+            sendback_dialog: $entryworkflow::EntryWorkflow::CMS::_mode_sendback_dialog
+            sendback: $entryworkflow::EntryWorkflow::CMS::_mode_sendback
+            preview2publish: $entryworkflow::EntryWorkflow::CMS::_mode_preview2publish
+            add_perms_for_category: $entryworkflow::EntryWorkflow::CMS::_mode_add_perms_for_category
+            remove_perms_for_category: $entryworkflow::EntryWorkflow::CMS::_mode_remove_perms_for_category
+            manage_perms_for_category: $entryworkflow::EntryWorkflow::CMS::_mode_manage_perms_for_category
+callbacks:
+    MT::App::CMS::template_param.edit_entry: $entryworkflow::EntryWorkflow::Plugin::_cb_tp_edit_entry
+    MT::App::CMS::template_source.edit_entry: $entryworkflow::EntryWorkflow::Plugin::_cb_ts_edit_entry
+    MT::App::CMS::template_source.blog_stats_entry: $entryworkflow::EntryWorkflow::Plugin::_cb_alt_widget_tmpl
+    MT::App::CMS::template_source.blog_stats_recent_entries: $entryworkflow::EntryWorkflow::Plugin::_cb_alt_widget_tmpl
+    MT::App::CMS::template_source.recent_submissions.mtml: $entryworkflow::EntryWorkflow::Plugin::_cb_alt_widget_tmpl
+    cms_pre_save.entry: $entryworkflow::EntryWorkflow::Plugin::_cb_pre_save_entry
+    cms_pre_save.page: $entryworkflow::EntryWorkflow::Plugin::_cb_pre_save_entry
+    cms_post_save.entry: $entryworkflow::EntryWorkflow::Plugin::_cb_post_save_entry
+    cms_post_save.page: $entryworkflow::EntryWorkflow::Plugin::_cb_post_save_entry
+    cms_post_save.powerrevision: $entryworkflow::EntryWorkflow::Plugin::_cb_post_save_entry
+    cms_pre_redirect.entry: $entryworkflow::EntryWorkflow::Plugin::_cb_pre_redirect_entry
+    cms_pre_redirect.page: $entryworkflow::EntryWorkflow::Plugin::_cb_pre_redirect_entry
+    cms_post_recover.entry: $entryworkflow::EntryWorkflow::Plugin::_cb_post_recover_entry
+    cms_post_recover.page: $entryworkflow::EntryWorkflow::Plugin::_cb_post_recover_entry
+    MT::App::CMS::pre_run: $entryworkflow::EntryWorkflow::Plugin::_cb_pre_run
+    cms_pre_load_filtered_list.entry: $entryworkflow::EntryWorkflow::Plugin::_cb_cms_pre_load_filtered_list_entry
+    cms_pre_load_filtered_list.page: $entryworkflow::EntryWorkflow::Plugin::_cb_cms_pre_load_filtered_list_entry
+    MT::App::CMS::template_output.list_common: $entryworkflow::EntryWorkflow::Plugin::_cb_to_list_common
+    MT::App::CMS::template_param.preview_strip: $entryworkflow::EntryWorkflow::Plugin::_cb_tp_preview_strip
+list_properties:
+    member:
+        perms_for_category:
+            display: optional
+            label: Permission for Categories
+            order: 300
+            html: $entryworkflow::EntryWorkflow::Listing::_html_perms_for_category
+    page:
+        status:
+            base: entry.status
+            single_select_options: >
+                sub {
+                    return [ 
+                        { label => MT->translate( 'Draft' ), value => 1, },
+                        { label => MT->translate( 'Published' ), value => 2, },
+                        { label => MT->translate( 'Review' ), value => 3, },
+                        { label => MT->translate( 'Scheduled' ), value => 4, },
+                    ],
+                },
+#system_filters:
+#    page:
+#        review:
+#            label: Review
+list_actions:
+    member: $entryworkflow::EntryWorkflow::Listing::_list_actions
+tags:
+    block:
+        IfEntryCanEditable?: $entryworkflow::EntryWorkflow::Tags::_hdlr_if_entry_can_editable
+        EntryCreatorContext: $entryworkflow::EntryWorkflow::Tags::_hdlr_entry_creator_context
+        IfCanCreateInCategory?: $entryworkflow::EntryWorkflow::Tags::_hdlr_can_create_in_category
+        IfAuthorPostLimitInBlog?: $entryworkflow::EntryWorkflow::Tags::_hdlr_author_post_limit_in_blog
+    function:
+        EntryCreatorDisplayName: $entryworkflow::EntryWorkflow::Tags::_hdlr_entry_creator_displayname
+        EntryCreatorID: $entryworkflow::EntryWorkflow::Tags::_hdlr_entry_creator_id
+convert_tools: 
+    entryworkflow: $entryworkflow::EntryWorkflow::Tools::converter

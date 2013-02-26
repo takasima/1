@@ -1,0 +1,112 @@
+<style type="text/css">
+    .medium-header {
+        margin-bottom: 20px;
+        padding-left: 5px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #ccc;
+        font-size: 110%;
+    }
+    .small-header {
+        margin-bottom: 15px;
+        padding-left: 5px;
+        padding-bottom: 4px;
+        border-bottom: 1px dotted #ccc;
+        font-size: 105%;
+    }
+</style>
+<mtapp:setting
+    id="hide_extfields"
+    label="<__trans phrase="Show">">
+    <label><input type="checkbox"<mt:if name="hide_extfields"> checked="checked"</mt:if> name="hide_extfields" id="hide_extfields" /> <__trans phrase="Hide Extra fields"></label>
+</mtapp:setting>
+<mtapp:setting
+    id="thumb_width"
+    label="<__trans phrase="Thumbnail Width">">
+    <input type="text" value="<mt:var name="thumb_width" escape="html">" name="thumb_width" id="thumb_width" />
+</mtapp:setting>
+<mtapp:setting
+    id="enable_upload"
+    label="<__trans phrase="Uploadable file suffix">">
+    <input type="text" value="<mt:var name="enable_upload" escape="html">" name="enable_upload" id="enable_upload" />
+</mtapp:setting>
+<mtapp:setting
+    id="upload_path"
+    label="<__trans phrase="Uploadable file path">">
+    <input type="text" value="<mt:var name="upload_path" escape="html">" name="upload_path" id="upload_path" />
+</mtapp:setting>
+<mtapp:setting
+    id="duplicate_item"
+    label="<__trans phrase="Duplicate items">">
+    <label><input type="checkbox"<mt:if name="duplicate_item"> checked="checked"</mt:if> name="duplicate_item" id="duplicate_item" /> <__trans phrase="Copy item at duplicate entry"></label>
+</mtapp:setting>
+<mt:ignore>
+<mtapp:setting
+    id="compact_attachfile"
+    label="<__trans phrase="File field">">
+    <label><input type="checkbox"<mt:if name="compact_attachfile"> checked="checked"</mt:if> name="compact_attachfile" id="compact_attachfile" /> <__trans phrase="Use compact file field"></label>
+</mtapp:setting>
+</mt:ignore>
+<mt:ignore>
+<h3 class="medium-header"><__trans phrase="Editor Settings"></h3>
+<mtapp:setting
+    id="ex_editor_style_css"
+    label="editor_style.css:">
+    <input type="text" id="ex_editor_style_css" name="ex_editor_style_css" value="<mt:var name="ex_editor_style_css" escape="html">" />
+</mtapp:setting>
+<mtapp:setting
+    id="ex_theme_advanced_buttons1"
+    label="advanced_buttons1:">
+    <textarea id="theme_advanced_buttons1" name="ex_theme_advanced_buttons1" style="height:40px"><mt:var name="ex_theme_advanced_buttons1" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="ex_theme_advanced_buttons2"
+    label="advanced_buttons2:">
+    <textarea id="theme_advanced_buttons2" name="ex_theme_advanced_buttons2" style=";height:40px"><mt:var name="ex_theme_advanced_buttons2" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="ex_theme_advanced_buttons3"
+    label="advanced_buttons3:">
+    <textarea id="ex_theme_advanced_buttons3" name="ex_theme_advanced_buttons3" style="height:40px"><mt:var name="ex_theme_advanced_buttons3" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="ex_theme_advanced_buttons4"
+    label="advanced_buttons4:">
+    <textarea id="ex_theme_advanced_buttons4" name="ex_theme_advanced_buttons4" style="height:40px"><mt:var name="ex_theme_advanced_buttons4" escape="html"></textarea>
+</mtapp:setting>
+<mtapp:setting
+    id="ex_theme_advanced_buttons5"
+    label="advanced_buttons5:">
+    <textarea id="ex_theme_advanced_buttons5" name="ex_theme_advanced_buttons5" style="height:40px"><mt:var name="ex_theme_advanced_buttons5" escape="html"></textarea>
+</mtapp:setting>
+<mt:ignore>
+<mtapp:setting
+    id="text_filters"
+    label="<__trans phrase="Text Filters">">
+    <label><input type="checkbox"<mt:if name="text_filters"> checked="checked"</mt:if> name="text_filters" id="text_filters" /> <__trans phrase="Movable Type Compatible"></label>
+</mtapp:setting>
+</mt:ignore>
+</mt:ignore>
+<h3 class="medium-header"><__trans phrase="Permission"></h3>
+<mtapp:setting
+    id="entry_permission"
+    label="<__trans phrase="Entry Field Permission">">
+    <label><input type="radio"<mt:if name="entry_permission" eq="can_administer_blog"> checked="checked"</mt:if> name="entry_permission" id="entry_permission" value="can_administer_blog" /> <__trans phrase="Blog Administrator">&nbsp;</label>
+    <label><input type="radio"<mt:if name="entry_permission" eq="can_edit_templates"> checked="checked"</mt:if> name="entry_permission" id="entry_permission0" value="can_edit_templates" /> <__trans phrase="Manage Templates">&nbsp;</label>
+    <label><input type="radio"<mt:if name="entry_permission" eq="can_create_post"> checked="checked"</mt:if> name="entry_permission" id="entry_permission1" value="can_create_post" /> <__trans phrase="Create Entries">&nbsp;</label>
+    <label><input type="radio"<mt:if name="entry_permission" eq="can_publish_post"> checked="checked"</mt:if> name="entry_permission" id="entry_permission2" value="can_publish_post" /> <__trans phrase="Publish Entries">&nbsp;</label><br />
+    <label><input type="radio"<mt:if name="entry_permission" eq="can_edit_all_posts"> checked="checked"</mt:if> name="entry_permission" id="entry_permission3" value="can_edit_all_posts" /> <__trans phrase="Edit All Entries">&nbsp;</label>
+</mtapp:setting>
+<mtapp:setting
+    id="page_permission"
+    label="<__trans phrase="Page Field Permission">">
+    <label><input type="radio"<mt:if name="page_permission" eq="can_administer_blog"> checked="checked"</mt:if> name="page_permission" id="page_permission" value="can_administer_blog" /> <__trans phrase="Blog Administrator">&nbsp;</label>
+    <label><input type="radio"<mt:if name="page_permission" eq="can_edit_templates"> checked="checked"</mt:if> name="page_permission" id="page_permission0" value="can_edit_templates" /> <__trans phrase="Manage Templates">&nbsp;</label>
+    <label><input type="radio"<mt:if name="page_permission" eq="can_manage_pages"> checked="checked"</mt:if> name="page_permission" id="page_permission1" value="can_manage_pages" /> <__trans phrase="Manage Pages">&nbsp;</label>
+    <label><input type="radio"<mt:if name="page_permission" eq="can_publish_post"> checked="checked"</mt:if> name="page_permission" id="page_permission2" value="can_publish_post" /> <__trans phrase="Publish Entries">&nbsp;</label>
+</mtapp:setting>
+<h3 class="medium-header"><__trans phrase="Post Import"></h3>
+<mtapp:setting
+    id="post_import_index"
+    label="<__trans phrase="Post Import">">
+    <label><input type="checkbox"<mt:if name="post_import_index"> checked="checked"</mt:if> name="post_import_index" id="post_import_index" /> <__trans phrase="Make index for search when post import."></label>
+</mtapp:setting>

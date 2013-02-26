@@ -1,0 +1,33 @@
+<__trans_section component="community">
+
+<$mt:Var name="heading" value="<__trans phrase="Thank you for posting an entry.">"$>
+
+<mt:If name="entry_status" eq="1">
+<mt:SetVarBlock name="page_title"><__trans phrase="Entry Pending"></mt:SetVarBlock>
+<mt:SetVarBlock name="message">
+<p><__trans phrase="Your entry has been received and held for approval by the blog owner."></p>
+</mt:SetVarBlock>
+<mt:Else><mt:If name="entry_status" eq="2">
+<mt:SetVarBlock name="message">
+<mt:SetVarBlock name="page_title"><__trans phrase="Entry Posted"></mt:SetVarBlock>
+<p><__trans phrase="Your entry has been posted."></p>
+</mt:SetVarBlock>
+<mt:Else>
+<mt:SetVarBlock name="message">
+<mt:SetVarBlock name="page_title"><__trans phrase="Entry Pending"></mt:SetVarBlock>
+<p><__trans phrase="Your entry has been received."></p>
+</mt:SetVarBlock>
+</mt:If></mt:If>
+
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">"$>
+
+<h1 id="page-title"><$mt:Var name="heading"$></h1>
+
+<$mt:Var name="message"$>
+
+<p><__trans phrase="Return to the <a href="[_1]">blog's main index</a>." params="<$mt:BlogURL$>"></p>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

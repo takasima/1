@@ -1,0 +1,171 @@
+name: Custom Group Pack
+id:   CustomGroup
+key:  customgroup
+version: 1.8
+schema_version: 0.31
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+l10n_class: CustomGroup::L10N
+description: <__trans phrase="Objects Grouping and Sorting Interface.">
+config_settings:
+    CustomGroupFieldScope:
+        default: blog
+    ObjectGroupFieldScope:
+        default: blog
+permissions:
+    system.manage_objectgroup:
+        label: Manage Object Groups
+        order: 1000
+    blog.manage_objectgroup:
+        label: Manage Object Groups
+        group: blog_admin
+        order: 1399
+listing_screens:
+    objectgroup:
+        object_label: Object Group
+        primary: name
+        default_sort_key: name
+        view:
+            - website
+            - blog
+            - system
+system_filters:
+    objectgroup: $customgroup::ObjectGroup::Listing::system_filters
+list_properties:
+    objectgroup: $customgroup::ObjectGroup::Listing::list_props
+list_actions:
+    objectgroup: $customgroup::ObjectGroup::Listing::list_actions
+object_types:
+    customgroup: CustomGroup::CustomGroup
+    grouporder: CustomGroup::GroupOrder
+    objectgroup: ObjectGroup::ObjectGroup
+    objectorder: ObjectGroup::ObjectOrder
+    template:
+        group_id: integer
+        group_class: string(25)
+        objectgroup_id: integer
+    author:
+        can_manage_objectgroup: 'boolean meta'
+customfield_types: $customgroup::CustomGroup::Field::_customfield_types
+callbacks:
+    init_request: $customgroup::CustomGroup::CMS::_init_request
+    init_app:
+        handler: $customgroup::CustomGroup::Field::_init_tags
+        priority: 10
+    cms_post_delete.entry:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_entry
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_post_delete.page:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_entry
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_post_delete.category:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_category
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_post_delete.folder:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_category
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_post_delete.blog:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_blog
+        handler: $customgroup::CustomGroup::Plugin::_cb_blog_post_delete
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_post_delete.website:
+        handler: $customgroup::ObjectGroup::Plugin::_delete_blog
+        handler: $customgroup::CustomGroup::Plugin::_cb_blog_post_delete
+        handler: $customgroup::CustomGroup::Plugin::_cb_post_delete_object
+    cms_pre_save.field: $customgroup::CustomGroup::Plugin::_cms_pre_save_field
+    MT::App::CMS::pre_run: $customgroup::CustomGroup::Listing::_pre_run
+    MT::App::CMS::template_param.edit_objectgroup: $customgroup::ObjectGroup::Plugin::_edit_objectgroup_param
+    MT::App::CMS::template_param.edit_template:
+        - handler: $customgroup::CustomGroup::Plugin::_edit_template_param
+        - handler: $customgroup::ObjectGroup::Plugin::_edit_template_param
+    MT::App::CMS::template_param: $customgroup::CustomGroup::Plugin::_template_param
+    MT::App::CMS::template_param.edit_author: $customgroup::ObjectGroup::Plugin::_edit_author
+    cms_post_save.template:
+        - handler: $customgroup::CustomGroup::Plugin::_cms_post_save_template
+        - handler: $customgroup::ObjectGroup::Plugin::_cms_post_save_template
+    cms_post_delete.template:
+        - handler: $customgroup::CustomGroup::Plugin::_cms_post_delete_template
+        - handler: $customgroup::ObjectGroup::Plugin::_cms_post_delete_template
+    cms_post_save: $customgroup::CustomGroup::Plugin::_cms_post_save
+    MT::App::CMS::template_source.footer: $customgroup::CustomGroup::Plugin::_footer_source
+    save_permission_filter.grouporder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    delete_permission_filter.grouporder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    save_permission_filter.objectorder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    delete_permission_filter.objectorder: sub { MT->instance->error( MT->translate( 'Invalid request.' ) ); }
+    CustomGroup::GroupOrder::post_save: $customgroup::CustomGroup::Plugin::_cb_customorder_post_save
+    restore:
+        - handler: $customgroup::CustomGroup::Plugin::_cb_restore
+        - handler: $customgroup::ObjectGroup::Plugin::_cb_restore
+    tasks:
+        - handler: $customgroup::CustomGroup::Field::_init_tags
+          priority: 1
+    MT::App::CMS::take_down: >
+        sub {
+            my $app = MT->instance;
+            return 1 unless $app->mode eq 'plugin_control';
+            my $plugin = MT->component( 'CustomGroupConfig' );
+            my $switch = MT->config( 'PluginSwitch' ) || {};
+            $switch->{ $plugin->{ plugin_sig } } = 1;
+            MT->config( 'PluginSwitch', $switch, 1 );
+            MT->config->save_config();
+        }
+applications:
+    cms:
+        menus:
+            objectgroup:
+                label: Group
+                order: 500
+            objectgroup:list_objectgroup:
+                label: Object
+                mode: list
+                args:
+                    _type: objectgroup
+                order: 100
+                condition: $customgroup::ObjectGroup::Plugin::_group_permission
+                view:
+                    - system
+                    - website
+                    - blog
+        content_actions:
+            objectgroup:
+                create_objectgroup:
+                    class: icon-create
+                    label: Create New
+                    mode: edit
+                    args:
+                        _type: objectgroup
+                    condition: $customgroup::ObjectGroup::Plugin::_group_permission
+tags:
+    block:
+        IfNotSent?: $customgroup::CustomGroup::Tags::_hdlr_if_not_sent
+        IfCMSWebSite?: $customgroup::CustomGroup::Tags::_hdlr_if_website
+    # Object Group
+        OGEntries: $customgroup::ObjectGroup::Tags::_hdlr_og_entries
+        OGCategories: $customgroup::ObjectGroup::Tags::_hdlr_og_categories
+        OGBlogs: $customgroup::ObjectGroup::Tags::_hdlr_og_blogs
+        ObjectGroupItems: $customgroup::ObjectGroup::Tags::_hdlr_og_groupitems
+        IfObjectGroupItemIsEntry?: $customgroup::ObjectGroup::Tags::_hdlr_if_entry
+        IfObjectGroupItemIsCategory?: $customgroup::ObjectGroup::Tags::_hdlr_if_category
+        IfObjectGroupItemIsBlog?: $customgroup::ObjectGroup::Tags::_hdlr_if_blog
+        CustomGroups: $customgroup::CustomGroup::Tags::_hdlr_custom_groups
+        CustomGroupsHeader: $customgroup::CustomGroup::Tags::_hdlr_pass_tokens
+        CustomGroupsFooter: $customgroup::CustomGroup::Tags::_hdlr_pass_tokens
+    function:
+        GetObjectClassLabel: $customgroup::CustomGroup::Tags::_get_object_class_label
+        GetObjectChildLabel: $customgroup::CustomGroup::Tags::_get_object_child_label
+        CustomGroupFieldScope: $customgroup::CustomGroup::Tags::_hdlr_field_scope
+        CategoryClass: $customgroup::CustomGroup::Tags::_hdlr_category_class
+    # Object Group
+        ObjectGroupItemClass: $objectgroup::ObjectGroup::Tags::_hdlr_og_groupitemclass
+        CustomGroupName: $customgroup::CustomGroup::Tags::_hdlr_custom_group_name
+        CustomGroupOrder: $customgroup::CustomGroup::Tags::_hdlr_custom_group_order
+backup_instructions:
+    grouporder:
+        order: 560
+    objectorder:
+        order: 560
+tasks:
+    customgroup_adjust_order:
+        label: Cleanup order
+        code: $customgroup::CustomGroup::Tools::_task_adjust_order
+        frequency: 180

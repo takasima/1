@@ -1,0 +1,58 @@
+    <mtapp:setting
+        id="create_other_fomatted_image_is_default"
+        label="<__trans phrase="Create other formatted images">">
+    <label><input type="checkbox" name="create_other_fomatted_image_is_default" id="create_other_fomatted_image_is_default" value="1" <mt:if name="create_other_fomatted_image_is_default">checked="checked"</mt:if> /> <__trans phrase="Is default"></label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="not_show_other_fomatted_images"
+        label="<__trans phrase="Other formatted images in sidebar.">">
+    <label><input type="checkbox" name="not_show_other_fomatted_images" id="not_show_other_fomatted_images" value="1" <mt:if name="not_show_other_fomatted_images">checked="checked"</mt:if> /> <__trans phrase="Not show"></label>
+    <p class="hint"><__trans phrase="If checked, all thumbnail does not be shown in sidemenu."></p>
+    </mtapp:setting>
+<mt:unless name="is_website">
+<h3><__trans phrase="Settings for posting by mail"></h3>
+    <mtapp:setting
+        id="mailpost_address"
+        label="<__trans phrase="Mail address of mail account post mail send to.">">
+    <input type="text" name="mailpost_address" id="mailpost_address" value="<mt:var name="mailpost_address" escape="HTML">" />
+    <p class="hint"><__trans phrase="If you want to post by mail, you send mail this mail address."></p>
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_account"
+        label="<__trans phrase="Mail account for post mail send to.">">
+    <input type="text" name="mailpost_account" id="mailpost_account" value="<mt:var name="mailpost_account" escape="HTML">" />
+    <p class="hint"><__trans phrase="If mailaddress is 'post@example.com', maybe 'post'"></p>
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_password"
+        label="<__trans phrase="Password of mail account for post mail send to.">">
+    <input type="password" name="mailpost_password" id="mailpost_password" value="<mt:var name="mailpost_password" escape="HTML">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_server"
+        label="<__trans phrase="Mail server of mail account post mail send to.">">
+    <input type="text" name="mailpost_server" id="mailpost_server" value="<mt:var name="mailpost_server" escape="HTML">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_protocol"
+        label="<__trans phrase="Mail protocol of mail account post mail send to.">">
+    <input type="text" name="mailpost_protocol" id="mailpost_protocol" value="<mt:var name="mailpost_protocol" escape="HTML">" />
+    </mtapp:setting>
+<h3><__trans phrase="Settings for attachment files"></h3>
+    <mtapp:setting
+        id="mailpost_outdir"
+        label="<__trans phrase="Directory for saving attachment files.">">
+    <input type="text" name="mailpost_outdir" id="mailpost_outdir" value="<mt:var name="mailpost_outdir" escape="HTML">" />
+    <p class="hint"><__trans phrase="If this is 'files', attachment files saved '/path/to/blog/files'."></p>
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_imagewidth"
+        label="<__trans phrase="Image width">">
+    <input type="text" name="mailpost_imagewidth" id="mailpost_imagewidth" value="<mt:var name="mailpost_imagewidth" escape="HTML">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="mailpost_imagemarkup"
+        label="<__trans phrase="Image markup">">
+    <input type="text" name="mailpost_imagemarkup" id="mailpost_imagemarkup" value="<mt:var name="mailpost_imagemarkup" escape="HTML">" />
+    </mtapp:setting>
+</mt:unless>

@@ -1,0 +1,13 @@
+<mtapp:widget id="most_popular_entries" class="most-popular-entries-widget" label="<__trans phrase="Most Popular Entries">" can_close="1">
+    <mt:section cache_prefix="most_popular_entries_widget" by_blog="1">
+        <mt:if var="has_popular_entries">
+            <ul class="most-popular-entries-list pkg">
+                <mt:entries>
+                    <li class="icon-left-wide icon-success"><a href="<mt:entrypermalink escape="html">"><mt:entrytitle escape="html"></a></li>
+                </mt:entries>
+            </ul>
+        <mt:else>
+            <p class="zero-state"><__trans phrase="There are no popular entries."></p>
+        </mt:if>
+    </mt:section>
+</mtapp:widget>

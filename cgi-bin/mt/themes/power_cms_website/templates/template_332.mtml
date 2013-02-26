@@ -1,0 +1,41 @@
+<MTIf name="keitai">
+    <MTCampaigns group="$widget">
+    <MTCampaignsHeader>
+    <div style="height:3px">
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="3" />
+    </div>
+    <div><$MTVar name="widget" encode_html="1"$></div>
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+    </MTCampaignsHeader>
+    <div>
+    ・<MTIf tag="CampaignURL"><a href="<$MTCampaignURL encode_html="1"$>" target="_blank"></MTIf><$MTCampaignTitle encode_html="1"$><MTIf tag="CampaignURL"></a></MTIf><br />
+    <img src="<$MTVar name="common_path" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+    </div>
+    </MTCampaigns>
+<MTElse name="SmartPhone">
+    <$MTSetVar name="group_name" value="<__trans phrase="Support">"$>
+    <MTCampaigns group="$group_name">
+    <MTCampaignsHeader>
+    <div class="nav4">
+    <h3><a href="#"><$MTVar name="group_name"$></a></h3>
+        <ul>
+    </MTCampaignsHeader>
+            <li><a href="<$MTCampaignURL encode_html="1"$>" target="_blank"><$MTCampaignTitle encode_html="1"$></a></li>
+    <MTCampaignsFooter>
+        </ul>
+    </div>
+    </MTCampaignsFooter>
+    </MTCampaigns>
+<MTElse>
+    <$MTSetVar name="group_name" value="<__trans phrase="Support">"$>
+    <MTCampaigns group="$group_name">
+    <MTCampaignsHeader>
+    <h3 class="heading_icon support"><$MTVar name="group_name"$></h3>
+    <ul class="links">
+    </MTCampaignsHeader>
+    <li><a<MTIf tag="CampaignExternalLink"> class="external"</MTIf> href="<$MTCampaignURL encode_html="1"$>" target="_blank"><$MTCampaignTitle encode_html="1"$></a></li>
+    <MTCampaignsFooter>
+    </ul>
+    </MTCampaignsFooter>
+    </MTCampaigns>
+</MTIf>

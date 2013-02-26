@@ -1,0 +1,190 @@
+package <mt:var name="plugin_id">::Plugin;
+use strict;
+
+use lib qw( addons/CustomObject.pack/lib );
+use CustomObject::Util qw( utf8_on build_tmpl );
+use CustomObject::Plugin;
+use CustomObject::Listing;
+
+sub system_filters_tag {
+    return {
+        <mt:var name="class"> => {
+            label => 'Tags with <mt:var name="plugin_id">',
+            view  => [ 'blog', 'website' ],
+            items => [ { type => 'for_<mt:var name="class">' } ],
+            order => 1001,
+        },
+    };
+}
+
+sub list_props_tag {
+    return {
+        for_<mt:var name="class"> => {
+            base        => 'tag.for_customobject',
+            label       => 'Tags with <mt:var name="plugin_id">',
+            obj_class   => '<mt:var name="class">',
+        },
+        <mt:var name="class">_count => {
+            label       => '<mt:var name="plugin_id">',
+            base        => 'tag.customobject_count',
+            count_class => 'customobject',
+            display     => 'default',
+            order       => 1000,
+            obj_class   => '<mt:var name="class">',
+        },
+    };
+}
+
+sub system_filters_group {
+    my $plugin = MT->component( '<mt:var name="plugin_id">' );
+    my $filters = {
+        my_posts => {
+            label => $plugin->translate( 'My <mt:var name="plugin_id"> Groups' ),
+            items => sub {
+                [ { type => 'current_user' } ];
+            },
+            order => 1000,
+        },
+    };
+    return $filters;
+}
+
+sub system_filters_<mt:var name="class"> {
+    return CustomObject::Listing::system_filters_customobject( 'meth', '<mt:var name="class">' );
+}
+
+sub list_props {
+    return CustomObject::Listing::list_props( 'meth', '<mt:var name="class">' );
+}
+
+sub list_group_props {
+    return CustomObject::Listing::list_group_props( 'meth', '<mt:var name="class">' );
+}
+
+sub list_actions {
+    return CustomObject::Listing::list_actions( 'meth', '<mt:var name="class">' );
+}
+
+sub list_group_actions {
+    return CustomObject::Listing::list_group_actions( 'meth', '<mt:var name="class">' );
+}
+
+sub content_actions {
+    return CustomObject::Listing::content_actions( 'meth', '<mt:var name="class">' );
+}
+
+sub _menu_permission {
+    return CustomObject::Plugin::_menu_permission( 'meth', '<mt:var name="class">' );
+}
+
+sub _group_menu_permission {
+    return CustomObject::Plugin::_group_menu_permission( 'meth', '<mt:var name="class">' );
+}
+sub _customfield_types {
+    require CustomObject::Field;
+    return CustomObject::Field::_customfield_types( 'meth', '<mt:var name="class">', '<mt:var name="plugin_id">', 2024 );
+}
+
+sub _view_log {
+    my ( $cb, $app, $param, $tmpl ) = @_;
+    my $plugin = '<mt:var name="class">';
+    my ( $label_en, $label_ja, $label_plural ) = CustomObject::Plugin::__get_settings( $app, $app->blog, $plugin );
+    my $class_loop = $param->{ class_loop };
+    push @$class_loop, { class_name => '<mt:var name="class">', class_label => $label_ja };
+    $param->{ class_loop } = $class_loop;
+}
+
+sub _pre_run {
+    my ( $cb, $app ) = @_;
+    if ( $app->param( 'search_result' ) ) {
+        if ( my $blog_id = $app->param( 'blog_id' ) ) {
+            if ( my $id = $app->param( 'id' ) ) {
+                if ( $app->param( '_type' ) &&
+                     $app->param( '_type' ) eq '<mt:var name="class">' ) {
+                     $app->redirect( $app->base . $app->uri( mode => 'view',
+                                            args => { blog_id => $blog_id,
+                                                      _type => 'customobject',
+                                                      class => '<mt:var name="class">',
+                                                      id => $id } ) );
+                }
+            }
+        }
+    }
+    my $plugin = '<mt:var name="class">';
+    my $orig_ja = utf8_on( '<mt:var name="ja">' );
+    my $orig_en = utf8_on( '<mt:var name="plugin_id">' );
+    my $orig_plural = utf8_on( '<mt:var name="plural">' );
+    my $orig_en_lc = lc( $orig_en );
+    my $map = {
+        'CustomObject'  => '<mt:var name="ja">',
+        'CustomObjects' => '<mt:var name="ja">',
+        'CustomObject Group' => '<mt:var name="ja">グループ',
+        'CustomObject Groups' => '<mt:var name="ja">グループ',
+        'Folder-<mt:var name="plugin_id">' => 'フォルダ別<mt:var name="ja">',
+        '<mt:var name="plugin_id">' => '<mt:var name="ja">',
+        '<mt:var name="plural">' => '<mt:var name="ja">',
+        'Manage <mt:var name="plugin_id">' => '<mt:var name="ja">の管理',
+        'Manage <mt:var name="plugin_id"> Groups' => '<mt:var name="ja">グループの管理',
+        'Multiple <mt:var name="plugin_id">' => '<mt:var name="ja">(複数選択)',
+        'My <mt:var name="plugin_id">' => '自分の<mt:var name="ja">',
+        'My <mt:var name="plural">' => '自分の<mt:var name="ja">',
+        'My <mt:var name="plugin_id"> Groups' => '自分の<mt:var name="ja">グループ',
+        'Tags with <mt:var name="plugin_id">' => '<mt:var name="ja">のタグ',
+        '<mt:var name="plugin_id"> Group' => '<mt:var name="ja">グループ',
+        '<mt:var name="plugin_id"> Groups' => '<mt:var name="ja">グループ',
+        'Create and manage <mt:var name="class">.' => '<mt:var name="ja">を作成・管理します。',
+        'Create and Manage <mt:var name="plugin_id">.' => '<mt:var name="ja">の作成・管理をします。',
+        'Save this <mt:var name="plugin_id">' => 'この<mt:var name="ja">を保存する',
+        'Save this <mt:var name="plugin_id"> (s)' => 'この<mt:var name="ja">を保存する (s)',
+        'Publish this <mt:var name="plugin_id">' => 'この<mt:var name="ja">を公開する',
+        'Publish this <mt:var name="plugin_id"> (s)' => 'この<mt:var name="ja">を公開する (s)',
+        'Re-Edit this <mt:var name="plugin_id">' => 'この<mt:var name="ja">を編集する',
+        'Re-Edit this <mt:var name="plugin_id"> (e)' => 'この<mt:var name="ja">を編集する (e)',
+        'You are previewing the <mt:var name="plugin_id"> entitled &ldquo;[_1]&rdquo;' => 'プレビュー中: <mt:var name="ja">「[_1]」',
+        'Cloning <mt:var name="plugin_id"> Groups for blog...' => '<mt:var name="ja">グループを複製しています...',
+        'Cloning <mt:var name="plugin_id">s for blog...' => '<mt:var name="ja">を複製しています...',
+        'Cloning <mt:var name="plugin_id"> tags for blog...' => '<mt:var name="ja">のタグを複製しています...',
+        'Exclude <mt:var name="plugin_id">s' => '<mt:var name="ja">の除外',
+    };
+    my $lh = MT->language_handle;
+    my $package = ref $lh;
+    require CustomObject::Plugin;
+    my ( $label_en, $label_ja, $label_plural ) = CustomObject::Plugin::__get_settings( $app, $app->blog, $plugin );
+    $label_ja = utf8_on( '<mt:var name="ja">' ) unless $label_ja;
+    my $search_ja = utf8_on( '<mt:var name="ja">' );
+    my $search_en = '<mt:var name="plugin_id">';
+    my $search_plural = '<mt:var name="plural">';
+    my $search_lc = '<mt:var name="class">';
+    my $label_lc = lc( $label_en );
+    for my $key ( keys( %$map ) ) {
+        my $text = utf8_on( $map->{ $key } );
+        $map->{ $key } = $text;
+        if ( $package eq 'MT::L10N::ja' ) {
+            $text =~ s/$search_ja/$label_ja/;
+            # $text =~ s/$orig_ja/$label_ja/;
+            $map->{ $key } = $text;
+        } else {
+            my $new = $key;
+            $new =~ s/$search_en/$label_en/;
+            $new =~ s/$search_plural/$label_plural/;
+            $new =~ s/$search_lc/$label_lc/;
+            $new =~ s/$search_lc/$label_lc/;
+            # $new =~ s/$orig_en/$label_en/;
+            # $new =~ s/$orig_en_lc/$label_lc/;
+            $map->{ $key } = $new;
+        }
+    }
+    if ( $package eq 'MT::L10N::ja' ) {
+        $map->{ $plugin } = $label_ja;
+    } else {
+        $map->{ $plugin } = $label_en;
+    }
+    $package =~ s/^MT/<mt:var name="plugin_id">/;
+    eval(<<__END__);
+package $package;
+\$Lexicon{\$_} = \$map->{\$_} foreach ( keys( %\$map ) );
+__END__
+    return 1;
+}
+
+1;

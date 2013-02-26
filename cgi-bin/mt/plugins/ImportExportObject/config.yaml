@@ -1,0 +1,32 @@
+id  : ImportExportObject
+key : importexportobject
+name: Import / Export Object
+version: 0.7
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+description: <__trans phrase="Import and Export Entry,Page,Category,Folder,Asset and Field.">
+l10n_class: ImportExportObject::L10N
+config_settings:
+    ImportExportCategorySeparator:
+        default: _
+    ImportExportCategoryKey:
+        default: label
+    ImportExportCategoryDelim:
+        default: ','
+applications:
+    cms:
+        menus:
+            tools:start_importexport:
+                label: '(Im|Ex)port'
+                mode: start_im_export
+                order: 1100
+                permission: administer_blog,administer_website
+                system_permission: administer
+                view:
+                    - website
+                    - blog
+                    - system
+                condition: $importexportobject::ImportExportObject::Util::can_im_export
+        methods:
+            im_export_object: $importexportobject::ImportExportObject::Plugin::_im_export_object
+            start_im_export: $importexportobject::ImportExportObject::Plugin::_start_im_export

@@ -1,0 +1,91 @@
+<__trans_section component="Campaign">
+<mt:setvarblock name="list_id"><mt:var name="object_type">-listing</mt:setvarblock>
+<mt:if name="blog_id"><mt:var name="blog_view" value="1"></mt:if>
+<mt:unless name="search_replace">
+<mt:setvarblock name="action_buttons">
+        <mt:unless name="dialog_view">
+        <button
+            class="mt-delete-items button"
+            onclick="doRemoveItems(getByID('<mt:var name="object_type">-listing-form'), '<__trans phrase="Campaign Groups" escape="js">', '<__trans phrase="Campaign Groups" escape="js">'); return false;"
+            accesskey="x"
+            title="<__trans phrase="Delete selected Campaign Groups (x)">"
+            ><__trans phrase="Delete"></button>
+        </mt:unless>
+</mt:setvarblock>
+</mt:unless>
+<mt:setvarblock name="table_header">
+    <tr>
+        <th class="col head cb" style="padding:7px;width:21px">
+    <mt:unless name="dialog_view">
+        <input type="checkbox" name="id-head" value="all" class="select" />
+    </mt:unless>
+        </th>
+        <th class="col head name" style="padding:7px;"><__trans phrase="Name"> (<__trans phrase="Object Count">)</th>
+        <mt:unless name="dialog_view">
+        <th class="col head settings" style="width:200px;"><__trans phrase="Settings"></th>
+        </mt:unless>
+        <th class="col head author_name" style="width:70px;padding:7px;"><__trans phrase="Author"></th>
+        <mt:if name="scope_type" ne="blog">
+        <th class="col head blog_name" style="padding:7px;"><__trans phrase="Blog"></th>
+        </mt:if>
+        <mt:unless name="dialog_view">
+        <th class="col head created_on" style="padding:7px;"><__trans phrase="Created on"></th>
+        </mt:unless>
+        <th class="col head modified_on" style="padding:7px;"><__trans phrase="Modified on"></th>
+    </tr>
+</mt:setvarblock>
+
+<mtapp:listing id="$list_id">
+    <mt:if __first__>
+            <thead><mt:var name="table_header"></thead>
+            <tfoot><mt:var name="table_header"></tfoot>
+            <tbody>
+    </mt:if>
+                <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+                    <td class="col cb">
+                    <mt:if name="dialog_view">
+                            <input type="radio" name="id" value="<mt:var name="id" escape="html">" class="select" />
+                    <mt:else>
+                        <mt:if name="can_edit"><input type="checkbox" name="id" value="<mt:var name="id" escape="html">" class="select" /></mt:if>
+                    </mt:if>
+                    </td>
+                    <td class="col name">
+                    <input type="hidden" id="name-<mt:var name="id" escape="html">" value="<mt:var name="name" escape="html">" />
+                    <mt:if name="can_edit"><a href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="blog_id">&amp;id=<mt:var name="id">&amp;_type=campaigngroup"></mt:if>
+                        <mt:if name="name"><mt:var name="name" escape="html"><mt:else>...</mt:else></mt:if> (<mt:var name="count">)
+                    <mt:if name="can_edit"></a></mt:if>
+                    </td>
+                    <mt:unless name="dialog_view">
+                    <td class="col name">
+                        <mt:if name="additem">
+                        <__trans phrase="Add new Campaign"> (<mt:if name="addposition"><__trans phrase="Add last"><mt:else><__trans phrase="Add first"></mt:else></mt:if>)
+                        <mt:if name="addfilter" eq="tag"><__trans phrase="Tag is">
+                        '<mt:var name="addfiltertag" escape="html">'
+                        </mt:if>
+                        <mt:if name="addfilter" eq="blog">
+                            <mt:if name="filter_blogname">
+                            <__trans phrase="Website/Blog is">
+                            '<mt:var name="filter_blogname" escape="html">'
+                            </mt:if>
+                        </mt:if>
+                        <mt:else><__trans phrase="None"></mt:else></mt:if>
+                    </td>
+                    </mt:unless>
+                    <td class="col author_name">
+                    <a href="<mt:var name="mt_url">?__mode=list_campaigngroup&amp;blog_id=<mt:var name="blog_id">&amp;filter=author_id&amp;filter_val=<mt:var name="author_id"><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;costomobjectgroup_select=1&amp;dialog=1</mt:if>"><mt:var name="author_name" escape="html"></td>
+                    <mt:if name="scope_type" ne="blog">
+                    <td class="col blog_name"><a href="<mt:var name="mt_url">?__mode=list_campaigngroup&amp;blog_id=<mt:var name="weblog_id"><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;costomobjectgroup_select=1&amp;dialog=1</mt:if>"><mt:var name="weblog_name" escape="html"></a></td>
+                    </mt:if>
+                    <mt:unless name="dialog_view">
+                    <td class="col created_on"><mt:var name="created_on"></td>
+                    </mt:unless>
+                    <td class="col modified_on"><mt:var name="modified_on"></td>
+                </tr>
+    <mt:if __last__>
+            </tbody>
+    </mt:if>
+</mtapp:listing>
+<mt:if name="dialog_view">
+<mt:include name="include/js_attachfield_single.tmpl">
+</mt:if>
+</__trans_section>

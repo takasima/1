@@ -1,0 +1,20 @@
+<__trans_section component="community">
+<div id="beta">
+    <div id="beta-inner">
+        <$mt:Var name="profile_widgets"$>
+<mt:If name="page_columns" eq="2">
+        <$mt:WidgetSet name="<__trans phrase="Activity Widgets">"$>
+        <$mt:WidgetSet name="<__trans phrase="Archive Widgets">"$>
+<mt:Else name="page_columns" eq="3">
+        <$mt:WidgetSet name="<__trans phrase="Archive Widgets">"$>
+</mt:If>
+    </div>
+</div>
+<mt:If name="page_columns" eq="3">
+<div id="gamma">
+    <div id="gamma-inner">
+        <$mt:WidgetSet name="<__trans phrase="Activity Widgets">"$>
+    </div>
+</div>
+</mt:If>
+</__trans_section>

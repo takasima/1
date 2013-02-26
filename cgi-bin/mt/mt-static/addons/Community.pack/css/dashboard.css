@@ -1,0 +1,32 @@
+.dashboard .author {
+    padding: 10px;
+}
+
+.dashboard .author-inner {
+    padding-left: 19px;
+    background-repeat: no-repeat;
+    background-position: 0 .3em;
+}
+
+.dashboard .author h4 {
+    margin: 0;
+}
+
+.dashboard .author h4 a {
+    color: #000;
+}
+.dashboard .author h4 a:hover {
+    color: #61889b;
+}
+
+.dashboard .author-odd {
+    background-color: #f3f6f9;
+}
+
+.dashboard .author-meta {
+    color: #666;
+}
+
+.recent-submissions-widget .content {
+    padding-left: 10px;
+}

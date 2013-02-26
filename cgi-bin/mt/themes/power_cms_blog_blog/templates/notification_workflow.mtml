@@ -1,0 +1,23 @@
+<mt:if name="is_revision"><__trans phrase="<< This entry is next version. >>">
+</mt:if><__trans phrase="Access to Movable Type">:
+<mt:if name="is_revision"><$MTEntryID setvar="entry_id"$>
+<<$mt:var name="script_uri"$>?__mode=preview_history&blog_id=<$MTBlogID$>&entry_id=<$mt:var name="entry_id" op="*" value="-1"$>&_type=<$MTEntryClass$>&revision_id=<$mt:var name="revision_id"$>>
+<mt:else>
+<mt:ifplugin component="PowerCMS">
+<<$mt:var name="script_uri"$>?__mode=preview&blog_id=<$MTBlogID$>&id=<$MTEntryID$>>
+<mt:else>
+<<$mt:var name="script_uri"$>?__mode=view&_type=<$MTEntryClass$>&blog_id=<$MTBlogID$>&id=<$MTEntryID$>>
+</mt:ifplugin>
+</mt:if>
+
+------------------------------------------------------------------------
+
+<__trans phrase="Title">: <$MTEntryTitle$>
+<__trans phrase="Date">: <$MTDate$>
+
+<__trans phrase="Message">:
+<$mt:var name="message"$>
+
+------------------------------------------------------------------------
+
+<__trans phrase="Author">: <$MTAuthorDisplayName$> <mailto:<$MTAuthorEmail$>>

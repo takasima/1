@@ -1,0 +1,10 @@
+<ul class="breadcrumb clf">
+<li><a href="<$MTWebsiteURL escape="html"$>"><__trans phrase="Home"></a></li>
+<$MTPageBasename setvar="page_basename"$>
+<MTPageFolder>
+<MTIf name="page_basename" ne="index">
+<li><a href="<$MTWebsiteURL escape="html"$><$MTFolderPath separator="_"$>/"><$MTFolderLabel escape="html"$></a></li>
+</MTIf>
+</MTPageFolder>
+<li class="last"><MTPageTitle escape="html"$></li>
+</ul>

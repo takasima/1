@@ -1,0 +1,58 @@
+/*============================================================**
+        Force overwrite Default style
+**============================================================*/
+
+#mce_fullscreen_container {
+z-index: 1050 !important;
+}
+
+.overlay,
+.ui-widget-overlay {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	height: auto;
+	width: auto;
+}
+
+span.mceEditor {
+    display: block;
+    border-left: 1px solid #BBBBBB;
+    border-right: 1px solid #BBBBBB;
+    overflow: hidden;
+    width: 75%;
+}
+
+.edit-screen span.mceEditor {
+	width: auto;
+}
+
+table.mceLayout {
+    width: 100% !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+
+textarea.editor {
+    display: inline;
+    position: static;
+    padding: 0.2em 0.25em;
+    outline: 0;
+    border: 1px solid #dcdddd;
+    border-top-color: #adadad;
+    border-left-color: #adadad;
+    background-color: #fbfbfb;
+    font-size: 13px;
+    vertical-align: middle;
+    box-shadow: 0 1px 0 #f3f3f3;
+    -webkit-box-shadow: 0 1px 0 #f3f3f3;
+    -moz-box-shadow: 0 1px 0 #f3f3f3;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+}

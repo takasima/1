@@ -1,0 +1,10 @@
+<?php
+function smarty_function_mtcampaigntitle ( $args, &$ctx ) {
+    $campaign = $ctx->stash( 'campaign' );
+    if (! isset( $campaign ) ) {
+        return $ctx->error();
+    } else {
+        return $campaign->title;
+    }
+}
+?>

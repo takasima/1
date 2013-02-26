@@ -1,0 +1,12 @@
+        <span class="date-time-fields">
+<mt:if var name="options" ne="time">
+            <input type="text" id="d_<mt:var name="field_name" escape="html">" class="entry-date text-date" name="d_<mt:var name="field_name" escape="html">" value="<mt:var name="date" escape="html">" />
+<mt:else>
+            <input type="hidden" id="d_<mt:var name="field_name" escape="html">" name="d_<mt:var name="field_name" escape="html">" value="" />
+</mt:if>
+<mt:if var name="options" ne="date">
+            <input type="text" class="entry-time" name="t_<mt:var name="field_name" escape="html">" value="<$mt:var name="time" escape="html"$>" />
+<mt:else>
+            <input type="hidden" id="t_<mt:var name="field_name" escape="html">" name="t_<mt:var name="field_name" escape="html">" value="" />
+</mt:if>
+        </span>

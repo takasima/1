@@ -1,0 +1,16 @@
+<$MTWebsiteID setvar="site_id"$>
+<$MTWebsiteURL setvar="site_url"$>
+<$MTWebsiteName setvar="site_name"$>
+<$MTWebsiteRelativeURL setvar="site_path"$>
+<$MTBlogRelativeURL setvar="blog_path"$>
+<$MTVar name="blog_path" cat="common/" setvar="common_path"$>
+
+<MTSetVarBlock name="title">NOT FOUND</MTSetVarBlock>
+
+<$MTInclude module="<__trans phrase="Mobile-Header">"$>
+
+<h1><__trans phrase="Page Not Found"></h1>
+
+<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+
+<$MTInclude module="<__trans phrase="Mobile-Footer">"$>

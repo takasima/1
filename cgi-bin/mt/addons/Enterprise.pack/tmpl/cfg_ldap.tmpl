@@ -1,0 +1,637 @@
+<mt:setvarblock name="page_title"><__trans phrase="Authentication Configuration"></mt:setvarblock>
+<mt:setvar name="step_five" value="1">
+<mt:include name="include/chromeless_header.tmpl">
+<form method="post" onsubmit="return validate(this)">
+  <input type="hidden" name="__mode" value="" />
+  <input type="hidden" name="test" value="" />
+  <input type="hidden" name="step" value="<mt:var name="step" escape="html">" />
+  <input type="hidden" name="set_static_uri_to" id="set_static_uri_to" value="<mt:var name=STATIC_URI>">
+  <input type="hidden" name="default_language" value="<mt:var name="default_language" escape="html">" />
+  <input type="hidden" name="config" value="<mt:var name=CONFIG ESCAPE=HTML>" />
+  <script type="text/javascript">
+  /* <![CDATA[ */
+  var needValidate = true;
+  
+  function go(mode) {
+      var f = document.forms[0];
+      if (mode == 'test') f['test'].value = mode;
+      f['__mode'].value = mode;
+  }
+  
+  function toggle_auth(check) {
+      if (check.checked) {
+          showByID("submit");
+          showByID("params");
+          hideByID("goback");
+      } else {
+          showByID("goback");
+          hideByID("params");
+          hideByID("submit");
+      }
+      return true;
+  }
+  
+  function toggle_eum(check) {
+      if (check.checked) {
+          showByID("eum_enable");
+          hideByID("goback");
+          showByID("submit");
+      } else {
+          hideByID("eum_enable");
+          showByID("goback");
+          hideByID("submit");
+      }
+      return true;
+  }
+  
+  function server_select(sel){
+      var f = document.forms[0];
+      var type = sel.options[sel.selectedIndex].value;
+      if (type == "openldap") {
+          f['eum_user_id'].value = 'entryUUID';
+          f['eum_user_email'].value = 'mail';
+          f['eum_user_fullname'].value = 'cn';
+          f['eum_user_member'].value = 'uid';
+          f['eum_group_id'].value = 'entryUUID';
+          f['eum_group_name'].value = 'cn';
+          f['eum_group_fullname'].value = 'cn';
+          f['eum_group_member'].value = 'memberUid';
+      } else if (type == "ad") {
+          f['eum_user_id'].value = 'objectGUID';
+          f['eum_user_email'].value = 'mail';
+          f['eum_user_fullname'].value = 'cn';
+          f['eum_user_member'].value = 'dn';
+          f['eum_group_id'].value = 'objectGUID';
+          f['eum_group_name'].value = 'cn';
+          f['eum_group_fullname'].value = 'cn';
+          f['eum_group_member'].value = 'member';
+      } else {
+          f['eum_user_id'].value = '';
+          f['eum_user_email'].value = '';
+          f['eum_user_fullname'].value = '';
+          f['eum_user_member'].value = '';
+          f['eum_group_id'].value = '';
+          f['eum_group_name'].value = '';
+          f['eum_group_fullname'].value = '';
+          f['eum_group_member'].value = '';
+      }
+  }
+  
+  function validate (f) {
+      if (needValidate) {
+          <mt:if name="MODE_AUTH">
+          if (f.authtype.checked) {
+              if (!f.authurl.value) {
+                  alert('<__trans phrase="You must set your Authentication URL." escape="js">');
+                  f.authtype.focus();
+                  return false;
+              }
+          }
+          return true;
+          </mt:if>
+          <mt:if name="MODE_EUM">
+          if (f.eum.checked) {
+              if (!f.eum_group_searchbase.value) {
+                  alert('<__trans phrase="You must set your Group search base." escape="js">');
+                  f.eum_group_searchbase.focus();
+                  return false;
+              }
+          }
+          return true;
+          </mt:if>
+          <mt:if name="MODE_MAPPING">
+          if (!f.eum_user_id.value){
+              alert('<__trans phrase="You must set your UserID attribute." escape="js">');
+              f.eum_user_id.focus();
+              return false;
+          } else if (!f.eum_user_email.value){
+              alert('<__trans phrase="You must set your email attribute." escape="js">');
+              f.eum_user_email.focus();
+              return false;
+          } else if (!f.eum_user_fullname.value){
+              alert('<__trans phrase="You must set your user fullname attribute." escape="js">');
+              f.eum_user_fullname.focus();
+              return false;
+          } else if (!f.eum_user_member.value){
+              alert('<__trans phrase="You must set your user member attribute." escape="js">');
+              f.eum_user_member.focus();
+              return false;
+          } else if (!f.eum_group_id.value){
+              alert('<__trans phrase="You must set your GroupID attribute." escape="js">');
+              f.eum_group_id.focus();
+              return false;
+          } else if (!f.eum_group_name.value){
+              alert('<__trans phrase="You must set your group name attribute." escape="js">');
+              f.eum_group_name.focus();
+              return false;
+          } else if (!f.eum_group_fullname.value){
+              alert('<__trans phrase="You must set your group fullname attribute." escape="js">');
+              f.eum_group_fullname.focus();
+              return false;
+          } else if (!f.eum_group_member.value){
+              alert('<__trans phrase="You must set your group member attribute." escape="js">');
+              f.eum_group_member.focus();
+              return false;
+          }
+          </mt:if>
+      }
+      
+      return true;
+  }
+  /* ]]> */
+  </script>
+
+<mt:unless name="success">
+  <mt:if name="connect_error">
+  <mtapp:statusmsg
+     id="connect_error"
+     class="error"
+     can_close="0">
+    <__trans phrase="An error occurred while attempting to connect to the LDAP server: "><mt:var name="error" escape="html">
+  </mtapp:statusmsg>
+  <mt:else>
+    <mt:if name="error">
+  <mtapp:statusmsg
+     id="connect_error"
+     class="error"
+     can_close="0">
+    <mt:var name="error" escape="html">
+  </mtapp:statusmsg>
+    </mt:if>
+  </mt:if>
+  <p class="intro"><__trans phrase="You can configure your LDAP settings from here if you would like to use LDAP-based authentication."></p>
+<mt:else>
+  <mt:if name="mode_auth">
+  <p class="intro"><span class="ready"><__trans phrase="Your configuration was successful."></span> <__trans phrase="Click 'Continue' below to configure the External User Management settings."></p>
+  </mt:if>
+  <mt:if name="mode_eum">
+  <p class="intro"><span class="ready"><__trans phrase="Your configuration was successful."></span> <__trans phrase="Click 'Continue' below to configure your LDAP attribute mappings."></p>
+  </mt:if>
+  <mt:if name="mode_mapping">
+  <p class="intro"><span class="ready"><__trans phrase="Your LDAP configuration is complete."></span> <__trans phrase="To finish with the configuration wizard, press 'Continue' below."></p>
+  </mt:if>
+</mt:unless>
+
+<mt:if name="current_mode" eq="cfg_ldap_auth">
+  <mt:unless name="has_net_ldap">
+  <mtapp:statusmsg
+     id="config_error"
+     class="alert"
+     can_close="0">
+    <__trans phrase="Can't locate Net::LDAP. Net::LDAP module is required to use LDAP authentication.">
+  </mtapp:statusmsg>
+  </mt:unless>
+</mt:if>
+
+<mt:if name="mode_auth">
+<!-- AuthenticationModule -->
+<p>
+  <input type="checkbox" name="authtype" id="authtype" class="cb" value="1" <mt:if name="has_net_ldap"><mt:if name="authtype">checked</mt:if> onClick="toggle_auth(this)" <mt:else>disabled="1" </mt:if> />
+  <label for="authtype"><__trans phrase="Use LDAP"></label>
+</p>
+<div id="params" <mt:unless name="use_ldap">style="display: none"</mt:unless>>
+<!-- LDAPAuthURL -->
+  <mtapp:setting
+     id="authurl"
+     label="<__trans phrase="Authentication URL">"
+     label_class="top-label"
+     hint="<__trans phrase="The URL to access for LDAP authentication.">">
+    <input type="text" name="authurl" id="authurl" class="text full" value="<mt:var name="authurl" escape="html">" />
+  </mtapp:setting>
+<!-- LDAPAuthBindDN -->
+  <mtapp:setting
+     id="binddn"
+     label="<__trans phrase="Authentication DN">"
+     label_class="top-label"
+     hint="<__trans phrase="An optional DN used to bind to the LDAP directory when searching for a user.">">
+    <input type="text" name="binddn" id="binddn" class="text full" value="<mt:var name="binddn" escape="html">" />
+  </mtapp:setting>
+<!-- LDAPAuthPassword -->
+  <mtapp:setting
+     id="authpassword"
+     label="<__trans phrase="Authentication password">"
+     label_class="top-label"
+     hint="<__trans phrase="Used for setting the password of the LDAP DN.">">
+    <input type="password" name="authpassword" id="authpassword" class="password text short" value="<mt:var name="authpassword" escape="html">" />
+  </mtapp:setting>
+
+<!-- AuthLDAPSASLMechanism -->
+  <mtapp:setting
+     id="saslmechanism"
+     label="<__trans phrase="SASL Mechanism">"
+     label_class="top-label"
+     hint="<__trans phrase="The name of the SASL Mechanism used for both binding and authentication.">">
+    <select id="saslmechanism" name="saslmechanism">
+    <mt:loop name="sasl_loop">
+      <option value="<mt:var name="id">" <mt:if name="selected">selected="selected"</mt:if>><mt:var name="name"></option>
+    </mt:loop>
+    </select>
+  </mtapp:setting>
+
+  <mtapp:setting
+     id="test_userid"
+     label="<__trans phrase="Test Username">"
+     label_class="top-label">
+    <input type="text" name="test_userid" id="test_userid" class="text full" value="<mt:var name="test_userid" escape="html">" /><br />
+  </mtapp:setting>
+
+  <mtapp:setting
+     id="test_password"
+     label="<__trans phrase="Test Password">"
+     label_class="top-label">
+    <input type="password" name="test_password" id="test_password" class="text short password" value="<mt:var name="test_password" escape="html">" /><br />
+  </mtapp:setting>
+</div>
+</mt:if>
+
+<mt:if name="mode_eum">
+<!-- ExternalUserManagement -->
+<p>
+  <input type="checkbox" id="eum" class="cb" name="eum" value="1" <mt:if name="eum">checked</mt:if> onclick="toggle_eum(this)" />
+  <span class="label"><__trans phrase="Enable External User Management"></span>
+</p>
+<div id="eum_enable" <mt:unless name="eum">style="display: none"</mt:unless>>
+<!-- ExternalUserSyncFrequency -->
+  <mtapp:setting
+     id="eum_freq"
+     label="<__trans phrase="Synchronization Frequency">"
+     label_class="top-label"
+     hint="<__trans phrase="The frequency of synchronization in minutes. (Default is 60 minutes)">">
+    <select name="eum_freq" id="eum_freq">
+      <option value="15"<mt:if name="eum_freq" eq="15">selected="selected"</mt:if>><__trans phrase="15 Minutes"></option>
+      <option value="30"<mt:if name="eum_freq" eq="30">selected="selected"</mt:if>><__trans phrase="30 Minutes"></option>
+      <option value="60"<mt:if name="eum_freq" eq="60">selected="selected"</mt:if><mt:unless name="eum_freq">selected="selected"</mt:unless>><__trans phrase="60 Minutes"></option>
+      <option value="90"<mt:if name="eum_freq" eq="90">selected="selected"</mt:if>><__trans phrase="90 Minutes"></option>
+    </select>
+  </mtapp:setting>
+<!-- LDAPGroupSearchBase -->
+  <mtapp:setting
+     id="eum_group_searchbase"
+     label="<__trans phrase="Group Search Base Attribute">"
+     label_class="top-label">
+    <input type="text" id="eum_group_searchbase" class="text full" name="eum_group_searchbase" value="<mt:var name="eum_group_searchbase" escape="html">" />
+  </mtapp:setting>
+<!-- LDAPGroupFilter -->
+  <mtapp:setting
+     id="eum_group_filter"
+     label="<__trans phrase="Group Filter Attribute">"
+     label_class="top-label">
+    <input type="text" id="eum_group_filter" class="text full" name="eum_group_filter" value="<mt:var name="eum_group_filter" escape="html">" />
+  </mtapp:setting>
+</div>
+<div id="eum_search_result" <mt:unless name="eum_search_result">style="display: none"</mt:unless>>
+<mt:if name="group_found">
+  <div><__trans phrase="Search Results (max 10 entries)"></div>
+  <div class="listing" id="selector">
+    <table class="legacy listing-table show-admin">
+      <thead>
+        <tr>
+          <th class="col head"><span class="col-label"><__trans phrase="CN"></span></th>
+        </tr>
+      </thead>
+      <tbody>
+      <mt:loop name="group_loop">
+        <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+          <td class="col"><mt:var name="cn"></td>
+        </tr>
+      </mt:loop>
+      </tbody>
+    </table>
+  </div>
+<mt:else>
+  <p><__trans phrase="No groups were found with these settings."></p>
+</mt:if>
+</div>
+</mt:if>
+
+<mt:if name="mode_mapping">
+<h2><__trans phrase="Attribute mapping"></h2>
+<!-- AuthenticationModule -->
+<mtapp:setting
+   id="servertype"
+   label="<__trans phrase="LDAP Server">"
+   label_class="top-label">
+  <select id="servertype" name="servertype" onchange="server_select(this)">
+    <option value=""><__trans phrase="Select One..."></option>
+    <option value="openldap">OpenLDAP</option>
+    <option value="ad">ActiveDirectory</option>
+    <option value="other"><__trans phrase="Other"></option>
+  </select>
+</mtapp:setting>
+<!-- LDAPUserIdAttribute -->
+<mtapp:setting
+   id="eum_user_id"
+   label="<__trans phrase="User ID Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_user_id" id="eum_user_id" class="text full" value="<mt:var name="eum_user_id" escape="html">" />
+</mtapp:setting>
+<!-- LDAPUserEmailAttribute -->
+<mtapp:setting
+   id="eum_user_email"
+   label="<__trans phrase="Email Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_user_email" id="eum_user_email" class="text full" value="<mt:var name="eum_user_email" escape="html">" />
+</mtapp:setting>
+<!-- LDAPUserFullNameAttribute -->
+<mtapp:setting
+   id="eum_user_fullname"
+   label="<__trans phrase="User Fullname Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_user_fullname" id="eum_user_fullname" class="text full" value="<mt:var name="eum_user_fullname" escape="html">" />
+</mtapp:setting>
+<!-- LDAPUserGroupMemberAttribute -->
+<mtapp:setting
+   id="eum_user_member"
+   label="<__trans phrase="User Member Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_user_member" id="eum_user_member" class="text full" value="<mt:var name="eum_user_member" escape="html">" />
+</mtapp:setting>
+<!-- LDAPGroupIdAttribute -->
+<mtapp:setting
+   id="eum_group_id"
+   label="<__trans phrase="GroupID Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_group_id" id="eum_group_id" class="text full" value="<mt:var name="eum_group_id" escape="html">" />
+</mtapp:setting>
+<!-- LDAPGroupNameAttribute -->
+<mtapp:setting
+   id="eum_group_name"
+   label="<__trans phrase="Group Name Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_group_name" id="eum_group_name" class="text full" value="<mt:var name="eum_group_name" escape="html">" />
+</mtapp:setting>
+<!-- LDAPGroupFullNameAttribute -->
+<mtapp:setting
+   id="eum_group_fullname"
+   label="<__trans phrase="Group Fullname Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_group_fullname" id="eum_group_fullname" class="text full" value="<mt:var name="eum_group_fullname" escape="html">" />
+</mtapp:setting>
+<!-- LDAPGroupMemberAttribute -->
+<mtapp:setting
+   id="eum_group_member"
+   label="<__trans phrase="Group Member Attribute">"
+   label_class="top-label">
+  <input type="text" name="eum_group_member" id="eum_group_member" class="text full" value="<mt:var name="eum_group_member" escape="html">" />
+</mtapp:setting>
+
+<div id="eum_search_result"<mt:unless name="eum_search_result"> style="display: none"</mt:unless>>
+<mt:if name="group_found">
+  <div><__trans phrase="Search Result (max 10 entries)"></div>
+  <div id="selector" class="listing">
+    <table class="legacy listing-table show-admin">
+      <thead>
+        <tr>
+          <th class="col head"><span class="col-label"><__trans phrase="Group Name"></span></th>
+          <th class="col head"><span class="col-label"><__trans phrase="Group Fullname"></span></th>
+          <th class="col head"><span class="col-label"><__trans phrase="Group Member"></span></th>
+        </tr>
+      </thead>
+      <tbody>
+      <mt:loop name="group_loop">
+        <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+          <td class="col"><mt:var name="group_name" escape="html"></td>
+          <td class="col"><mt:var name="group_fullname" escape="html"></td>
+          <td class="col"><mt:var name="group_member" escape="html"><mt:if name="group_member_count" gt="1"> <__trans phrase="(and [_1] more members)" params="<mt:var name="group_member_count" op="-" value="1">"></mt:if></td>
+        </tr>
+      </mt:loop>
+      </tbody>
+    </table>
+  </div>
+<mt:else>
+  <p><__trans phrase="No groups could be found."></p>
+</mt:if>
+<mt:if name="user_found">
+  <div id="selector" class="listing">
+    <table class="legacy listing-table show-admin">
+      <thead>
+        <tr>
+          <th class="col head"><span class="col-label"><__trans phrase="User Fullname"></span></th>
+          <th class="col head"><span class="col-label"><__trans phrase="Email Address"></span></th>
+          <th class="col head"><span class="col-label"><__trans phrase="Groups"></span></th>
+        </tr>
+      </thead>
+      <tbody>
+      <mt:loop name="user_loop">
+        <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+          <td class="col"><mt:var name="user_fullname" escape="html"></td>
+          <td class="col"><mt:var name="user_email" escape="html"></td>
+          <td class="col"><mt:var name="user_group" escape="html"><mt:if name="user_group_count" gt="1"> <__trans phrase="(and [_1] more groups)" params="<mt:var name="user_group_count" op="-" value="1">"></mt:if></td>
+        </tr>
+      </mt:loop>
+      </tbody>
+    </table>
+  </div>
+<mt:else>
+  <p><__trans phrase="No users could be found."></p>
+</mt:if>
+</div>
+</mt:if>
+
+<mt:if name="mode_auth">
+  <mt:unless name="success">
+<div id="goback" class="actions-bar" <mt:if name="authtype">style="display: none"</mt:if>>
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     name="continue"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+
+<div id="submit" class="actions-bar" <mt:unless name="authtype">style="display: none"</mt:unless>>
+  <button
+     name="do_test"
+     type="submit"
+     class="action primary button"
+     onclick="go('test')">
+    <__trans phrase="Test connection to LDAP">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:unless>
+  <mt:if name="success">
+<div id="submit" class="actions-bar">
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="do_test"
+     type="submit"
+     class="action button"
+     onclick="go('test')">
+    <__trans phrase="Test connection to LDAP">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+
+<div id="goback" class="actions-bar" style="display: none">
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:if>
+</mt:if>
+
+<mt:if name="mode_eum">
+  <mt:unless name="success">
+<div id="goback" class="actions-bar" <mt:if name="eum">style="display: none"</mt:if>>
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+<div id="submit" class="actions-bar" <mt:unless name="eum">style="display: none"</mt:unless>>
+  <button
+     name="do_test"
+     type="submit"
+     class="action primary button"
+     onclick="go('test')">
+    <__trans phrase="Test search">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:unless>
+  <mt:if name="success">
+<div id="submit" class="actions-bar">
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="do_test"
+     type="submit"
+     class="action button"
+     onclick="go('test')">
+    <__trans phrase="Test search">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+<div id="goback" class="actions-bar"  style="display: none">
+  <button
+     name="do_test"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:if>
+</mt:if>
+
+<mt:if name="mode_mapping">
+  <mt:unless name="success">
+<div id="goback" class="actions-bar">
+  <button
+     name="do_test"
+     type="submit"
+     class="action primary button"
+     onclick="go('test')">
+    <__trans phrase="Test search">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:unless>
+  <mt:if name="success">
+<div id="submit" class="actions-bar">
+  <button
+     name="continue"
+     type="submit"
+     class="action primary button"
+     onclick="go('next_step')">
+    <__trans phrase="Continue">
+  </button>
+  <button
+     name="do_test"
+     type="submit"
+     class="action button"
+     onclick="go('test')">
+    <__trans phrase="Test search">
+  </button>
+  <button
+     name="back"
+     type="submit"
+     class="goback action button"
+     onclick="needValidate = false;this.form.reset(); go('previous_step');">
+    <__trans phrase="Back">
+  </button>
+</div>
+  </mt:if>
+</mt:if>
+
+</form>
+<mt:include name="include/chromeless_footer.tmpl">

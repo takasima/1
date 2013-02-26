@@ -1,0 +1,59 @@
+<MTSetVars>
+page_title=<$MTBlogName$>
+description=<$MTBlogDescription strip_linefeeds="1" escape="html"$>
+keywords=<MTTags glue="," sort_by="rank" limit="10"><$MTTagName escape="html"$></MTTags>
+website_id=<$MTWebsiteID$>
+website_url=<$MTWebsiteURL$>
+website_name=<$MTWebsiteName$>
+body_class=mt-main-index
+</MTSetVars>
+<MTSetVarBlock name="html_head" append="1">
+<link href="<$MTLink template="<__trans phrase="SP-Stylesheet(top.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+</MTSetVarBlock>
+<$MTInclude module="<__trans phrase="SP-HTML Header">"$>
+<$MTInclude module="<__trans phrase="SP-Header">"$>
+<mtml tag="mt:SetVarBlock" params='name="html_tag"'>
+    <MTGroupBlogsWebsites group="<__trans phrase="News list">">
+        <MTIf name="__first__">
+        <section>
+        </MTIf>
+        <MTSetVarBlock name="blog_id"><$MTBlogID$></MTSetVarBlock>
+        <MTEntries lastn="5" blog_ids="$blog_id">
+            <MTEntriesHeader>
+            <h2><a href="<$MTBlogURL escape="html"$>"><$MTBlogName escape="html"$></a></h2>
+            <div class="panel">
+            <nav>
+            <ul class="nav2">
+            </MTEntriesHeader>
+                <li><h2><a href="<$MTEntryPermalink escape="html"$>"><span><$MTEntryDate format="%x"$></span><$MTEntryTitle escape="html"$></a></h2></li>
+            <MTEntriesFooter>
+            </ul>
+            </nav>
+            </div>
+            </MTEntriesFooter>
+        </MTEntries>
+        <MTIf name="__last__">
+        <section>
+        </MTIf>
+    </MTGroupBlogsWebsites>
+    <nav>
+        <$MTWidgetSet name="<__trans phrase="Links">" SmartPhone="1"$>
+    </nav>
+    <aside>
+        <MTCampaigns group="<__trans phrase="Banner group">">
+        <MTIfCampaignHasImage>
+        <MTCampaignsHeader>
+        <ul class="banner">
+        </MTCampaignsHeader>
+        <MTCampaignAsset type="image">
+        <li><a href="<$MTCampaignURL escape="html"$>"><img src="<$MTAssetThumbnailURL width="222" escape="html"$>" alt="<$MTCampaignTitle escape="html"$>" /></a></li>
+        </MTCampaignAsset>
+        <MTCampaignsFooter>
+        </ul>
+        </MTCampaignsFooter>
+        </MTIfCampaignHasImage>
+        </MTCampaigns>
+    </aside>
+<mtml tag="/mt:SetVarBlock">
+<mtml tag="mt:Var" params='name="html_tag" highlightingsearchword="1"'>
+<$MTInclude module="<__trans phrase="SP-Footer">"$>

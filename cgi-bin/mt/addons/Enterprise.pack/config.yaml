@@ -1,0 +1,796 @@
+label: Advanced Pack
+author_name: Six Apart, Ltd.
+author_link: http://www.sixapart.com/
+version: 2.12
+schema_version: 1.1
+l10n_class: MT::Enterprise::L10N
+
+init: $Enterprise::MT::Enterprise::Util::init
+
+applications:
+    cms: app-cms.yaml
+    wizard: app-wizard.yaml
+
+object_types:
+    group: MT::Group
+list_properties:
+    association:
+        user_name:
+            label: User/Group
+            filter_label: User/Group Name
+            col: name
+            html: |
+                sub {
+                    my ( $prop, $obj, $app ) = @_;
+                    require MT::Author;
+                    my $type = $obj->type == MT::Association::USER_BLOG_ROLE() ? 'user' : 'group';
+                    my $icon_url = MT->static_path . 'images/nav_icons/color/' . $type . '.gif';
+                    my $name = MT::Util::encode_html($obj->$type->name);
+                    my $edit_link = $app->uri(
+                        mode => 'view',
+                        args => {
+                            _type   => $type eq 'user' ? 'author' : 'group',
+                            id      => $obj->$type->id,
+                            blog_id => 0,
+                        },
+                    );
+                    return qq{
+                        <a href="$edit_link">$name</a>
+                        <span class="target-type $type">
+                            <img src="$icon_url" />
+                        </span>
+                    };
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $author_terms = $prop->super(@_);
+                    my @authors = MT->model('author')->load(
+                        {
+                            %$author_terms,
+                        },
+                    );
+                    my @groups = MT->model('group')->load(
+                        {
+                            %$author_terms,
+                        },
+                    );
+                    if ( scalar @authors && scalar @groups ) {
+                        return [[
+                            { author_id => [ map { $_->id } @authors ] },
+                            '-or',
+                            { group_id => [ map { $_->id } @groups ] },
+                        ]];
+                    }
+                    elsif ( scalar @authors ) {
+                        return { author_id => [ map { $_->id } @authors ] };
+                    }
+                    elsif ( scalar @groups ) {
+                        return { group_id => [ map { $_->id } @groups ] };
+                    }
+                    return { author_id => { '<' => 0 } };
+                }
+            bulk_sort: |
+                sub {
+                    my $prop = shift;
+                    my ( $objs ) = @_;
+                    sort {
+                        ( $a->type == MT::Association::USER_BLOG_ROLE() ? $a->user->name
+                                                                        : $a->group->name )
+                        cmp
+                        ( $b->type == MT::Association::USER_BLOG_ROLE() ? $b->user->name
+                                                                        : $b->group->name )
+                    } @$objs;
+                }
+        group_id:
+            auto: 1
+            label: Group
+            display: none
+            filter_editable: 0
+            label_via_param: |
+                sub {
+                    my ( $prop, $app, $val ) = @_;
+                    my $group = MT->model('group')->load( $val )
+                        or return $prop->error(MT->translate('Invalid parameter.'));
+                    my $pack = MT->component('enterprise');
+                    return $pack->translate(
+                        'Permissions of group: [_1]',
+                        $group->display_name || $group->name,
+                    );
+                }
+            args_via_param: |
+                sub {
+                    my $prop = shift;
+                    my ( $app, $val ) = @_;
+                    return { option => 'equal', value => $val };
+                }
+        type:
+            base:    __virtual.single_select
+            display: none
+            col:     type
+            label:   Type
+            single_select_options: >
+                sub {
+                    my @sso;
+                    my $pack = MT->component('enterprise');
+
+                    push @sso, { label => $pack->translate('User'),
+                               value => 1 };
+                    push @sso, { label => $pack->translate('Group'),
+                               value => 2 };
+                    return \@sso;
+                }
+    group:
+        name:
+            auto: 1
+            label: Name
+            display: force
+            order: 100
+            html: |
+                sub {
+                    my ( $prop, $obj, $app ) = @_;
+                    my $name = MT::Util::encode_html($obj->name);
+                    my $description = MT::Util::encode_html($obj->description);
+                    my $edit_url = $app->uri(
+                        mode => 'view',
+                        args => {
+                            _type   => 'group',
+                            id      => $obj->id,
+                            blog_id => 0,
+                        },
+                    );
+                    my $status = $obj->status == MT::Group::ACTIVE() ? 'enabled'
+                               :                                       'disabled';
+                    my $status_icon = MT->static_path . 'images/status_icons/group-' . $status . '.gif';
+                    my $description_block = ( length($description) > 0 ) ? qq{
+                        <p class="description">$description</p>
+                    } : q{};
+                    if ( $app->can_do('edit_group') ) {
+                        return qq{
+                            <span class="status $status">
+                                <img alt="$status" src="$status_icon" />
+                            </span>
+                            <span class="groupname"><a href="$edit_url">$name</a></span>
+                            $description_block
+                        };
+                    }
+                    else {
+                        return qq{
+                            <span class="status $status">
+                                <img alt="$status" src="$status_icon" />
+                            </span>
+                            <span class="groupname">$name</span>
+                            $description_block
+                        };
+                    }
+                }
+        display_name:
+            auto: 1
+            label: Display Name
+            display: default
+            order: 200
+        member_count:
+            label: __GROUP_MEMBER_COUNT
+            display: default
+            base: __virtual.object_count
+            order: 300
+            count_class: association
+            count_col: group_id
+            count_terms:
+                author_id:
+                    not: 0
+            filter_type: group_id
+            list_screen: group_member
+            list_permit_action: access_to_group_member_list
+        created_on:
+            base: __virtual.created_on
+            display: none
+        modified_on:
+            base: __virtual.modified_on
+            display: none
+        description:
+            label: Description
+            auto: 1
+            display: none
+        status:
+            label: Status
+            base: __virtual.single_select
+            col: status
+            display: none
+            single_select_options: >
+                sub {
+                    my $pack = MT->component('enterprise');
+                    return [
+                        {   label => $pack->translate('Enabled'),
+                            value => 1,
+                        },
+                        {   label => $pack->translate('Disabled'),
+                            value => 2,
+                        }
+                    ];
+                }
+        author_id:
+            base: __virtual.integer
+            label: Author
+            filter_label: My Groups
+            display: none
+            filter_editable: 0
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $aid = $args->{value};
+                    my $association_class = MT->model('association');
+                    $db_args->{joins} ||= [];
+                    push @{ $db_args->{joins} }, $association_class->join_on(
+                        'group_id',
+                        {
+                            type => $association_class->USER_GROUP(),
+                            author_id => $aid,
+                        },
+                    );
+                }
+            label_via_param: |
+                sub {
+                    my $prop = shift;
+                    my ( $app, $val ) = @_;
+                    my $author = MT->model('author')->load($val);
+                    my $pack = MT->component('enterprise');
+                    $pack->translate(
+                       'Groups associated with author: [_1]',
+                       MT::Util::encode_html( $author->nickname || $author->name ),
+                    );
+                }
+
+    group_member:
+        name:
+            label: Username
+            col: name
+            display: force
+            order: 100
+            base: __virtual.string
+            sub_fields:
+                -
+                    class: userpic
+                    label: Userpic
+                    display: optional
+                -
+                    class: user-info
+                    label: User Info
+                    display: optional
+            html: |
+                sub {
+                    my ( $prop, $obj, $app ) = @_;
+                    MT::Author::_bulk_author_name_html($prop, [ $obj->user ], $app );
+                }
+            bulk_sort: |
+                sub {
+                    my $prop = shift;
+                    my ( $objs ) = @_;
+                    sort { $a->user->name cmp $b->user->name } @$objs;
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $term = $prop->super(@_);
+                    $db_args->{joins} ||= [];
+                    push @{ $db_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'= association_author_id',
+                            name => $term->{name},
+                        },
+                        { }
+                    );
+                }
+            sort: 0
+        nickname:
+            base: __virtual.string
+            col: name
+            label: Display Name
+            order: 200
+            display: default
+            html: |
+                sub {
+                    my ( $prop, $obj, $app ) = @_;
+                    MT::Author::_nickname_bulk_html($prop, [ $obj->user ], $app );
+                }
+            bulk_sort: |
+                sub {
+                    my $prop = shift;
+                    my ( $objs ) = @_;
+                    sort { $a->user->nickname cmp $b->user->nickname } @$objs;
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $term = $prop->super(@_);
+                    $db_args->{joins} ||= [];
+                    push @{ $db_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'= association_author_id',
+                            nickname => $term->{name},
+                        },
+                        { }
+                    );
+                }
+            sort: 0
+        group_name:
+            label: Group Name
+            filter_label: Group
+            display: force
+            base: __virtual.string
+            order: 300
+            col: name
+            html: |
+                sub {
+                    my ( $prop, $obj, $app ) = @_;
+                    my $group = $obj->group;
+                    return unless $group;
+                    my $name = MT::Util::encode_html($group->name);
+                    my $description = MT::Util::encode_html($group->description);
+                    my $edit_url = $app->uri(
+                        mode => 'view',
+                        args => {
+                            _type   => 'group',
+                            id      => $group->id,
+                            blog_id => 0,
+                        },
+                    );
+                    my $status = $group->status == MT::Group::ACTIVE() ? 'enabled'
+                               :                                         'disabled';
+                    my $status_icon = MT->static_path . 'images/status_icons/group-' . $status . '.gif';
+                    my $description_block = ( length($description) > 0 ) ? qq{
+                        <p class="description">$description</p>
+                    } : q{};
+                    return qq{
+                        <span class="status $status">
+                            <img alt="$status" src="$status_icon" />
+                        </span>
+                        <span class="groupname"><a href="$edit_url">$name</a></span>
+                        $description_block
+                    };
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $term = $prop->super(@_);
+                    $db_args->{joins} ||= [];
+                    push @{ $db_args->{joins} }, MT->model('group')->join_on(
+                        undef,
+                        {
+                            id => \'= association_group_id',
+                            name => $term->{name},
+                        },
+                        { }
+                    );
+                }
+            bulk_sort: |
+                sub {
+                    my $prop = shift;
+                    my ( $objs ) = @_;
+                    sort { $a->group->name cmp $b->group->name } @$objs;
+                }
+        _type:
+            terms: |
+                sub {
+                    require MT::Association;
+                    return { type => MT::Association::USER_GROUP() };
+                }
+            view: none
+        entry_count:
+            label: __ENTRY_COUNT
+            display: default
+            order: 400
+            base: __virtual.object_count
+            col_class: num
+            count_class: entry
+            count_col: author_id
+            filter_type: author_id
+            ref_column: author_id
+            html: |
+                sub {
+                    my $prop = shift;
+                    my ( $obj, $app ) = @_;
+                    my $count = MT->model( $prop->count_class )
+                        ->count( { $prop->count_col => $obj->author_id } );
+                    my $uri = $app->uri(
+                        mode => 'list',
+                        args => {
+                            _type      => $prop->count_class,
+                            blog_id    => ( $app->blog ? $app->blog->id : 0 ),
+                            filter     => $prop->filter_type,
+                            filter_val => $obj->author_id,
+                        }
+                    );
+                    return qq{<a href="$uri">$count</a>};
+                }
+        comment_count:
+            label: __COMMENT_COUNT
+            display: default
+            order: 500
+            base: __virtual.object_count
+            col_class: num
+            count_class: comment
+            count_col: commenter_id
+            filter_type: commenter_id
+            ref_column: author_id
+            html: |
+                sub {
+                    my $prop = shift;
+                    my ( $obj, $app ) = @_;
+                    my $count = MT->model( $prop->count_class )
+                        ->count( { $prop->count_col => $obj->author_id } );
+                    my $uri = $app->uri(
+                        mode => 'list',
+                        args => {
+                            _type      => $prop->count_class,
+                            blog_id    => ( $app->blog ? $app->blog->id : 0 ),
+                            filter     => $prop->filter_type,
+                            filter_val => $obj->author_id,
+                        }
+                    );
+                    return qq{<a href="$uri">$count</a>};
+                }
+        created_on:
+            base: __virtual.created_on
+            order: 700
+            display: optional
+            raw: |
+                sub {
+                    my ( $prop, $obj ) = @_;
+                    $obj->user->created_on
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ($args, $load_terms, $load_args) = @_;
+                    my $term = $prop->super(@_);
+                    $load_args->{joins} ||= [];
+                    push @{ $load_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'=association_author_id',
+                            created_on => $term->{created_on},
+                        },
+                        {}
+                    );
+                }
+        modified_on:
+            base: __virtual.modified_on
+            order: 800
+            display: optional
+            raw: |
+                sub {
+                    my ( $prop, $obj ) = @_;
+                    $obj->user->modified_on
+                }
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ($args, $load_terms, $load_args) = @_;
+                    my $term = $prop->super(@_);
+                    $load_args->{joins} ||= [];
+                    push @{ $load_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'=association_author_id',
+                            created_on => $term->{modified_on},
+                        },
+                        {}
+                    );
+                }
+        blog_name:
+            display: none
+        status:
+            label: Status
+            base: __virtual.single_select
+            col: status
+            display: none
+            single_select_options: >
+                sub {
+                    my @sso;
+                    my $pack = MT->component('enterprise');
+
+                    push @sso, {
+                        label => $pack->translate('Active'),
+                        value => 'active' };
+                    push @sso, {
+                        label => $pack->translate('Inactive'),
+                        value => 'inactive' };
+                    push @sso, {
+                        label => $pack->translate('Pending'),
+                        value => 'pending' };
+                    return \@sso;
+                }
+            terms: |
+                sub {
+                    my ( $prop, $args, $load_terms, $load_args ) = @_;
+                    my $val = $args->{value};
+
+                    require MT::Author;
+                    my %statuses = (
+                        active   => MT::Author::ACTIVE(),
+                        inactive => MT::Author::INACTIVE(),
+                        pending  => MT::Author::PENDING(),
+                    );
+                    $val = exists $statuses{$val} ? $statuses{$val} : undef;
+                    return unless $val;
+
+                    $load_args->{joins} ||= [];
+                    push @{ $load_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'=association_author_id',
+                            status  => $val,
+                        },
+                        {}
+                    );
+                }
+        email:
+            base: __virtual.string
+            col: name
+            label: Email
+            filter_label: Email Address
+            display: none
+            col: email
+            terms: |
+                sub {
+                    my $prop = shift;
+                    my ( $args, $db_terms, $db_args ) = @_;
+                    my $term = $prop->super(@_);
+                    $db_args->{joins} ||= [];
+                    push @{ $db_args->{joins} }, MT->model('author')->join_on(
+                        undef,
+                        {
+                            id => \'= association_author_id',
+                            email => $term->{email},
+                        },
+                        { }
+                    );
+                }
+            sort: 0
+        group_id:
+            base: __virtual.hidden
+            col: group_id
+            filter_editable: 0
+            display: none
+            label_via_param: |
+                sub {
+                    my ( $prop, $app, $val ) = @_;
+                    my $pack = MT->component('enterprise');
+                    my $group = MT->model('group')->load( $val )
+                        or return $prop->error($pack->translate('Invalid parameter.'));
+                    my $label = $pack->translate(
+                        'Members of group: [_1]',
+                        $group->name,
+                    );
+                    $prop->{label} = MT::Util::encode_html($label);
+                }
+            args_via_param: |
+                sub {
+                    my ( $prop, $app ) = @_;
+                    my $group_id = $app->param('filter_val');
+                    return { value => $group_id };
+                }
+
+listing_screens:
+    group:
+        object_label: Group
+        default_sort_key: name
+        primary: name
+        view:
+            - system
+    group_member:
+        screen_label: Manage Group Members
+        object_label_plural: Group Members
+        object_label: Group Member
+        object_type: association
+        default_sort_key: name
+        permission: administer
+        primary: name
+        view:
+            - system
+        search_label: User
+        search_type: author
+
+system_filters:
+    association:
+        for_user:
+            label: Permissions for Users
+            items:
+                -
+                    type: type
+                    args:
+                        value: 1
+            order: 100
+        for_group:
+            label: Permissions for Groups
+            items:
+                -
+                    type: type
+                    args:
+                        value: 2
+            order: 200
+    group:
+        active_groups:
+            label: Active Groups
+            items:
+                -
+                    type: status
+                    args:
+                        value: 1
+            order: 100
+        disabled_groups:
+            label: Disabled Groups
+            items:
+                -
+                    type: status
+                    args:
+                        value: 2
+            order: 200
+    group_member:
+        enabled:
+            label: Enabled Users
+            items:
+                -
+                    type: status
+                    args:
+                        value: active
+            order: 100
+        disabled:
+            label: Disabled Users
+            items:
+                -
+                    type: status
+                    args:
+                        value: inactive
+            order: 200
+object_drivers:
+    oracle:
+        label: Oracle Database (Recommended)
+        dbd_package: DBD::Oracle
+        dbd_version: 1.15
+        config_package: Oracle
+        match: "(db[id]::)?oracle"
+        display:
+            - dbname
+            - dbuser
+            - dbpass
+            - dbport
+    mssqlserver:
+        label: Microsoft SQL Server Database
+        dbd_package: DBD::ODBC
+        dbd_version: 1.13
+        config_package: MSSQLServer
+        match: "(db[id]::)?(ms)?sqlserver"
+        display:
+            - dbserver
+            - dbname
+            - dbuser
+            - dbpass
+            - odbcdriver
+            - publish_charset
+            - dbport
+    umssqlserver:
+        label: Microsoft SQL Server Database UTF-8 support (Recommended)
+        dbd_package: DBD::ODBC
+        dbd_version: 1.14
+        config_package: UMSSQLServer
+        match: "(db[id]::)?u(ms)?sqlserver"
+        display:
+            - dbserver
+            - dbname
+            - dbuser
+            - dbpass
+            - odbcdriver
+            - dbport
+db_form_data:
+    publish_charset:
+        element: input
+        type: text
+        label: Publish Charset
+        order: 25
+    odbcdriver:
+        element: input
+        type: text
+        label: ODBC Driver
+        order: 5
+        default: SQL Server Native Client 10.0
+        hint: Specify 'SQL Native Client 10.0' for SQL Server 2008 or 'SQL Native Client' for SQL Server 2005.
+        show_hint: 1
+
+config_settings:
+    LDAPAuthURL: ~
+    LDAPAuthBindDN: ~
+    LDAPAuthPassword: ~
+    LDAPAuthSASLMechanism:
+        default: PLAIN
+    LDAPGroupNameAttribute: ~
+    LDAPGroupIdAttribute: ~
+    LDAPGroupFullNameAttribute:
+        default: displayName
+    LDAPGroupMemberAttribute: ~
+    LDAPGroupSearchBase: ~
+    LDAPGroupFilter: ~
+    LDAPUserIdAttribute: ~
+    LDAPUserEmailAttribute:
+        default: mail
+    LDAPUserFullNameAttribute:
+        default: displayName
+    LDAPUserGroupMemberAttribute: ~
+    AuthLDAPURL:
+        alias: LDAPAuthURL
+    AuthLDAPBindDN:
+        alias: LDAPAuthBindDN
+    AuthLDAPPassword:
+        alias: LDAPAuthPassword
+    AuthLDAPSASLMechanism:
+        alias: LDAPAuthSASLMechanism
+    ExternalUserSyncFrequency:
+        default: 60
+    ExternalUserManagement:
+        default: 1
+        handler: >
+            sub {
+                my $mgr = shift;
+                return $mgr->set_internal( 'ExternalUserManagement', @_ ) if @_;
+                ( $mgr->AuthenticationModule ne 'MT' )
+                  && $mgr->get_internal('ExternalUserManagement') ? 1 : 0;
+            }
+    ExternalGroupManagement:
+        default: 1
+        handler: >
+            sub {
+                my $mgr = shift;
+                return $mgr->set_internal('ExternalGroupManagement', @_) if @_;
+                ($mgr->AuthenticationModule ne 'MT') &&
+                    $mgr->get_internal('ExternalGroupManagement') ? 1 : 0;
+            }
+    DBRetryDuration: ~
+    DBCheckSlaveStatus: ~
+    DBMaxReplicationLag: ~
+    DatabaseRoles:
+        path: 1
+        handler: $Enterprise::MT::Enterprise::Util::cfg_database_roles
+    ODBCDriver:
+        default: SQL Native Client
+
+tasks:
+    external_user_management:
+        label: External Directory Synchronization
+        handler: >
+            sub {
+                require MT::Auth;
+                MT::Auth->task_synchronize;
+            }
+        frequency: >
+            sub {
+                MT->config("ExternalUserSyncFrequency") * 60;
+            }
+
+upgrade_functions:
+    fix_blob_for_mssqlserver:
+        priority: 3.1
+        code: $Enterprise::MT::Enterprise::Upgrade::fix_blob_for_mssqlserver
+    populate_author_external_id:
+        priority: 3.1
+        updater:
+            type: author
+            label: Populating author's external ID to have lower case user name...
+            condition: >
+                sub {
+                       ( defined($_[0]->external_id) && $_[0]->external_id )
+                    || ( 'MT' eq MT->config->AuthenticationModule )
+                    || ( MT->config->ExternalUserManagement ) ? 0 : 1;
+                }
+            code: >
+                sub {
+                    $_[0]->external_id( lc $_[0]->name );
+                }
+

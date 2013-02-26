@@ -1,0 +1,376 @@
+<__trans_section component="Campaign">
+<mt:ifPlugin component="TinyMCE">
+<mt:else>
+<mt:setvar name="use_wysiwyg" value="">
+</mt:else>
+</mt:ifPlugin>
+<$MTVersion setvar="version"$>
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+ fieldset textarea { height:240px }
+.field input.full-width, .field textarea.full-width { width:100% }
+</style>
+<script type="text/javascript">
+function check_item () {
+    var title = jQuery( '#title' ).val();
+    if ( title == '' ) {
+        alert( '<__trans phrase="Enter a Campaign title.">' );
+        return false;
+    }
+}
+</script>
+<mt:if name="use_wysiwyg">
+<script type="text/javascript" src="<$mt:var name="static_uri"$>plugins/TinyMCE/lib/tinymce/tiny_mce.js"></script>
+<script type="text/javascript">
+<mt:ifPlugin component="TinyMCE">
+var editor_another_setting = true;
+var theme_advanced_buttons1 = '<$mt:var name="theme_advanced_buttons1" escape="js"$>';
+var theme_advanced_buttons2 = '<$mt:var name="theme_advanced_buttons2" escape="js"$>';
+var theme_advanced_buttons3 = '<$mt:var name="theme_advanced_buttons3" escape="js"$>';
+var theme_advanced_buttons4 = '<$mt:var name="theme_advanced_buttons4" escape="js"$>';
+var theme_advanced_buttons5 = '<$mt:var name="theme_advanced_buttons5" escape="js"$>';
+var editor_content_css = '<$mt:var name="editor_style_css" escape="js"$>';
+</mt:ifPlugin>
+</script>
+</mt:if>
+</mt:setvarblock>
+<mt:setvarblock name="page_title"><mt:if name="id"><__trans phrase="Edit Campaign"><mt:else><__trans phrase="Create Campaign"></mt:else></mt:if></mt:setvarblock>
+<mt:setvar name="position_actions_bottom" value="1">
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved">
+        <mtapp:statusmsg
+           id="saved"
+            class="success"
+            rebuild="all">
+            <__trans phrase="Your changes have been saved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="error">
+        <mtapp:statusmsg
+            id="generic-error"
+            class="error">
+            <mt:var name="error">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+<mt:setvartemplate name="action_buttons">
+    <button
+        type="submit"
+        accesskey="s"
+        title="<__trans phrase="Save this Campaign (s)">"
+        class="save action primary-button primary button"
+        onclick="return check_item();"
+        ><__trans phrase="Save"></button>
+    <mt:if name="id">
+    <button
+        onclick="
+        if ( window.confirm( '<__trans phrase="Are you sure you want to remove this Campaign?">' ) ) {
+            getByID( 'this_mode' ).value='delete';
+            getByID( 'this_return_args' ).value='__mode=list<mt:if name="version" like="/^5\.0/">_campaign<mt:else>&amp;_type=campaign</mt:if>&amp;blog_id=<mt:var name="blog_id">';
+            this.form.submit();
+        } else {
+            return false;
+        }
+        "
+        type="submit"
+        accesskey="x"
+        title="<__trans phrase="Delete this Campaign (x)">"
+        class="delete action button"
+        ><__trans phrase="Delete"></button>
+    </mt:if>
+</mt:setvartemplate>
+<mt:setvarblock name="related_content">
+<mtapp:PageActions>
+<MTIgnore>TODO::Revision</MTIgnore>
+<mtapp:widget
+    id="campaign-conversion-widget"
+    class="status-widget"
+    label="<__trans phrase="Conversion">">
+    <mtapp:setting
+        id="max_displays"
+        label="<__trans phrase="Max Displays">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" class="text num" name="max_displays" id="max_displays" value="<mt:var name="max_displays" escape="html">" />
+    <label style="color:#666">&nbsp;&nbsp;( <__trans phrase="Displays"> : <mt:if name="displays"><mt:var name="displays" escape="html"><mt:else>-</mt:else></mt:if> )</label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="max_clicks"
+        label="<__trans phrase="Max Clicks">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" class="text num" name="max_clicks" id="max_clicks" value="<mt:var name="max_clicks" escape="html">" />
+    <label style="color:#666">&nbsp;&nbsp;( <__trans phrase="Clicks"> : <mt:if name="clicks"><mt:var name="clicks" escape="html"><mt:else>-</mt:else></mt:if> )</label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="max_uniqdisplays"
+        label="<__trans phrase="Max Uniq Displays">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" class="text num" name="max_uniqdisplays" id="max_uniqdisplays" value="<mt:var name="max_uniqdisplays" escape="html">" />
+    <label style="color:#666">&nbsp;&nbsp;( <__trans phrase="Displays"> : <mt:if name="uniqdisplays"><mt:var name="uniqdisplays" escape="html"><mt:else>-</mt:else></mt:if> )</label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="max_uniqclicks"
+        label="<__trans phrase="Max Uniq User's Clicks">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" class="text num" name="max_uniqclicks" id="max_uniqclicks" value="<mt:var name="max_uniqclicks" escape="html">" />
+    <label style="color:#666">&nbsp;&nbsp;( <__trans phrase="Clicks"> : <mt:if name="uniqclicks"><mt:var name="uniqclicks" escape="html"><mt:else>-</mt:else></mt:if> )</label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="conversion"
+        label="<__trans phrase="Conversion">"
+        label_class="top-label"
+        show_hint="0">
+        <label style="color:#666;line-height:22px"><mt:if name="conversion"><mt:var name="conversion" escape="html"><mt:else>-</mt:else></mt:if></label>
+    </mtapp:setting>
+    <mtapp:setting
+        id="conversion"
+        label="<__trans phrase="Conversion Page View">"
+        label_class="top-label"
+        show_hint="0">
+        <label style="color:#666;line-height:22px"><mt:if name="conversionview"><mt:var name="conversionview" escape="html"><mt:else>-</mt:else></mt:if></label>
+    </mtapp:setting>
+</mtapp:widget>
+<mtapp:widget
+    id="object-publishing-widget"
+    class="publishing-widget"
+    label="<__trans phrase="Metadata">">
+    <mtapp:setting
+        id="tags"
+        label="<__trans phrase="Tags">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" name="tags" id="tags" class="text full-width" value="<mt:var name="tags" escape="html">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="status"
+        label="<__trans phrase="Status">"
+        label_class="top-label"
+        show_hint="0">
+    <select name="status" id="status">
+    <option value="1" <mt:if name="status" eq="1">selected="selected"</mt:if>><__trans phrase="Draft"></option>
+    <option value="2" <mt:if name="status" eq="2">selected="selected"</mt:if>><__trans phrase="Publishing"></option>
+    <option value="3" <mt:if name="status" eq="3">selected="selected"</mt:if>><__trans phrase="Scheduled"></option>
+    <option value="4" <mt:if name="status" eq="4">selected="selected"</mt:if>><__trans phrase="Ended"></option>
+    </select>
+    </mtapp:setting>
+    <mtapp:setting
+        id="basename"
+        label="<__trans phrase="basename">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" class="text" style="width:50%" name="basename" id="basename" value="<mt:var name="basename" escape="html">" />
+    </mtapp:setting>
+<mt:if name="position_actions_bottom">
+    <mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+</mt:if>
+</mtapp:widget>
+</form>
+</mt:setvarblock>
+
+<mt:setvarblock name="object_nav">
+    <ul class="object-nav">
+        <li id="previous-link"><mt:if name="previous_campaign_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=campaign&amp;id=<mt:var name="previous_campaign_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Previous"></a><mt:else><span><__trans phrase="Previous"></span></mt:if></li>
+        <li id="next-link"><mt:if name="next_campaign_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=campaign&amp;id=<mt:var name="next_campaign_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Next"></a><mt:else><span><__trans phrase="Next"></span></mt:if></li>
+    </ul>
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<mt:var name="id" escape="html">" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id" escape="html">" />
+    <input type="hidden" name="__mode" value="save_campaign" id="this_mode" />
+    <input type="hidden" name="_type" value="campaign" />
+    <input type="hidden" name="return_args" id="this_return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+<mt:if name="position_actions_top">
+    <mt:include name="include/actions_bar.tmpl" bar_position="top" hide_pager="1">
+</mt:if>
+<fieldset>
+    <MTIgnore><h3><mt:var name="page_title"></h3></MTIgnore>
+    <mtapp:setting
+        id="title"
+        label_class="top-label"
+        label="<__trans phrase="Title">"
+        show_hint="0"
+        show_label="0">
+    <input type="text" name="title" id="title" class="title text full-width" value="<mt:var name="title" escape="html">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="set_period"
+        label="<__trans phrase="Set Period">"
+        label_class="top-label"
+        show_hint="0">
+        <label style="color:#666"><input type="checkbox" name="set_period" id="set_period" value="1" <mt:if name="set_period" eq="1">checked="checked"</mt:if> /> <__trans phrase="Set the publishing period"></label>
+        <span style="color:#666" id="publishing_period">(<__trans phrase="Publishing period">
+        <input type="text" name="publishing_on_date" id="publishing_on_date" style="width:7em;" class="text start-date text-date" value="<mt:var name="publishing_on_date" escape="html">" />
+        <input type="text" name="publishing_on_time" id="publishing_on_time" style="width:5.5em;" class="text start-time" value="<mt:var name="publishing_on_time" escape="html">" />
+        -
+        <input type="text" name="period_on_date" id="period_on_date" style="width:7em;" class="text end-date text-date" value="<mt:var name="period_on_date" escape="html">" />
+        <input type="text" name="period_on_time" id="period_on_time" style="width:5.5em;" class="text end-time" value="<mt:var name="period_on_time" escape="html">" />)</span>
+    <input type="hidden" name="set_period" value="2" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="url"
+        label="<__trans phrase="Url">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" name="url" id="url" class="text full-width" value="<mt:var name="url" escape="html">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="image"
+        label="<__trans phrase="Image">"
+        label_class="top-label"
+        show_hint="0">
+    <mt:if name="image_url">
+    <div class="full-width" style="padding:0.5em;margin-bottom:1em;border:1px solid #C8C2BE; background-color:white;text-align:center">
+        <a href="<mt:var name="orig_image_url" escape="html">" title="<mt:var name="image_label" escape="html">" target="_blank">
+        <img src="<mt:var name="image_url" escape="html">" width="<mt:var name="image_width">" height="<mt:var name="image_height">" alt="<mt:var name="image_label" escape="html">" />
+        </a>
+    </div>
+    </mt:if>
+    <input type="file" name="image" id="image" value="" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="movie"
+        label="<__trans phrase="Movie">"
+        label_class="top-label"
+        show_hint="0">
+    <mt:if name="movie_url">
+    <div class="full-width" style="padding:0.5em;margin-bottom:1em;border:1px solid #C8C2BE; background-color:white;text-align:center">
+    <mt:if name=movie_extension eq="swf">
+        <mt:if name=image_width>
+            <mt:if name=image_height>
+                <mt:setvar name="show_swf" value="1">
+            </mt:if>
+        </mt:if>
+    </mt:if>
+    <mt:if name="show_swf">
+        <object data="<mt:var name="movie_url" escape="html">" width="<mt:var name="image_width">" height="<mt:var name="image_height">" type="application/x-shockwave-flash">
+        <param name="movie" value="<mt:var name="movie_url" escape="html">" />
+        </object>
+    <mt:else>
+        <a href="<mt:var name="movie_url" escape="html">" title="<mt:var name="movie_label" escape="html"> ( <mt:var name="movie_mime_type" escape="html"> )" target="_blank">
+        <mt:if name="movie_extension" eq="swf">
+        <img src="<mt:var name="static_uri">images/filetype_icons/fla_sm.gif" width="16" height="16" alt="<mt:var name="movie_label" escape="html"> ( <mt:var name="movie_mime_type" escape="html"> )" />
+        <mt:else>
+        <img src="<mt:var name="static_uri">images/filetype_icons/mpeg_sm.gif" width="16" height="16" alt="<mt:var name="movie_label" escape="html"> ( <mt:var name="movie_mime_type" escape="html"> )" />
+        </mt:else>
+        </mt:if>
+    </mt:else>
+    </mt:if>
+        </a>
+    </div>
+    </mt:if>
+    <input type="file" name="movie" id="movie" value="" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="banner_width"
+        label="<__trans phrase="Banner Size">"
+        label_class="top-label"
+        show_hint="0">
+        <__trans phrase="Width">
+        <select name="banner_width" id="banner_width">
+            <option value="0" <mt:if name="banner_width" eq="0">selected="selected"</mt:if>>auto</option>
+            <mt:for var="__counter__" from="$min_banner_size" to="$max_banner_size">
+            <option value="<mt:var name="__counter__">" <mt:if name="banner_width" eq="$__counter__">selected="selected"</mt:if>><mt:var name="__counter__">px</option>
+            </mt:for>
+        </select>
+        x
+        <__trans phrase="Height">
+        <select name="banner_height" id="banner_height">
+            <option value="0" <mt:if name="banner_height" eq="0">selected="selected"</mt:if>>auto</option>
+            <mt:for var="__counter__" from="$min_banner_size" to="$max_banner_size">
+            <option value="<mt:var name="__counter__">" <mt:if name="banner_height" eq="$__counter__">selected="selected"</mt:if>><mt:var name="__counter__">px</option>
+            </mt:for>
+        </select>
+    </mtapp:setting>
+    <mtapp:setting
+        id="text"
+        label="<__trans phrase="Text">"
+        label_class="top-label"
+        show_hint="0">
+<mt:if name="use_wysiwyg">
+<div style="font-size:10px;margin-bottom:3px;margin-top:-10px;text-align:right">
+    <select name="editor_select" id="editor_select" style="font-size:10px;">
+    <option value="0"><__trans phrase="Rich Text"></option>
+    <option value="1" <mt:if name="editor_select">selected="selected"</mt:if>><__trans phrase="None"></option>
+    </select>
+</div>
+</mt:if>
+    <textarea name="text" id="text" class="text full-width"><mt:var name="text" escape="html"></textarea>
+    <mt:if name="use_wysiwyg">
+    <script type="text/javascript">
+        jQuery(function(){
+            toggle_editor(getByID('editor_select'),jQuery('#text'));
+            jQuery('#editor_select').change(function(){
+                toggle_editor(this,jQuery('#text'));
+            })
+        });
+    </script>
+    </mt:if>
+    </mtapp:setting>
+    <mtapp:setting
+        id="memo"
+        label="<__trans phrase="Memo">"
+        label_class="top-label"
+        show_hint="0">
+    <input type="text" name="memo" id="memo" class="text full-width" value="<mt:var name="memo" escape="html">" />
+    </mtapp:setting>
+</fieldset>
+<MTIgnore>
+<mt:if name="position_actions_bottom">
+    <mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+</mt:if>
+</MTIgnore>
+<script type="text/javascript">
+/* <![CDATA[ */
+App.bootstrapInline( false );
+jQuery( function() {
+    jQuery( 'input.text-date' ).datepicker( {
+        dateFormat: 'yy-mm-dd',
+        dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        monthNames: ['-01','-02','-03','-04','-05','-06','-07','-08','-09','-10','-11','-12'],
+        showMonthAfterYear: true,
+        prevText: '&lt;',
+        nextText: '&gt;'
+    } );
+} );
+function custom_insertHTML( html, target ) {
+    var ed = Editor;
+    ed.focus();
+    ed.selection.moveToBookmark( ed.bookmark );
+    ed.execCommand( 'mceInsertContent', false, html );
+    //insert_at_caret( $( '#' + target ), html )
+}
+function insert_at_caret ( target, v ) {
+    var area = target.get( 0 );
+    area.focus();
+    if ( jQuery.browser.msie ) {
+        var r = document.selection.createRange();
+        r.text = v;
+        r.select();
+    } else {
+        var s = area.value;
+        var p = area.selectionStart;
+        var np = p + v.length;
+        area.value = s.substr( 0, p ) + v + s.substr( p );
+        area.setSelectionRange( np, np );
+    }
+}
+function toggle_editor(sel,target) {
+    var val = jQuery(sel).val();
+    if ( val == 0 ) {
+        tinymce_editor.show(target);
+    } else if ( val == 1 ) {
+        tinymce_editor.remove(target);
+    }
+}
+/* ]]> */
+</script>
+<mt:include name="include/footer.tmpl">
+</__trans_section>

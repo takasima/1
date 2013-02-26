@@ -1,0 +1,304 @@
+<__trans_section component="CustomObject">
+<mt:if name="dialog_view">
+<mt:Trans component="$component" phrase="Select [_1]" params="$class_label_plural" setvar="page_title">
+<mt:else>
+<mt:Trans component="$component" phrase="Manage [_1]" params="$class_label_plural" setvar="page_title">
+</mt:else>
+</mt:if>
+<mt:setvarblock name="html_head" append="1">
+<mt:if name="dialog_view">
+<style type="text/css">
+.plugin-actions{ display:none }
+.pagination { margin-top:-32px; }
+.legacy { margin-top:-22px; margin-bottom:-12px; }
+</style>
+</mt:if>
+<script type="text/javascript">
+var select_csv;
+function file_select() {
+    select_csv = 1;
+    getByID( 'send_csv' ).style.display = 'inline';
+}
+function upload_csv() {
+    if ( getByID( 'csv' ).style.display == 'none' ) {
+        getByID( 'csv' ).style.display = 'inline';
+        return false;
+    }
+    if ( select_csv == 1 ) {
+        if ( window.confirm( '<mt:Trans component="$component" phrase="Are you sure you want to import [_1] from CSV?" params="$class_label_plural">' ) ) {
+            var form = getByID( 'upload_customobject_csv' );
+            form.submit();
+        }
+    } else {
+        alert( '<__trans phrase="Please select a file to upload.">' );
+    }
+    return false;
+}
+</script>
+</mt:setvarblock>
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved_deleted">
+        <mtapp:statusmsg
+            id="saved-deleted"
+            class="success">
+                <mt:Trans component="$component" phrase="The [_1] has been deleted from database." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="published">
+        <mtapp:statusmsg
+            id="saved-published"
+            class="success"
+            rebuild="all">
+                <mt:Trans component="$component" phrase="The [_1] has been published." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="not_published">
+        <mtapp:statusmsg
+            id="saved-not_published"
+            class="success">
+                <mt:Trans component="$component" phrase="The [_1] has not been published." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="unpublished">
+        <mtapp:statusmsg
+            id="saved-unpublished"
+            class="success"
+            rebuild="all">
+                <mt:Trans component="$component" phrase="The [_1] has been unpublished." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="not_unpublished">
+        <mtapp:statusmsg
+            id="saved-not_unpublished"
+            class="success">
+                <mt:Trans component="$component" phrase="The [_1] has not been unpublished." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="imported">
+        <mtapp:statusmsg
+            id="imported"
+            class="success">
+                <mt:Trans component="$component" phrase="The [_1] has been imported from CSV." params="$class_label_plural">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="not_imported">
+        <mtapp:statusmsg
+            id="not_imported"
+            class="error">
+                <mt:Trans component="$component" phrase="The [_1] has not been imported from CSV." params="$class_label">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="content_header">
+<mt:if name="blog_id">
+    <ul class="action-customobject-list" style="margin-bottom:0.2em;margin-top:0.3em">
+        <li style="display:inline"><a href="<mt:var name="mt_url">?__mode=view&amp;blog_id=<mt:var name="blog_id">&amp;_type=customobject&amp;class=<mt:var name="class">" class="icon-left icon-create"><mt:Trans component="$component" phrase="Create [_1]" params="$class_label"></a>&nbsp;&nbsp; </li>
+    <mt:if name="__is_admin__">
+        <li style="display:inline">
+        <a href="javascript:void(0);" class="icon-left icon-create" onclick="return upload_csv()"><__trans phrase="Import from CSV"></a>
+        <form method="post" style="display:inline" action="<mt:var name="mt_url">" enctype="multipart/form-data" id="upload_customobject_csv">
+        <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+        <input type="hidden" name="__mode" value="upload_customobject_csv" />
+        <input type="hidden" name="class" value="<mt:var name="class">" />
+        <input type="hidden" name="return_args" value="<mt:var name="return_args" escape="html">" />
+        <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+        <span id="csv" style="display:none;">
+        <input onchange="file_select()" style="font-size:11px;" type="file" name="file" id="file" />
+        <a href="javascript:void(0)" style="display:none" id="send_csv" onclick="return upload_csv()"><__trans phrase="Send"></a>
+        &nbsp;&nbsp; </span>
+        </form>
+        &nbsp;&nbsp; </li>
+        <li style="display:inline"><a class="icon-left icon-create" href="<mt:var name="mt_url">?__mode=download_customobject_csv&amp;blog_id=<mt:var name="blog_id">&amp;magic_token=<mt:var name="magic_token">&amp;class=<mt:var name="class">"><__trans phrase="Download CSV"></a>
+        </li>
+    </mt:if>
+    </ul>
+</mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="related_content">
+    <mtapp:PageActions from="$mode">
+</mt:setvarblock>
+
+<mt:setvar name="options-class" value="absolute">
+
+<mt:setvarblock name="html_body_footer">
+<mt:ignore>
+    <mt:include name="include/display_options.tmpl">
+</mt:ignore>
+</mt:setvarblock>
+
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+</style>
+<script type="text/javascript">
+/* <![CDATA[ */
+function enableFilterButton () {
+    getByID( 'filter-button' ).style.display = 'inline';
+}
+
+function toggleFilter () {
+    var filterActive = getByID( 'filter-title' );
+    if ( filterActive.style.display == 'none' ) {
+        filterActive.style.display = 'block';
+        getByID ( 'filter-select' ) .style.display = "none";
+    } else {
+        filterActive.style.display = 'none';
+        getByID ( 'filter-select' ) .style.display = "block";
+    }
+}
+
+function setFilterCol ( choice ) {
+    var sel = getByID ( 'filter-select-form' );
+    if ( !sel ) return;
+    var filters = [ 'author_id', 'status', 'exacttag' ];
+    //var filters = [  ];
+    var fld = getByID( 'filter-col' );
+    for ( var i = 0; i < filters.length; i++ ) {
+        var filter_sel = getByID( 'filter-' + filters[ i ] );
+        if ( filter_sel ) {
+            if ( choice == filters[ i ] ) {
+                filter_sel.style.display = 'inline';
+                if ( fld ) {
+                    fld.selectedIndex = i;
+                }
+            } else {
+                filter_sel.style.display = 'none';
+            }
+        }
+    }
+    if ( choice == 'none' ) {
+        var filter_sel = getByID( 'filter-' + filters[ 0 ] );
+        filter_sel.style.display = 'inline';
+    }
+    col_span = getByID ( 'filter-text-col' );
+    if ( choice != 'none' ) {
+        if ( fld.selectedIndex > -1 && col_span ) {
+            col_span.innerHTML =
+                fld.options[fld.selectedIndex].text;
+        }
+    }
+    if ( choice == 'exacttag' ) {
+        getByID( 'filter-text-val' ).innerHTML = '<mt:var name="filter_val" escape="html">';
+    }
+}
+var tableSelect;
+function init()
+{
+    // setup
+    tableSelect = new TC.TableSelect( "<mt:var name="object_type">-listing-table" );
+    tableSelect.rowSelect = true;
+    setFilterCol(<mt:if name="filter">'<mt:var name="filter" escape="js">'<mt:else>'none'</mt:if>);<mt:if name="filter">
+    setFilterVal('<mt:var name="filter_val" escape="js">');
+</mt:if>
+}
+TC.attachLoadEvent( init );
+/* ]]> */
+</script>
+</mt:setvarblock>
+
+<mt:setvarblock name="list_filter_form">
+<form id="filter-form" method="get" action="<mt:var name="mt_url">">
+    <input type="hidden" name="__mode" value="list_<mt:var name="object_type">" />
+        <mt:if name="blog_id">
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+        </mt:if>
+    <input id="filter" type="hidden" name="filter" value="" />
+    <input id="filter_val" type="hidden" name="filter_val" value="" />
+    <input type="hidden" name="class" value="<mt:var name="class">" />
+        <mt:if name="dialog_view">
+    <input type="hidden" name="dialog_view" value="1" />
+    <input type="hidden" name="edit_field" value="<mt:var name="edit_field" escape="html">" />
+    <input type="hidden" name="costomobject_select" value="1" />
+    <input type="hidden" name="dialog" value="1" />
+        </mt:if>
+</form>
+<div class="listing-filter">
+    <div class="listing-filter-inner inner pkg">
+        <form id="filter-select-form" method="get" onsubmit="execFilter(this)">
+            <input type="hidden" name="class" value="<mt:var name="class">" />
+        <mt:if name="dialog_view">
+            <input type="hidden" name="dialog_view" value="1" />
+            <input type="hidden" name="edit_field" value="<mt:var name="edit_field" escape="html">" />
+            <input type="hidden" name="customobject_select" value="1" />
+            <input type="hidden" name="dialog" value="1" />
+        </mt:if>
+            <div class="filter">
+                <div id="filter-title" class="filter-title">
+                <mt:unless name="filter">
+                <mt:unless name="query">
+                    <strong><__trans phrase="All [_1]" params="<mt:var name="object_label_plural">"></strong>
+                    <a href="javascript:void(0)" onclick="toggleFilter()" class="filter-link">[ <__trans phrase="change"> ]</a>
+                <mt:else>
+                    <strong><__trans phrase="[_1] where name contains [_2]" params='<mt:var name="object_label_plural">%%<mt:var name="query" escape="html">'></strong>
+                    <a href="<mt:var name="script_url">?__mode=<mt:var name="mode" escape="url"><mt:if name="blog_id">&amp;blog_id=<mt:var name="blog_id"></mt:if><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;costomobject_select=1&amp;dialog=1</mt:if>&amp;class=<mt:var name="class">">[ <__trans phrase="Remove filter"> ]</a>
+                </mt:unless>
+                <mt:else>
+                <strong>
+                    <__trans phrase="[_1] where [_2] is [_3]" params='<mt:var name="object_label_plural">%%<span id="filter-text-col">&nbsp;</span>%%<span id="filter-text-val"></span>'>
+                </strong>
+                    <a href="<mt:var name="script_url">?__mode=<mt:var name="mode" escape="url"><mt:if name="blog_id">&amp;blog_id=<mt:var name="blog_id"></mt:if><mt:if name="dialog_view">&amp;dialog_view=1&amp;edit_field=<mt:var name="edit_field" escape="url">&amp;costomobject_select=1&amp;dialog=1</mt:if>&amp;class=<mt:var name="class">">[ <__trans phrase="Remove filter"> ]</a>
+                </mt:unless>
+                </div>
+        <div id="filter-select" class="page-title" style="display: none">
+            <!-- start filter form -->
+                <select id="filter-col" name="filter" onchange="setFilterCol(this.options[this.selectedIndex].value);enableFilterButton(this)">
+                    <option value="author_id"><__trans phrase="Author"></option>
+                    <option value="status"><__trans phrase="Status"></option>
+                    <option value="exacttag"><__trans phrase="Tags"></option>
+                </select>
+                <__trans phrase="is">
+                <span id="filter-author_id" style="display: none">
+                    <select id="author_id-val" name="filter_val" onchange="enableFilterButton()">
+                        <mt:loop name="author_loop">
+                            <option value="<mt:var name="author_id">"><mt:var name="author_name" escape="html"></option>
+                        </mt:loop>
+                    </select>
+                </span>
+                <span id="filter-status" style="display: none">
+                    <select id="status-val" name="filter_val" onchange="enableFilterButton()">
+                        <option value="1"><__trans phrase="Draft"></option>
+                        <option value="2"><__trans phrase="Publishing"></option>
+                    </select>
+                </span>
+                <span id="filter-exacttag" style="display: none">
+                    <select id="exacttag-val" name="filter_val" onchange="enableFilterButton()">
+                        <mt:loop name="tag_loop">
+                            <option value="<mt:var name="tag_name" escape="html">"><mt:var name="tag_name" escape="html"></option>
+                        </mt:loop>
+                    </select>
+                </span>
+            <span class="buttons">
+                <button
+                    id="filter-button"
+                    onclick="return execFilter(getByID('filter-select-form'))"
+                    type="submit"
+                    class="button"
+                    ><__trans phrase="Filter"></button>
+                <button
+                    onclick="toggleFilter(); return false;"
+                    class="button"
+                    type="submit"
+                    ><__trans phrase="Cancel"></button>
+            </span>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+</mt:setvarblock>
+<mt:if name="dialog_view">
+<mt:include name="dialog/header.tmpl">
+<mt:else>
+<mt:include name="include/header.tmpl">
+</mt:else>
+</mt:if>
+<mt:var name="list_filter_form">
+<mt:include name="include/customobject_table.tmpl">
+<mt:if name="dialog_view">
+<mt:include name="dialog/footer.tmpl">
+<mt:else>
+<mt:include name="include/footer.tmpl">
+</mt:else>
+</mt:if>
+</__trans_section>

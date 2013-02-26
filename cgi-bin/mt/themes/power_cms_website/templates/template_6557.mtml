@@ -1,0 +1,18 @@
+<MTSetVars>
+page_title=NOT FOUND
+</MTSetVars>
+
+<MTSetVarBlock name="html_head" append="1">
+<link href="<$MTLink template="<__trans phrase="PC-Stylesheet(top.css)">"$>" rel="stylesheet" type="text/css" media="screen,print" />
+</MTSetVarBlock>
+<$MTInclude module="<__trans phrase="PC-HTML Header">"$>
+<$MTInclude module="<__trans phrase="PC-Header">"$>
+        <!-- [contents] -->
+        <div id="contents" class="clf">
+                <$MTInclude module="<__trans phrase="PC-Main visual">"$>
+                <div id="contents_list" class="clf">
+                        <h1><__trans phrase="Page Not Found"></h1>
+                </div>
+        </div>
+        <!-- /[contents] -->
+<$MTInclude module="<__trans phrase="PC-Footer">"$>

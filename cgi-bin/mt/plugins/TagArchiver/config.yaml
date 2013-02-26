@@ -1,0 +1,62 @@
+name: Tag Archiver
+id:   TagArchiver
+key:  tagarchiver
+version: 0.7
+schema_version: 0.2
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+l10n_class: TagArchiver::L10N
+description: <__trans phrase="Tag based archiver.">
+archive_types:
+    Tag: TagArchiver::Tag
+object_types:
+    fileinfo:
+        tag_id: integer
+
+# TODO / cms_post_save_by_listing.page/entry(test)
+# TODO / at Tasks
+
+callbacks:
+    init_request: $tagarchiver::TagArchiver::Plugin::_init_request
+    MT::App::CMS::pre_run: $tagarchiver::TagArchiver::Plugin::_pre_run
+    MT::App::CMS::post_run: $tagarchiver::TagArchiver::Plugin::_post_run
+    build_file_filter: $tagarchiver::TagArchiver::Plugin::_build_file_filter
+    cms_post_delete.tag: $tagarchiver::TagArchiver::Plugin::_post_delete_tag
+    cms_post_save.page:
+        handler: $tagarchiver::TagArchiver::Plugin::_post_save_page
+        priority: 10
+    cms_post_save.entry:
+        handler: $tagarchiver::TagArchiver::Plugin::_post_save_entry
+        priority: 10
+    cms_post_save.page:
+        handler: $tagarchiver::TagArchiver::Plugin::_post_save_entry
+        priority: 10
+    cms_delete_permission_filter.entry:
+        handler: $tagarchiver::TagArchiver::Plugin::_pre_delete_entry
+        priority: 10
+    cms_delete_permission_filter.page:
+        handler: $tagarchiver::TagArchiver::Plugin::_pre_delete_page
+        priority: 10
+    scheduled_post_published: $tagarchiver::TagArchiver::Plugin::_post_published_entry
+    scheduled_post_unpublished: $tagarchiver::TagArchiver::Plugin::_post_published_entry
+    MT::Tag::post_save: $tagarchiver::TagArchiver::Plugin::_post_save_tag
+    MT::App::CMS::template_param.edit_template: $tagarchiver::TagArchiver::Plugin::_edit_template_param
+    cms_pre_preview.template: $tagarchiver::TagArchiver::Plugin::_cms_pre_preview
+    cms_post_recover_from_revision.entry: $tagarchiver::TagArchiver::Plugin::_post_recover_entry
+    cms_post_recover_from_revision.page: $tagarchiver::TagArchiver::Plugin::_post_recover_page
+    cms_post_save_by_listing.entry:
+        handler: $tagarchiver::TagArchiver::Plugin::_post_published_entry
+        priority: 10
+    cms_post_save_by_listing.page:
+        handler: $tagarchiver::TagArchiver::Plugin::_post_published_entry
+        priority: 10
+    cms_post_delete.entry: $tagarchiver::TagArchiver::Plugin::_post_delete_entry
+    cms_post_delete.page: $tagarchiver::TagArchiver::Plugin::_post_delete_entry
+    cms_delete_permission_filter.tag: $tagarchiver::TagArchiver::Plugin::_pre_delete_tag
+    MT::ObjectTag::post_remove: $tagarchiver::TagArchiver::Plugin::_object_tag_remove
+    MT::FileInfo::post_save: $tagarchiver::TagArchiver::Plugin::_post_save_file_info
+    cms_pre_preview.template: $tagarchiver::TagArchiver::Plugin::_cms_pre_preview
+    restore: $tagarchiver::TagArchiver::Plugin::_cb_restore
+tags:
+    block:
+        SetTagContext: $tagarchiver::TagArchiver::Plugin::_tag_context

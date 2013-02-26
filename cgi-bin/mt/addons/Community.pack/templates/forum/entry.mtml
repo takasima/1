@@ -1,0 +1,21 @@
+<__trans_section component="community">
+<mt:SetVarBlock name="page_title"><$mt:EntryTitle$></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:Var name="page_title"$> - <$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<mt:SetVarBlock name="html_head" append="1">
+    <mt:EntryPrevious><link rel="prev bookmark" href="<$mt:EntryPermalink$>" title="<$mt:EntryTitle encode_html="1"$>" /></mt:EntryPrevious>
+    <mt:EntryNext><link rel="next bookmark" href="<$mt:EntryPermalink$>" title="<$mt:EntryTitle encode_html="1"$>" /></mt:EntryNext>
+    <$mt:EntryTrackbackData$>
+</mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">" body_class="mt-entry-archive"$>
+
+<mt:SetVarBlock name="content_header_title"><$mt:EntryCategory$></mt:SetVarBlock>
+<mt:SetVarBlock name="content_header_url"><$mt:EntryLink type="Category"$></mt:SetVarBlock>
+<$mt:Include module="<__trans phrase="Content Header">" content_header_title="$content_header_title" content_header_url="$content_header_url" content_header_title_tag="div" content_header_class="entry-title"$>
+
+<$mt:Include module="<__trans phrase="Entry Detail">"$>
+
+<$mt:Include module="<__trans phrase="Comments">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$> 
+</__trans_section>

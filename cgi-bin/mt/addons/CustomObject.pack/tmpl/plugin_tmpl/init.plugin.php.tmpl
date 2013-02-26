@@ -1,0 +1,82 @@
+<?php
+    global $customfield_types;
+    $customfield_types[ '<mt:var name="class">' ] = array(
+        'field_html' => array (
+            'default' => 'customfield_html_customobject',
+            'author' =>  'customfield_html_customobject_author',
+        ),
+        'column_def' => 'vinteger_idx',
+    );
+    $customfield_types[ '<mt:var name="class">_multi' ] = array(
+        'field_html' => array (
+            'default' => 'customfield_html_customobject_multi',
+            'author' =>  'customfield_html_customobject_multi_author',
+        ),
+        'column_def' => 'vchar_idx',
+    );
+    $customfield_types[ '<mt:var name="class">_group' ] = array(
+        'field_html' => array (
+            'default' => 'customfield_html_customobject',
+            'author' =>  'customfield_html_customobject_author',
+        ),
+        'column_def' => 'vinteger_idx',
+    );
+    require_once( 'archive_lib.php' );
+    ArchiverFactory::add_archiver( '<mt:var name="plugin_id">', '<mt:var name="plugin_id">Archiver' );
+    class <mt:var name="plugin_id">Archiver extends CustomObjectArchiver {
+        public function get_label( $args = NULL ) {
+            return '<mt:var name="plugin_id">';
+        }
+        public function template_params() {
+            $mt = MT::get_instance();
+            $ctx =& $mt->context();
+            require_once( 'init.CustomObject.php' );
+            $data = ___get_fileinfo( $ctx );
+            $id = $data->customobject_id;
+            $blog_id = $data->blog_id;
+            require_once( 'customobject.util.php' );
+            $prefix = __init_customobject_class( $ctx );
+            $include_draft = " AND {$prefix}_status = 2 ";
+            $where = "{$prefix}_blog_id={$blog_id} {$include_draft}";
+            if ( isset( $id ) ) {
+                $where = " {$prefix}_id='{$id}' $include_draft";
+            }
+            $extra[ 'limit' ] = 1;
+            $_customobject = new CustomObject;
+            $customobject = $_customobject->Find( $where, false, false, $extra );
+            if ( isset( $customobject ) ) {
+                $customobject = $customobject[ 0 ];
+                $ctx->stash( 'customobject', $customobject );
+            }
+            $vars =& $ctx->__stash[ 'vars' ];
+            $vars[ 'archive_class' ] = 'customobject-archive';
+            $vars[ 'customobject_class' ] = '<mt:var name="class">';
+            $vars[ 'archive_listing' ]   = 1;
+            $vars[ 'archive_template' ]  = 1;
+            $vars[ 'customobject_archive' ] = 1;
+        }
+    }
+    ArchiverFactory::add_archiver( 'Folder<mt:var name="plugin_id">', 'Folder<mt:var name="plugin_id">Archiver' );
+    class Folder<mt:var name="plugin_id">Archiver extends FolderCustomObjectArchiver {
+        public function get_label( $args = NULL ) {
+            return 'Folder-<mt:var name="plugin_id">';
+        }
+        public function template_params() {
+            $mt = MT::get_instance();
+            $ctx =& $mt->context();
+            require_once( 'init.CustomObject.php' );
+            $data = ___get_fileinfo( $ctx );
+            $id = $data->category_id;
+            $category = $mt->db()->fetch_folder( $id );
+            if ( isset( $category ) ) {
+                $ctx->stash( 'category', $category );
+            }
+            $vars =& $ctx->__stash[ 'vars' ];
+            $vars[ 'archive_class' ] = 'folder-<mt:var name="class">-archive';
+            $vars[ 'customobject_class' ] = '<mt:var name="class">';
+            $vars[ 'archive_listing' ]   = 1;
+            $vars[ 'archive_template' ]  = 1;
+            $vars[ 'folder_customobject_archive' ] = 1;
+        }
+    }
+?>

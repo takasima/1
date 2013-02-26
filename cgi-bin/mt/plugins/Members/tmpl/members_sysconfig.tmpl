@@ -1,0 +1,62 @@
+    <mtapp:setting
+        id="members_path_base"
+        label="<__trans phrase="Site Base Path">">
+    <ul>
+    <li><input type="text" value="<mt:var name="members_path_base" escape="html">" name="members_path_base" id="members_path_base" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_session_timeout"
+        label="<__trans phrase="Session Timeout">">
+    <ul>
+    <li><input type="text" value="<mt:var name="members_session_timeout" escape="html">" name="members_session_timeout" id="members_session_timeout" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_signup_timeout"
+        label="<__trans phrase="Sign up Timeout">">
+    <ul>
+    <li><input type="text" value="<mt:var name="members_signup_timeout" escape="html">" name="members_signup_timeout" id="members_signup_timeout" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_registration_status"
+        label="<__trans phrase="Register user's status">">
+    <ul>
+    <li><label><input type="radio" value="1" name="members_registration_status" id="members_registration_status" <mt:if name="members_registration_status" eq="1">checked="checked"</mt:if> />
+    <__trans phrase="Enabled"></label>
+    <label><input type="radio" value="3" name="members_registration_status" id="members_registration_status2" <mt:if name="members_registration_status" eq="3">checked="checked"</mt:if> />
+    <__trans phrase="Pending"></label>
+    </li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_email_notify2_active"
+        label="<__trans phrase="Send registered mail to author">">
+    <ul>
+    <li><label><input type="checkbox" name="members_email_notify2_active" id="members_email_notify2_active"<mt:if name="members_email_notify2_active"> checked="checked"</mt:if> /></label>
+    </li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_registration_all"
+        label="<__trans phrase="Allow Register">">
+    <ul>
+    <li><label><input type="checkbox" value="1" name="members_registration_all" id="members_registration_all" <mt:if name="members_registration_all">checked="checked"</mt:if> />
+    <__trans phrase="Register to All member's site."></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_email_notify2"
+        label="<__trans phrase="Notify Send to">">
+    <ul>
+    <li><label><input type="text" value="<mt:var name="members_email_notify2" escape="html">" name="members_email_notify2" id="members_email_notify2" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="members_email_from"
+        label="<__trans phrase="Notify Send From">">
+    <ul>
+    <li><label><input type="text" value="<mt:var name="members_email_from" escape="html">" name="members_email_from" id="members_email_from" /></li>
+    </ul>
+    </mtapp:setting>

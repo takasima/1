@@ -1,0 +1,35 @@
+<MTBuildRecurs>
+<MTSetVarTemplate name="entry_body">
+    <mtml tag="mt:IfUserAgent" params='wants="keitai" trim="1"'>
+    <mtml tag="mt:setvar" params='name="thumb_size" value="100,500"'>
+    <mtml tag="mt:else">
+    <mtml tag="mt:IfUserAgent" params='wants="SmartPhone"'>
+    <mtml tag="mt:setvar" params='name="thumb_size" value="200,1000"'>
+    <mtml tag="/mt:IfUserAgent">
+    <mtml tag="/mt:else">
+    <mtml tag="/mt:IfUserAgent">
+    <mtml tag="MTFor" params='convertthumbnail="$thumb_size"'>
+    <MTIfTemplateSelectorBlock>
+        <MTIfTemplateSelector name="">
+            <$MTPageBody mteval="1"$>
+            <MTIf tag="MTPageMore">
+            <div id="more">
+            <$MTPageMore mteval="1"$>
+            </div>
+            </MTIf>
+        </MTIfTemplateSelector>
+    </MTIfTemplateSelectorBlock>
+    <mtml tag="/MTFor">
+</MTSetVarTemplate>
+<mtml tag="mt:IfUserAgent" params='wants="keitai" trim="1"'>
+<$MTInclude module="<__trans phrase="Mobile-Page">"$>
+<mtml tag="mt:else">
+    <mtml tag="mt:IfUserAgent" params='wants="SmartPhone"'>
+<$MTInclude module="<__trans phrase="SP-Page">"$>
+    <mtml tag="mt:else">
+<$MTInclude module="<__trans phrase="PC-Page">"$>
+    <mtml tag="/mt:else">
+    <mtml tag="/mt:IfUserAgent">
+<mtml tag="/mt:else">
+<mtml tag="/mt:IfUserAgent">
+</MTBuildRecurs>

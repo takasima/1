@@ -1,0 +1,85 @@
+<$MTBlogID setvar="blog_id"$>
+<mt:IfUserAgent wants="SmartPhone">
+<!DOCTYPE HTML>
+<html lang="<$MTBlogLanguage$>" dir="ltr">
+    <head>
+        <meta charset="<$MTPublishCharset$>">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title><__trans phrase="Secede Confirm"> | <mt:blogname escape="html"></title>
+        <link href="<$MTLink template="<__trans phrase="SP-Stylesheet(import.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+        <link href="<$MTLink template="<__trans phrase="SP-Stylesheet(login.css)">"$>" rel="stylesheet" type="text/css" media="screen,print">
+        <script src="<$MTLink template="JavaScript(jquery.js)"$>"></script>
+        <script src="<$MTLink template="JavaScript"$>"></script>
+        <script src="<$MTLink template="<__trans phrase="SP-JavaScript(main.js)">" blog_id="$website_id"$>"></script>
+    </head>
+<header id="top" class="clearfix">
+    <p id="site_title"><mt:blogname escape="html"></p>
+</header>
+
+<h1 id="page_title"><a href="#global_nav"><__trans phrase="Sign In"></a></h1>
+
+<div id="contents">
+    <section>
+        <div class="panel">
+            <div class="login_panel">
+                <p><__trans phrase="Are you sure secede?"></p>
+                <form class="secedes_form" method="post" action="<$MTGetVar name="script_url"$>">
+                    <input type="hidden" name="magic_token" value="<$MTGetVar name="magic_token"$>" />
+                    <input type="hidden" name="__mode" value="secedes" />
+                    <input type="hidden" name="blog_id" value="<$MTGetVar name="blog_id"$>" />
+                    <input type="hidden" name="return_url" value="<$MTGetVar name="return_url"$>" />
+                    <p class="post_submit2">
+                        <input onclick="return confirm( '<__trans phrase="Are you sure secede?">' )" type="image" src="<$MTBlogURL escape="html"$>common/images/login_btn_secede_01.gif" alt="<__trans phrase="Secedes">" />
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+<footer>
+    <p><small>Copyright &copy; <$MTDate format="%Y"$></small></p>
+</footer>
+</body>
+</html>
+<mt:else>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=<$MTPublishCharset$>" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <title><__trans phrase="Secede Confirm"> | <mt:blogname escape="html"></title>
+        <link href="<$MTLink template="<__trans phrase="PC-Stylesheet(login.css)">"$>" rel="stylesheet" type="text/css" media="screen,print" />
+    </head>
+    <body class="contents_wide">
+        <!-- [contents] -->
+        <div id="contents">
+            <div class="login_field">
+            <div class="login_field_set">
+                <div class="login_field_inner">
+                    <h1 class="logo"><img src="<$MTBlogURL escape="html"$>common/images/login_logo.gif" width="280" height="55" alt="<$MTBlogName escape="html"$>" /></h1>
+                    <p><__trans phrase="Are you sure secede?"></p>
+                    <form class="secedes_form" method="post" action="<$MTGetVar name="script_url"$>">
+                        <input type="hidden" name="magic_token" value="<$MTGetVar name="magic_token"$>" />
+                        <input type="hidden" name="__mode" value="secedes" />
+                        <input type="hidden" name="blog_id" value="<$MTGetVar name="blog_id"$>" />
+                        <input type="hidden" name="return_url" value="<$MTGetVar name="return_url"$>" />
+                        <p class="post_submit2">
+                            <input onclick="return confirm( '<__trans phrase="Are you sure secede?">' )" type="image" src="<$MTBlogURL escape="html"$>common/images/login_btn_secede_01.gif" alt="<__trans phrase="Secedes">" />
+                        </p>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- /[contents] -->
+        <hr class="doc_separate" />
+        <div id="footer">
+            <div id="footer_info">
+                <address class="copy">Copyright &copy; <$MTDate format="%Y"$> <$MTBlogName$>. All rights reserved.</address>
+            </div>
+        </div>
+    </body>
+</html>
+</mt:else>
+</mt:IfUserAgent>

@@ -1,0 +1,91 @@
+<$mt:BlogID setvar="blog_id"$>
+<$mt:setvar name="edit_profile" value="1"$>
+<mt:SetVarBlock name="page_title"><__trans phrase="Edit Profile"></mt:SetVarBlock>
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<$mt:Include module="<__trans phrase="Mobile-Login Header">"$>
+
+<mt:if name="error">
+    <mt:loop name="errors">
+        <mt:setvarblock name="error_name">error_<$mt:var name="error_name"$></mt:setvarblock>
+        <$mt:setvar name="$error_name" value="1"$>
+    </mt:loop>
+    <span style="color:red">
+    <mt:if name="error_required">
+        <mt:if name="error_email">
+            <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+            <__trans phrase="Please enter your email address">
+        </mt:if>
+        <mt:if name="error_nickname">
+            <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+            <__trans phrase="Please enter your display name">
+        </mt:if>
+        <mt:if name="error_mobile_address">
+            <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+            <__trans phrase="Please enter your mobile email address">
+        </mt:if>
+    </mt:if>
+    <mt:if name="error_password">
+        <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+        <__trans phrase="Select a password for your account.">
+    </mt:if>
+    <mt:if name="error_pass_verify">
+        <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+        <__trans phrase="Please do re-enter the password">
+    </mt:if>
+    <mt:if name="error_password_not_verify">
+        <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+        <__trans phrase="Both passwords must match.">
+    </mt:if>
+    <mt:if name="error_email_not_valid">
+        <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+        <__trans phrase="Please check the format of the e-mail address">
+    </mt:if>
+    <mt:if name="error_mobile_not_valid">
+        <mt:if name="is_first"><br /><mt:else><$mt:setvar name="is_first" value="1"$></mt:if>
+        <__trans phrase="Please check the format of the mobile e-mail address">
+    </mt:if>
+    </span>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+<mt:else name="saved">
+    <span><__trans phrase="Your changes have been saved."></span>
+    <hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+</mt:if>
+<form method="post" action="<mt:var name="script_url">" utn="utn">
+    <input type="hidden" name="magic_token" value="<$mt:var name="magic_token"$>" />
+    <input type="hidden" name="__mode" value="edit_profile" />
+    <input type="hidden" name="type" value="save" />
+    <input type="hidden" name="author_id" value="<mt:authorid>" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="return_url" value="<mt:var name="return_url" escape="html">" />
+    <input type="hidden" name="sessid" value="<mt:var name="sessid" escape="html">" />
+    <__trans phrase="Display Name"><span style="color:red">[<__trans phrase="Required">]</span><br />
+        <input type="text" name="nickname" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authordisplayname escape="html">" /><br />
+    <__trans phrase="Email Address"><span style="color:red">[<__trans phrase="Required">]</span><br />
+        <input type="text" name="email" id="email" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authoremail escape="html">" /><br />
+        <mt:if name="email_error"><br /><span style="color:red">(<__trans phrase="Invalid value">)</span></mt:if>
+    <__trans phrase="Moblie E-mail"><span style="color:red">[<__trans phrase="Required">]</span><br />
+        <input type="text" name="mobile_address" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authormobileemail escape="html">" /><br />
+        <mt:if name="mobile_error"><br /><span style="color:red">(<__trans phrase="Invalid value">)</span></mt:if>
+    <__trans phrase="Secret Token"><br />
+        <input type="text" name="mail_token" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" value="<mt:authormobiletoken escape="html">" /><br />
+        <mt:if name="token_error"><br /><span style="color:red">(<__trans phrase="Invalid value">)</span></mt:if>
+    <__trans phrase="Password Recovery"><br />
+        <input name="password" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+        <mt:if name="passwd_error"><br /><span style="color:red">(<__trans phrase="Invalid value">)</span></mt:if>
+    <__trans phrase="Confirm Password"><br />
+        <input name="pass_verify" type="text" istyle="3" format="*m" style="-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:*m;" mode="alphabet" /><br />
+    <MTIfPlugin component="MailMagazine">
+    <__trans phrase="Mail Subscription"><br />
+        <input name="mail_subscription"<mt:if name="mail_subscription"> checked="checked"</mt:if> type="checkbox" /> <__trans phrase="Subscribe"><br />
+    </MTIfPlugin>
+        <div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Save">" /></div>
+</form>
+<hr style="color:#ccc;background:#ccc;height:1px;border:0px solid #ccc;margin:0.3em 0;" size="1"/>
+<form method="post" action="<mt:var name="script_url">" utn="utn">
+    <input type="hidden" name="magic_token" value="<$mt:var name="sessid"$>" />
+    <input type="hidden" name="__mode" value="secedes_confirm" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="sessid" value="<mt:var name="sessid" escape="html">" />
+    <div align="center" style="margin-top:0.3em;"><input type="submit" value="<__trans phrase="Secedes">" /></div>
+</form>
+<$mt:Include module="<__trans phrase="Mobile-Login Footer">"$>

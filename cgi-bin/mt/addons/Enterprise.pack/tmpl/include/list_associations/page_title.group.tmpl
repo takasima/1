@@ -1,0 +1,8 @@
+    <mt:if name="role_view">
+        <mt:if name="group_support">
+            <mt:setvarblock name="page_title"><__trans_section component="enterprise"><__trans phrase="Users &amp; Groups for [_1]" params="<mt:var name="role_name" escape="html">"></__trans_section></mt:setvarblock>
+        </mt:if>
+    </mt:if>
+    <mt:if name="group_view">
+        <mt:setvarblock name="page_title"><__trans phrase="Permissions for [_1]" params="<mt:var name="group_name" escape="html">"></mt:setvarblock>
+    </mt:if>

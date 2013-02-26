@@ -1,0 +1,160 @@
+<__trans_section component="ContactForm">
+<mt:setvarblock name="page_title"><mt:if name="id"><__trans phrase="Edit Feedback Data"><mt:else><__trans phrase="Create Feedback Data"></mt:else></mt:if></mt:setvarblock>
+<mt:setvarblock name="html_head" append="1">
+</mt:setvarblock>
+<mt:setvar name="position_actions_bottom" value="1">
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved">
+        <mtapp:statusmsg
+           id="saved"
+            class="success">
+            <__trans phrase="Your changes have been saved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="error">
+        <mtapp:statusmsg
+            id="generic-error"
+            class="error">
+            <mt:var name="error">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+<mt:setvartemplate name="action_buttons">
+    <button
+        type="submit"
+        accesskey="s"
+        title="<__trans phrase="Save this Feedback Data (s)">"
+        class="save action primary-button primary button"
+        ><__trans phrase="Save"></button>
+    <mt:if name="id">
+    <button
+        onclick="
+        if ( window.confirm( '<__trans phrase="Are you sure you want to remove this Feedback Data?">' ) ) {
+            getByID( 'this_mode' ).value='delete';
+            getByID( 'this_return_args' ).value='__mode=list&amp;_type=feedback&amp;blog_id=<mt:var name="blog_id">';
+            this.form.submit();
+        } else {
+            return false;
+        }
+        "
+        type="submit"
+        accesskey="x"
+        title="<__trans phrase="Delete this Feedback Data (x)">"
+        class="delete action button"
+        ><__trans phrase="Delete"></button>
+    </mt:if>
+</mt:setvartemplate>
+<mt:setvarblock name="related_content">
+    <mtapp:PageActions>
+</mt:setvarblock>
+
+<mt:setvarblock name="object_nav">
+    <ul class="object-nav">
+        <li id="previous-link"><mt:if name="previous_contactform_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=contactform&amp;id=<mt:var name="previous_contactform_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Previous"></a><mt:else><span><__trans phrase="Previous"></span></mt:if></li>
+        <li id="next-link"><mt:if name="next_contactform_id"><a href="<mt:var name="script_url">?__mode=view&amp;_type=contactform&amp;id=<mt:var name="next_contactform_id" escape="url">&amp;blog_id=<mt:var name="blog_id" escape="url">"><__trans phrase="Next"></a><mt:else><span><__trans phrase="Next"></span></mt:if></li>
+    </ul>
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">">
+    <input type="hidden" name="id" value="<mt:var name="id" escape="html">" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id" escape="html">" />
+    <input type="hidden" name="__mode" id="this_mode" value="save" />
+    <input type="hidden" name="action_name" value="" />
+    <input type="hidden" name="itemset_action_input" value="" />
+    <input type="hidden" name="_type" value="feedback" />
+    <input type="hidden" name="class" value="feedback" />
+    <input type="hidden" name="return_args" id="this_return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+<mt:if name="position_actions_top">
+    <mt:include name="include/actions_bar.tmpl" bar_position="top" hide_pager="1">
+</mt:if>
+<fieldset>
+    <MTIgnore><h3><mt:var name="page_title"></h3></MTIgnore>
+    <mtapp:setting
+        id="form_name"
+        label="<__trans phrase="Form">"
+        show_hint="0">
+    <div style="padding-top:5px;color:#555;font-weight:bold"><mt:var name="form_name" escape="html"></div>
+    </mtapp:setting>
+    <mt:if name="created_by">
+        <mtapp:setting
+            id="email"
+            label="<__trans phrase="Commenter">"
+            show_hint="0">
+        <mt:var name="obj_author" escape="html">
+        <MTIgnore>
+        <input type="text" name="email" id="email" class="text full-width" value="<mt:var name="email" escape="html">" />
+        </MTIgnore>
+    </mtapp:setting>
+    </mt:if>
+    <mt:loop name="data_loop">
+        <mtapp:setting
+            id="field_data-<mt:var name="field_count">"
+            label="<mt:var name="field_label" escape="html">"
+            show_hint="0">
+            <$mt:formcmshtml$>
+            <input type="hidden" name="field_basename-<mt:var name="field_count">" id="field_basename-<mt:var name="field_count">" value="<mt:var name="field_basename" escape="html">" />
+            <input type="hidden" name="field_type-<mt:var name="field_count">" id="field_type-<mt:var name="field_count">" value="<mt:var name="field_type" escape="html">" />
+        </mtapp:setting>
+    </mt:loop>
+    <mtapp:setting
+        id="memo"
+        label="<__trans phrase="Memo">"
+        show_hint="0">
+            <textarea name="memo" id="memo" class="text full-width"><mt:var name="memo" escape="html"></textarea>
+    </mtapp:setting>
+    <mtapp:setting
+        id="identifier"
+        label="<__trans phrase="Identifier">"
+        show_hint="0">
+    <input type="text" name="identifier" id="identifier" class="text full-width" value="<mt:var name="identifier" escape="html">" />
+    </mtapp:setting>
+    <mtapp:setting
+        id="status"
+        label="<__trans phrase="Status">"
+        show_hint="0">
+    <select name="status" id="status">
+    <option value="1"<mt:if name="status" eq="1"> selected="selected"</mt:if>><__trans phrase="Unapproval"></option>
+    <option value="2"<mt:if name="status" eq="2"> selected="selected"</mt:if>><__trans phrase="Approval"></option>
+    <option value="3"<mt:if name="status" eq="3"> selected="selected"</mt:if>><__trans phrase="Flagged"></option>
+    </select>
+    </mtapp:setting>
+    <mtapp:setting
+        id="created_on_date"
+        label="<__trans phrase="Post On">"
+        show_hint="0">
+            <input type="text" name="created_on_date" style="width:7em;" class="text start-date text-date" value="<mt:var name="created_on_date">" >
+            <input type="text" name="created_on_time" style="width:5.5em;" class="text start-time" value="<mt:var name="created_on_time">">
+    </mtapp:setting>
+</fieldset>
+
+<mt:if name="position_actions_bottom">
+    <mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+</mt:if>
+</form>
+
+<script type="text/javascript">
+App.bootstrapInline( false );
+jQuery( function() {
+    jQuery( 'input.text-date' ).datepicker( {
+        dateFormat: 'yy-mm-dd',
+        dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        monthNames: ['-01','-02','-03','-04','-05','-06','-07','-08','-09','-10','-11','-12'],
+        showMonthAfterYear: true,
+        prevText: '&lt;',
+        nextText: '&gt;'
+    } );
+} );
+function custom_insertHTML( html, target ) {
+    var ed = Editor;
+    ed.focus();
+    ed.selection.moveToBookmark( ed.bookmark );
+    ed.execCommand( 'mceInsertContent', false, html );
+    //insert_at_caret( $( '#' + target ), html )
+}
+</script>
+<mt:include name="include/footer.tmpl">
+</__trans_section>

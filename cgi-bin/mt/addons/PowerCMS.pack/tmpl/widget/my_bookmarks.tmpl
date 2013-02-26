@@ -1,0 +1,78 @@
+<__trans_section component="PowerCMS">
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+.shortcuts-list li {
+    padding-left: 20px;
+    background-position: 0px 2px;
+    background-repeat: no-repeat;
+}
+.shortcuts-list li .icons {
+    margin-left: 5px;
+}
+</style>
+</mt:setvarblock>
+<mtapp:widget class="widget bookmark-shortcut-widget" can_close="1" label="<__trans phrase="Bookmarks">">
+<mt:UserBookmarks setvar="_">
+    <mt:setvarblock name="item_count"><mt:var name="__counter__" escape="html"></mt:setvarblock>
+    <li class="item" id="bk_item_<mt:var name="__counter__" escape="html">" style="background-image:url(<$mt:var name="static_uri"$>addons/PowerCMS.pack/images/function_icon_set/16/<mt:if name="icon"><$mt:var name="icon" escape="html"$><mt:else>star_48</mt:else></mt:if>.png);">
+        <a class="title" href="<$mt:var name="url" escape="html"$>"><mt:var name="label" escape="html"></a>
+        <span class="icons">
+            <a title="<__trans phrase="edit">" class="mt-open-dialog" href="<$mt:var name="mt_url"$>?__mode=shortcut_dialog&amp;dialog_view=1&amp;key=<mt:var name="key" escape="url">"><img src="<$mt:var name="static_uri"$>addons/PowerCMS.pack/images/edit.gif" alt="<__trans phrase="edit">" width="10" height="10" /></a>
+            <a href="javascript:void(0)" class="delete" onclick="bookmark.delete(this,'<mt:var name="key" escape="js">');"><img title="<__trans phrase="delete">" src="<$mt:var name="static_uri"$>addons/PowerCMS.pack/images/trush.gif" alt="<__trans phrase="delete">" width="9" height="10" /></a>
+        </span>
+    </li>
+</mt:UserBookmarks>
+<mt:if name="_" like="/\S/">
+<ul class="shortcuts-list">
+<mt:var name="_">
+</ul>
+</mt:if>
+
+<p id="no-shortcut-available"<mt:if name="item_count"> style="display:none;color:gray"<mt:else> style="color:gray"</mt:else></mt:if>><__trans phrase="No shortcut available."></p>
+
+<script type="text/javascript">
+bookmark = {
+    init: {
+        total: <mt:if name="item_count"><mt:var name="item_count"><mt:else>0</mt:else></mt:if>
+    },
+    delete: function(a, key) {
+        if (!window.confirm('<__trans phrase="Are you sure you want to remove this shortcut?">')) {
+            return;
+        }
+        jQuery('<img src="<$mt:var name="static_uri"$>images/indicator-login.gif" class="bk_indicater" />').insertAfter(a);
+        jQuery(a).hide();
+        jQuery.ajax({
+            url: '<$MTAdminFullURL$>',
+            data: '__mode=remove_my_shortcut&key=' + key + '&magic_token=<mt:var name="magic_token" escape="js">',
+            success: function(data) {
+                if (!data.match('html')) {
+                    jQuery(a).parents('.item').remove();
+                    var url_a = jQuery(a).parents('.item').find('a').eq(0);
+                    var url = url_a.attr('href');
+                    jQuery('#bookmarks_menu_ul a').each(function() {
+                        if (jQuery(this).attr('href') == url) {
+                            jQuery(this).parent().remove();
+                        }
+                    });
+
+                    bookmark.init.total--;
+                    if (bookmark.init.total == 0) {
+                        jQuery('#no-shortcut-available').show();
+                    }
+                }else{
+                    jQuery('.bk_indicater').remove();
+                    jQuery(a).show();
+                    alert('<__trans phrase="Failed to remove">');
+                }
+            },
+            error: function() {
+                jQuery('.bk_indicater').remove();
+                jQuery(a).show();
+                alert('<__trans phrase="Failed to remove">');
+            }
+        });
+    }
+};
+</script>
+</mtapp:widget>
+</__trans_section>

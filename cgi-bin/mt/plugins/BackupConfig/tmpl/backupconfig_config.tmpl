@@ -1,0 +1,156 @@
+    <mtapp:setting
+        id="backup_sql"
+        label="<__trans phrase="Backup SQL">">
+    <ul>
+    <li><label><input type="checkbox" name="backup_sql" id="backup_sql"
+    <mt:if name="backup_sql">checked="checked"</mt:if> value="1" /> <__trans phrase="Backup SQL dump file"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="sql2zip"
+        label="<__trans phrase="Zip compress">">
+    <ul>
+    <li><label><input type="checkbox" name="sql2zip" id="sql2zip"
+    <mt:if name="sql2zip">checked="checked"</mt:if> value="1" /> <__trans phrase="Compress SQL file"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="backup_doc"
+        label="<__trans phrase="Backup documents">">
+    <ul>
+    <li><label><input type="checkbox" name="backup_doc" id="backup_doc"
+    <mt:if name="backup_doc">checked="checked"</mt:if> value="1" /> <__trans phrase="Backup web document root"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="sqldump"
+        label="<__trans phrase="Path to mysqldump ( or pg_dump | exp | sqlcmd )">">
+    <ul>
+    <li><label><input type="text" name="sqldump" id="sqldump" value="<mt:var name="sqldump" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="sqlopt"
+        label="<__trans phrase="SQL option">">
+    <ul>
+    <li><label><input type="text" name="sqlopt" id="sqlopt" value="<mt:var name="sqlopt" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+
+<mt:ignore>
+    <mtapp:setting
+        id="oracle_nls_lang"
+        label="<__trans phrase="NLS_LANG(Oracle)">">
+    <ul>
+    <li><label><input type="text" name="oracle_nls_lang" id="oracle_nls_lang" value="<mt:var name="oracle_nls_lang" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+</mt:ignore>
+    
+    <mtapp:setting
+        id="sql_file"
+        label="<__trans phrase="Path to saved SQL file">">
+    <ul>
+    <li><label><input type="text" name="sql_file" id="sql_file" value="<mt:var name="sql_file" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="backup_root"
+        label="<__trans phrase="Path to web document root for back up, Comma separated">">
+    <ul>
+    <li><label><input type="text" name="backup_root" id="backup_root" value="<mt:var name="backup_root" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="archive_file"
+        label="<__trans phrase="Path to archived web document root">">
+    <ul>
+    <li><label><input type="text" name="archive_file" id="archive_file" value="<mt:var name="archive_file" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="update_backup"
+        label="<__trans phrase="Update back up">">
+    <ul>
+    <li><label><input type="checkbox" name="update_backup" id="update_backup"
+    <mt:if name="update_backup">checked="checked"</mt:if> value="1" /> <__trans phrase="Back up updated files only"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="exclude"
+        label="<__trans phrase="Excludes">">
+    <ul>
+    <li><label><input type="text" name="exclude" id="exclude" value="<mt:var name="exclude" escape="html">" style="width:220px;font-size:12px;" />&nbsp; <__trans phrase="Regular expression, Comma separated"></label></li>
+    </ul>
+    </mtapp:setting>
+    
+<hr />
+<br />
+    <mtapp:setting
+        id="bk_use_ftp"
+        label="<__trans phrase="FTP">">
+    <ul>
+    <li><label><input type="checkbox" name="bk_use_ftp" id="bk_use_ftp" onclick="toggleBackupFtpSettings()"
+    <mt:if name="bk_use_ftp">checked="checked"</mt:if> value="1" /> <__trans phrase="Use FTP server"></label></li>
+    </ul>
+    </mtapp:setting>
+    
+<div id="backup_ftp_settings" style="display:none;">
+    <mtapp:setting
+        id="bk_remove_at_ftp"
+        label="<__trans phrase="Remove back up files">">
+    <ul>
+    <li><label><input type="checkbox" name="bk_remove_at_ftp" id="bk_remove_at_ftp"
+    <mt:if name="bk_remove_at_ftp">checked="checked"</mt:if> value="1" /> <__trans phrase="Remove back up files after FTP"></label></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="bk_up2server"
+        label="<__trans phrase="FTP host">">
+    <ul>
+    <li><input type="text" value="<mt:var name="bk_up2server" escape="html">" name="bk_up2server" id="bk_up2server" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="bk_ftpcwd"
+        label="<__trans phrase="FTP server root">">
+    <ul>
+    <li><input type="text" value="<mt:var name="bk_ftpcwd" escape="html">" name="bk_ftpcwd" id="bk_ftpcwd" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="bk_user_id"
+        label="<__trans phrase="User id">">
+    <ul>
+    <li><input type="text" value="<mt:var name="bk_user_id" escape="html">" name="bk_user_id" id="bk_user_id" /></li>
+    </ul>
+    </mtapp:setting>
+    <mtapp:setting
+        id="bk_ftppassword"
+        label="<__trans phrase="Password">">
+    <ul>
+    <li><input type="password" value="<mt:var name="bk_ftppassword" escape="html">" name="bk_ftppassword" id="bk_ftppassword" /></li>
+    </ul>
+    </mtapp:setting>
+</div>
+
+<hr />
+<br />
+    <mtapp:setting
+        id="last_backup"
+        label="<__trans phrase="Last backup (Unix time)">">
+    <ul>
+    <li><label><input type="text" name="last_backup" id="last_backup" value="<mt:var name="last_backup" escape="html">" /></label></li>
+    </ul>
+    </mtapp:setting>
+    
+<script type="text/javascript">
+toggleBackupFtpSettings();
+function toggleBackupFtpSettings () {
+    if ( document.getElementById('bk_use_ftp').checked == true ) {
+        document.getElementById('backup_ftp_settings').style.display = 'block';
+    } else {
+        document.getElementById('backup_ftp_settings').style.display = 'none';
+    }
+}
+</script>

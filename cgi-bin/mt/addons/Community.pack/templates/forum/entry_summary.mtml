@@ -1,0 +1,22 @@
+<__trans_section component="community">
+<$mt:EntryTrackbackData$>
+<div id="entry-<$mt:EntryID$>" class="entry-asset asset hentry">
+    <div class="asset-header">
+        <h2 class="asset-name entry-title"><a href="<$mt:EntryPermalink$>" rel="bookmark"><$mt:EntryTitle$></a></h2>
+        <$mt:Include module="<__trans phrase="Entry Metadata">"$>
+    </div>
+    <div class="asset-content entry-content">
+<mt:If tag="EntryBody">
+        <div class="asset-body">
+            <$mt:EntryBody$>
+        </div>
+</mt:If>
+<mt:If tag="EntryMore" convert_breaks="0">
+        <div class="asset-more-link">
+            <__trans phrase="Continue reading <a href="[_1]" rel="bookmark">[_2]</a>." params="<$mt:EntryPermalink$>#more%%<$mt:EntryTitle$>">
+        </div>
+</mt:If>
+    </div>
+    <div class="asset-footer"></div>
+</div>
+</__trans_section>

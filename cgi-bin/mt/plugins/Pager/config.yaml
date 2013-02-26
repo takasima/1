@@ -1,0 +1,38 @@
+name: Pager
+id:   Pager
+key:  pager
+version: 0.4
+schema_version: 0.1
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+l10n_class: Pager::L10N
+description: <__trans phrase="Split entry listing archives.">
+callbacks:
+    MT::App::CMS::template_param.edit_template: $pager::Pager::Plugin::_edit_template_param
+    build_file_filter: $pager::Pager::Plugin::_build_file_filter
+    cms_delete_permission_filter.template: $pager::Pager::Plugin::_cms_delete_permission_filter_template
+    post_delete_archive_file: $powercms::Pager::Plugin::_cb_post_delete_archive_file
+    restore: $pager::Pager::Plugin::_cb_restore
+tags:
+    block:
+        Pager: $pager::Pager::Tags::_pager_loop
+        PagerBlock: $pager::Pager::Tags::_pager_loop
+        IfPagerPrev?: $pager::Pager::Tags::_if_prev
+        IfPagerNext?: $pager::Pager::Tags::_if_next
+        IfPagerHeader?: $pager::Pager::Tags::_if_header
+        IfPagerFooter?: $pager::Pager::Tags::_if_footer
+        IfPagerCurrent?: $pager::Pager::Tags::_if_current
+    function:
+        PagerTotal: $pager::Pager::Tags::_pager_total
+        PagerLink: $pager::Pager::Tags::_pager_link
+        PagerCounter: $pager::Pager::Tags::_pager_counter
+        PagerNextLink: $pager::Pager::Tags::_pager_next
+        PagerPrevLink: $pager::Pager::Tags::_pager_prev
+        PagerCurrent: $pager::Pager::Tags::_pager_current
+object_types:
+    template:
+        pager: integer
+        pager_file_path: string(255)
+    fileinfo:
+        original_id: integer
+

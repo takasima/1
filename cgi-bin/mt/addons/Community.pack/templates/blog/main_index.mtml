@@ -1,0 +1,16 @@
+<__trans_section component="community">
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$></mt:SetVarBlock>
+<mt:SetVarBlock name="html_head" append="1">
+    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="<$mt:Link template="rsd"$>" />
+</mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">" body_class="mt-main-index"$>
+
+<mt:Entries>
+    <$mt:Include module="<__trans phrase="Entry Summary">"$>
+</mt:Entries>
+
+<$mt:Include module="<__trans phrase="Content Navigation">"$>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

@@ -1,0 +1,16 @@
+<__trans_section component="commercial">
+<mt:if name="show_fields_list">
+    <fieldset>
+        <h3><__trans phrase="Custom Fields"></h3>
+<mtapp:setting
+    id="show_fields"
+    label="<__trans phrase="Show These Fields">">
+    <ul>
+    <mt:loop name="show_fields_list">
+        <li><label for="<mt:var name="basename">"><input type="checkbox" name="show_field_<mt:var name="id">" id="<mt:var name="basename">" value="1"<mt:if name="selected"> checked="checked"</mt:if> /> <mt:var name="name" escape="html"></label></li>
+    </mt:loop>
+    </ul>
+</mtapp:setting>
+    </fieldset>
+</mt:if>
+</__trans_section>

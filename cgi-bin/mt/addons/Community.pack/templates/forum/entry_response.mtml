@@ -1,0 +1,35 @@
+<__trans_section component="community">
+
+<$mt:Var name="heading" value="<__trans phrase="Thank you for posting a new topic to the forums.">"$>
+
+<mt:If name="entry_status" eq="1">
+<mt:SetVarBlock name="page_title"><__trans phrase="Topic Pending"></mt:SetVarBlock>
+<mt:SetVarBlock name="message">
+<p><__trans phrase="The topic you posted has been received and held for approval by the forum administrators."></p>
+</mt:SetVarBlock>
+<mt:Else><mt:If name="entry_status" eq="2">
+<mt:SetVarBlock name="page_title"><__trans phrase="Topic Posted"></mt:SetVarBlock>
+<mt:SetVarBlock name="message">
+<p><__trans phrase="The topic you posted has been received and published. Thank you for your submission."></p>
+</mt:SetVarBlock>
+<mt:Else>
+<mt:SetVarBlock name="page_title"><__trans phrase="Topic Pending"></mt:SetVarBlock>
+<mt:SetVarBlock name="message">
+<p><__trans phrase="The topic you posted has been received and held for approval by the forum administrators."></p>
+</mt:SetVarBlock>
+</mt:If></mt:If>
+
+<mt:SetVarBlock name="title"><$mt:BlogName encode_html="1"$>: <$mt:Var name="page_title"$></mt:SetVarBlock>
+
+<$mt:Include module="<__trans phrase="Header">"$>
+
+<div class="content-header">
+    <h1 id="page-title"><$mt:Var name="heading"$></h1>
+</div>
+
+<$mt:Var name="message"$>
+
+<p><__trans phrase="Return to the <a href="[_1]">forum's homepage</a>." params="<$mt:BlogURL$>"></p>
+
+<$mt:Include module="<__trans phrase="Footer">"$>
+</__trans_section>

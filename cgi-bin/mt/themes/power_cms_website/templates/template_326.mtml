@@ -1,0 +1,31 @@
+var search_text = function() {
+    //bind focus evnet of search-field
+    jQuery('#hu_search_text')
+        .bind('focus', function() {
+            jQuery(this).addClass('on_focus');
+        })
+        .bind('blur', function() {
+            if (!this.value) {
+                jQuery(this).removeClass('on_focus');
+            }
+        });
+};
+
+var highlight_menu = function() {
+    var current_url = location.href,
+        home = '<$MTWebsiteURL escape="js"$>',
+        current_ne_home = current_url !== home;
+    jQuery('#header_global_navi a').each(function() {
+        var link = this.href;
+        if ((current_ne_home && link === home) ||
+            (link !== current_url && !current_url.match(link))) {
+            return;
+        }
+        jQuery(this).parent().addClass('current');
+    });
+};
+
+jQuery(function() {
+    search_text();
+    highlight_menu();
+});

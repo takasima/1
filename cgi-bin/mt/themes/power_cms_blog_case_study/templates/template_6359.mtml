@@ -1,0 +1,156 @@
+<mt:for add_session_for_mobile="1" external_link_for_mobile="1">
+<MTBlogParentWebsite>
+<$MTWebsiteID setvar="site_id"$>
+<$MTWebsiteURL setvar="site_url"$>
+<$MTWebsiteName setvar="site_name"$>
+<$MTWebsiteRelativeURL setvar="site_path"$>
+</MTBlogParentWebsite>
+
+<$MTBlogRelativeURL setvar="blog_path"$>
+<$MTVar name="blog_path" cat="common/" setvar="common_path"$>
+
+<MTSetVars>
+title=<$MTEntryTitle$>
+</MTSetVars>
+<MTSetVarBlock name="emoji_img_base"><$MT:StaticWebPath$>plugins/KeitaiLib/images/<$MTKeitaiEmoticonSize$>/</MTSetVarBlock>
+
+<MTIncludeBlock module="<__trans phrase="Mobile-contetns">">
+
+<div style="text-align:center">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" /><br />
+<span style="font-size:x-large;color:#212121"><$MTVar name="site_name" encode_html="1"$></span><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<MTIfBlog>
+<div style="background-color:#E7E7E7;text-align:left;padding:5px;font-weight:bold">
+<img src="<$MTVar name="common_path" encode_html="1"$>images/header_1.gif" alt="header_1" width="16" height="16" /> <$MTBlogName encode_html="1"$>
+</div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</MTIfBlog>
+</div>
+
+<div style="font-size:small;padding:0 5px">
+<div>
+<MTIf tag="EntrySiteCaptcha">
+<MTEntrySiteCaptchaAsset>
+<MTIf tag="AssetMIMEType" like="/^image\//">
+<$MTSetVar name="max_image_width" value="212"$>
+<$MTAssetProperty property="image_width" setvar="image_width"$>
+<MTIf name="image_width" gt="$max_image_width">
+<$MTVar name="max_image_width" setvar="image_width"$>
+<$MTAssetThumbnailURL width="$image_width" setvar="image_src"$>
+<$MTAssetThumbnailLink width="$image_width" regex_replace='/(?:.* height="(\d+))?.*/s','$1' setvar="image_height"$>
+<MTElse>
+<$MTAssetURL setvar="image_src"$>
+<$MTAssetProperty property="image_height" setvar="image_height"$>
+</MTIf>
+<p><img src="<$MTVar name="image_src" encode_html="1"$>" width="<$MTVar name="image_width" encode_html="1"$>" height="<$MTVar name="image_height" encode_html="1"$>" alt="<$MTEntryTitle encode_html="1"$>" /></p>
+</MTIf>
+</MTEntrySiteCaptchaAsset>
+</MTIf>
+<MTML tag="MTEmoticon2emoji" params='base="$emoji_img_base" size="12" emoticon="1" alt="1"'>
+<$MTEntryBody mteval="1"$>
+<MTML tag="/MTEmoticon2emoji">
+</div>
+<div>
+<img src="../common/images/sp.gif" alt="" width="1" height="10" />
+</div>
+
+<MTIf tag="MTEntryFunction">
+<MTEntryFunction setvar="_funcs">
+<div>
+・<$MTVar name="__value__" encode_html="1"$><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+</MTEntryFunction>
+</MTIf>
+
+<MTIf name="_funcs" like="/\S/">
+<__trans phrase="Using functional">
+<div style="background:url(<$MTVar name="common_path" encode_html="1"$>images/dot.gif) repeat-x">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<$MTVar name="_funcs"$>
+</MTIf>
+
+<$MTEntryID setvar="e_id"$>
+<$MTSetVar name="similar_group" function="undef"$>
+<MTEntrySimilarGroup stash="entry" setvar="similar_group">
+<MTIf tag="EntryID" ne="$e_id">
+<div>
+・<a href="<$MTEntryPermalink encode_html="1"$>"><$MTEntryTitle encode_html="1"$></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+</MTIf>
+</MTEntrySimilarGroup>
+<MTIf name="similar_group" like="/\S/">
+<img src="<$MTVar name="common_path" encode_html="1"$>images/heading_icon.gif" alt="heading_icon" width="14" height="13" /> <__trans phrase="Cases with the same functionality">
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<$MTVar name="similar_group"$>
+</MTIf>
+
+
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+<div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+</div>
+<div>
+・<a href="<$MTEntryPermalink encode_html="1"$>"><__trans phrase="Permalink"></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+<MTSetVarBlock name="_re">/(?=\<$MTBlogFileExtension$>$)/</MTSetVarBlock>
+<MTIfCommentsActive>
+<div>
+・<a href="<$MTEntryPermalink with_index="1" regex_replace='$_re','_comments'$>"><__trans phrase="View comments"> (<$MTEntryCommentCount encode_html="1"$>)</a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+<MTIfCommentsAccepted>
+<div>
+・<a href="<$MTEntryPermalink with_index="1" regex_replace='$_re','_form'$>"><__trans phrase="Leave a comment"></a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+</MTIfCommentsAccepted>
+</MTIfCommentsActive>
+<MTIfPingsActive>
+<div>
+・<a href="<$MTEntryPermalink with_index="1" regex_replace='$_re','_trackbacks'$>"><__trans phrase="Trackbacks"> (<$MTEntryTrackbackCount encode_html="1"$>)</a><br />
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="5" />
+</div>
+</MTIfPingsActive>
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<div style="text-align:center">
+<MTIf tag="EntryPrevious">
+<MTEntryPrevious>
+<img src="<$MTVar name="common_path" encode_html="1"$>images/prev_on.gif" alt="prev_on" width="8" height="12" /> <a href="<$MTEntryPermalink encode_html="1"$>"><__trans phrase="Previous"></a>
+</MTEntryPrevious>
+<MTElse>
+<img src="<$MTVar name="common_path" encode_html="1"$>images/prev_off.gif" alt="prev_off" width="8" height="12" /> <__trans phrase="Previous">
+</MTIf>
+<a style="margin:0 4px" href="<$MTBlogRelativeURL encode_html="1"$>"><$MTBlogName encode_html="1"$></a>
+<MTIf tag="EntryNext">
+<MTEntryNext>
+<a href="<$MTEntryPermalink encode_html="1"$>"><__trans phrase="Next"></a> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_on.gif" alt="next_on" width="8" height="12" />
+</MTEntryNext>
+<MTElse>
+<__trans phrase="Next"> <img src="<$MTVar name="common_path" encode_html="1"$>images/next_off.gif" alt="next_off" width="8" height="12" />
+</MTIf>
+</div>
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="10" />
+<div style="background-color:#E7E7E7">
+<img src="<$MTVar name="common_path" _default="/" encode_html="1"$>images/sp.gif" alt="" width="1" height="2" />
+</div>
+
+</div>
+
+</MTIncludeBlock>
+</mt:for>

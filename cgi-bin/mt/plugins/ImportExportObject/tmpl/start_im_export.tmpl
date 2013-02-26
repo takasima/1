@@ -1,0 +1,260 @@
+<__trans_section component="ImportExportObject">
+<mt:setvarblock name="page_title"><__trans phrase="Import Export Object"></mt:setvarblock>
+<mt:setvarblock name="html_head" append="1">
+</mt:setvarblock>
+<mt:setvar name="position_actions_bottom" value="1">
+<mt:setvarblock name="system_msg">
+    <mt:if name="saved">
+        <mtapp:statusmsg
+           id="saved"
+            class="success">
+            <__trans phrase="Your changes have been saved.">
+        </mtapp:statusmsg>
+    </mt:if>
+    <mt:if name="error">
+        <mtapp:statusmsg
+            id="generic-error"
+            class="error">
+            <mt:var name="error">
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+<mt:setvartemplate name="action_buttons">
+</mt:setvartemplate>
+
+<mt:include name="include/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">" enctype="multipart/form-data">
+
+<mt:if name="position_actions_top">
+    <mt:include name="include/actions_bar.tmpl" bar_position="top" hide_pager="1">
+</mt:if>
+
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id" escape="html">" />
+    <input type="hidden" name="__mode" value="im_export_object" />
+    <input type="hidden" name="action" id="action" value="" />
+    <input type="hidden" name="asset_zip" id="asset_zip" value="" />
+    <input type="hidden" name="return_args" id="this_return_args" value="<mt:var name="return_args" escape="html">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+<fieldset>
+    <mtapp:setting
+        id="_type"
+        label="<__trans phrase="Select an Object">"
+        show_hint="0">
+    <select name="_type" id="_type" onchange="toggle_object(this)">
+        <option value=""><__trans phrase="Select One..."></option>
+        <mt:unless name="blog_id"><option value="author"><__trans phrase="Author"></option></mt:unless>
+        <option value="entry"><__trans phrase="Entry"></option>
+        <option value="page"><__trans phrase="Page"></option>
+        <option value="category"><__trans phrase="Category"></option>
+        <option value="folder"><__trans phrase="Folder"></option>
+        <mt:if name="blog_id"><option value="asset"><__trans phrase="Asset"></option></mt:if>
+        <option value="field"><__trans phrase="Custom Field"></option>
+    </select>
+    </mtapp:setting>
+    
+<mt:unless name="blog_id">
+    <mtapp:setting
+        id="author"
+        label="<__trans phrase="Author">"
+        show_hint="0">
+    <input type="file" name="author" id="author" />
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'author' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'author' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+</mt:unless>
+
+    <mtapp:setting
+        id="entry"
+        label="<__trans phrase="Entry">"
+        show_hint="0">
+    <input type="file" name="entry" id="entry" />
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'entry' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'entry' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="page"
+        label="<__trans phrase="Page">"
+        show_hint="0">
+    <input type="file" name="page" id="page" />
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'page' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'page' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="category"
+        label="<__trans phrase="Category">"
+        show_hint="0">
+    <input type="file" name="category" id="category" />
+        <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'category' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'category' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="folder"
+        label="<__trans phrase="Folder">"
+        show_hint="0">
+    <input type="file" name="folder" id="folder" />
+        <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'folder' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'folder' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="asset"
+        label="<__trans phrase="Asset">"
+        show_hint="0">
+    <p><__trans phrase="CSV File">: <input type="file" name="asset" id="asset" /></p>
+    <p><__trans phrase="ZIP Archive">: <input type="file" name="zip" id="zip" /></p>
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'asset' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'asset' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="z"
+        onclick="return do_export( 'asset_zip' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export as ZIP"></button>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="field"
+        label="<__trans phrase="Custom Field">"
+        show_hint="0">
+    <input type="file" name="field" id="field" />
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_import( 'field' );"
+        title="<__trans phrase="Import (s)">"
+        class="save action primary button"
+        ><__trans phrase="Import"></button>
+        &nbsp;
+    <button
+        type="submit"
+        accesskey="s"
+        onclick="return do_export( 'field' );"
+        title="<__trans phrase="Export (e)">"
+        class="save action primary button"
+        ><__trans phrase="Export"></button>
+    </mtapp:setting>
+
+    <script type="text/javascript">
+        var objArray = new Array( <mt:unless name="blog_id">'author', </mt:unless>'entry', 'page', 'category', 'folder', 'asset', 'field' );
+        function toggle_object( sel ) {
+            var selected = sel.options[sel.selectedIndex].value;
+            for ( i=0; i<objArray.length; i++ ){
+                if ( selected == objArray[i] ) {
+                    getByID( objArray[i] + '-field' ).style.display = 'block';
+                } else {
+                    getByID( objArray[i] + '-field' ).style.display = 'none';
+                }
+            }
+        }
+        function do_import( obj ) {
+            getByID( 'action' ).value = 'import';
+            return confirm( '<__trans phrase="Are you sure you want to import this object?">' );
+        }
+        function do_export( obj ) {
+            getByID( 'action' ).value = 'export';
+            if ( obj == 'asset_zip' ) {
+                getByID( 'asset_zip' ).value = 1;
+            } else {
+                getByID( 'asset_zip' ).value = '';
+            }
+            return confirm( '<__trans phrase="Are you sure you want to export this object?">' );
+        }
+        for ( i=0; i < objArray.length; i++ ){
+            getByID( objArray[i] + '-field' ).style.display = 'none';
+        }
+    </script>
+
+<mt:Ignore>
+<mt:if name="position_actions_bottom">
+    <mt:include name="include/actions_bar.tmpl" bar_position="bottom" hide_pager="1">
+</mt:if>
+</mt:Ignore>
+</fieldset>
+</form>
+<mt:include name="include/footer.tmpl">
+</__trans_section>
