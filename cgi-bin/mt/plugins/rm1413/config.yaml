@@ -1,9 +1,0 @@
-id: rm1413
-name: Patch for initial theme applying
-key: rm1413
-
-init: $rm1413::RM1413::Patch::init
-callbacks:
-    blog_template_set_change: $rm1413::RM1413::Patch::cb_blog_template_set_change
-    MT::Upgrade::upgrade_end: $rm1413::RM1413::Patch::disable_plugin
-

@@ -1,9 +1,0 @@
-<__trans_section component="ContactForm"><__trans phrase="This Message has been posted for [_1] - [_2]" params="<$mt:BlogName$>%%<mt:var name="form_name">">
-
-<__trans phrase="Posted Data">:
-<mt:if name="field_loop">--------------<mt:loop name="field_loop">
-<$mt:var name="field_label"$>:
-<mt:if name="field_type" eq="date"><$mt:var name="field_value" format_ts="1" replace=" 00:00",""$><mt:elseif name="field_type" eq="date-and-time"><$mt:var name="field_value" format_ts="1"$><mt:else><$mt:var name="field_value"$></mt:else></mt:if>
---------------</mt:loop></mt:if>
--- 
-Powered by Movable Type</__trans_section>
